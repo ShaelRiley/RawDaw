@@ -5,14 +5,30 @@ import gzip
 import hashlib
 import io
 import json
+import os
 import platform
+import re
 import subprocess
 import tarfile
+import tempfile
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent.parent
 NAME='PRDE1_0.2.0_Linux_x86_64'
 STAMP=1791504000  # Stable build-content timestamp: 2026-10-09 UTC.
+
+
+def source_tree():
+    # Exclude prior distributions so rebuilding does not include the old
+    # archive's hash in its own input identity. Leave the real index untouched.
+    records=subprocess.check_output(['git','ls-files','--stage','-z'],cwd=ROOT).split(b'\0')
+    records=[row for row in records if row and not row.split(b'\t',1)[1].startswith(b'dist/')]
+    with tempfile.TemporaryDirectory(prefix='prde1-build-index-') as folder:
+        environment=os.environ.copy();environment['GIT_INDEX_FILE']=folder+'/index'
+        subprocess.run(['git','read-tree','--empty'],cwd=ROOT,env=environment,check=True)
+        subprocess.run(['git','update-index','-z','--index-info'],cwd=ROOT,env=environment,
+                       input=b'\0'.join(records)+b'\0',check=True)
+        return subprocess.check_output(['git','write-tree'],cwd=ROOT,env=environment,text=True).strip()
 
 
 def main():
@@ -30,9 +46,9 @@ def main():
         raise ValueError('Six verified auditions are required')
     version=subprocess.check_output(['g++','--version'],text=True).splitlines()[0]
     dependencies=subprocess.check_output(['ldd',str(binary)],text=True)
-    source_tree=subprocess.check_output(['git','write-tree'],cwd=ROOT,text=True).strip()
+    dependencies=re.sub(r'\s*\(0x[0-9a-fA-F]+\)','',dependencies)
     build_info={'version':'0.2.0','target':'Linux x86_64','builtOn':'Ubuntu 24.04',
-        'compiler':version,'python':platform.python_version(),'sourceTreeBeforeDistribution':source_tree,
+        'compiler':version,'python':platform.python_version(),'sourceTreeBeforeDistribution':source_tree(),
         'systemLibraries':dependencies,'schemaVersion':'1.0.0-dev.1','packCount':3,
         'releaseStatus':'private development checkpoint; coverage-limited packs; listening gate open',
         'files':{name:{'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)} for name,raw in sorted(files.items())}}
