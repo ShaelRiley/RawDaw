@@ -1,0 +1,13 @@
+{
+  "changedSourceRejected": {
+    "message": "Blocked ingest: absent/changed authorized source lead",
+    "priorPackPreserved": true
+  },
+  "falseChordRejected": {
+    "message": "Whole-chord diagnostic disagrees with saved identity: guitar_10_minor",
+    "priorPackPreserved": true
+  },
+  "repeatedPreparationByteIdentical": true,
+  "originalSourceArchiveSha256": "0a6202d0a6aa58f4b9a1172c146b75225d6cffd2a497c0255a27f15fbad62054",
+  "packSha256": "86cbbb967a7d8c00e004428272a389e3256a45e4010797fbfc7e69aa3cb0621c"
+}

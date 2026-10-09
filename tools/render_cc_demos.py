@@ -10,6 +10,7 @@ import wave
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent.parent
+from source_catalog import projects
 
 
 def render(pack,project,output,seek=0):
@@ -29,7 +30,10 @@ def pcm(path):
 def main(output):
     output.mkdir(parents=True,exist_ok=True)
     reports=[]
-    for project in sorted((ROOT/'packs').glob('*.prdeproj')):
+    expected=projects()
+    if set(expected)!=set((ROOT/'packs').glob('*.prdeproj')):
+        raise ValueError('Source catalog differs from available arrangements')
+    for project in sorted(expected):
         pack=project.with_name(project.stem[:-2]+'.prdepack')
         before=hashlib.sha256(pack.read_bytes()).hexdigest()
         path=output/(project.stem+'.wav')
@@ -48,11 +52,11 @@ def main(output):
                       seekFrame123457ExactSlice=True,packUnchanged=True,humanListening='not_performed')
         reports.append(report)
         print(project.name,report['eventCount'],'events',round(report['peakDbFS'],2),'dBFS; repeat/seek/hash passed',flush=True)
-    if len(reports)!=6:raise ValueError('Expected exactly six arrangements')
+    if len(reports)!=len(expected):raise ValueError('Missing verified source arrangement')
     (output/'validation.json').write_text(json.dumps(reports,indent=2)+'\n')
 
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output',type=Path,default=ROOT/'out'/'cc-auditions')
+    parser.add_argument('--output',type=Path,default=ROOT/'out'/'source-auditions')
     main(parser.parse_args().output)

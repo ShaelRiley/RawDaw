@@ -1,4 +1,4 @@
-"""Repeatable preparation of three curated CC songs from verified artist stems.
+"""Repeatable preparation of curated authorized songs from verified source stems.
 
 This bounded prototype is not the public AI builder skill or a general mixed-song
 separator. It consumes saved crop/pitch decisions, checks source hashes, and
@@ -145,7 +145,7 @@ def make_project(manifest, manifest_hash, spec, clip, name):
                         events.append(e)
                 part={"id":f"{role}_{bar}","role":role,"length":"4","events":events,
                       "provenance":{"sourceClip":"PRDE1 authored demonstration","license":"MIT",
-                                    "changes":"New performance using the prepared CC source bank"}}
+                                    "changes":"New performance using the prepared source bank"}}
             patterns.append(part);instances.append({"id":f"{role}_instance_{bar}","patternId":part["id"],"beat":str(bar*4),"linked":False})
     channels={role:channel() for role in ("lead","rhythm","bass","drums",*["drums."+slot for slot in SLOTS])}
     for role,gain in {"lead":-8,"rhythm":-10,"bass":-7,"drums":-8}.items():channels[role]["gainDb"]=gain
@@ -175,6 +175,9 @@ def prepare(recipe, source_root, output, work):
         if not path.is_file() or path.stat().st_size>MAX_SOURCE_BYTES or path.stat().st_size!=asset["bytes"] or sha256(path.read_bytes())!=asset["sha256"]:
             raise ValueError("Blocked ingest: absent/changed authorized source "+key)
         inputs[key]=path
+    profile=recipe.get("profileVersion",PROFILE)
+    primary=recipe.get("primarySourceInput","mix")
+    if primary not in inputs:raise ValueError("Primary source identity is not a verified input")
     ffmpeg=subprocess.check_output(["ffmpeg","-version"],text=True).splitlines()[0]
     files={};samples=[];mappings=[];audit=[];native={};decoded={}
     def add(spec,audio,lineage,extra_qa=None):
@@ -249,29 +252,29 @@ def prepare(recipe, source_root, output, work):
         "license":recipe["license"],"attribution":recipe["attribution"],"sourceHash":recipe["inputs"]["drums"]["sha256"],
         "normalizedPath":"clips/normalized/source_groove.json","midiPath":"clips/source-midi/source_groove.mid"}])
     files["analysis/harmony.json"]=canonical_bytes(recipe["analysis"])
-    files["analysis/coverage.json"]=canonical_bytes({"profile":PROFILE,"notes":{role:sorted(m["note"] for m in mappings if m["role"]==role) for role in ("lead","bass")},
+    files["analysis/coverage.json"]=canonical_bytes({"profile":profile,"notes":{role:sorted(m["note"] for m in mappings if m["role"]==role) for role in ("lead","bass")},
         "chords":[{k:m[k] for k in ("root","quality","inversion")} for m in mappings if m["role"]=="rhythm"],
         "unavailableSlots":{slot:v["reason"] for slot,v in drums.items() if v["status"]=="unavailable"},
         "fullTonalMapVerified":False,"humanListening":"not_performed","sustainLoops":0})
     files["presets/mix.json"]=canonical_bytes({"preset":"dry prototype","masterReverbOn":False,"masterDelayOn":False})
     files["provenance.json"]=canonical_bytes({"sourcePage":recipe["sourcePage"],"license":recipe["license"],"licenseUrl":recipe["licenseUrl"],
         "attribution":recipe["attribution"],"ingredients":recipe["inputs"],"licenseEvidence":recipe["licenseEvidence"],
-        "separation":"Artist-provided stems from this song, plus the credited upstream vocal in Where You Are Now; no learned separation model",
+        "separation":recipe.get("separation","Artist-provided stems from this song, plus the credited upstream vocal in Where You Are Now; no learned separation model"),
         "recipeSha256":sha256(canonical_bytes(recipe)),"ffmpeg":ffmpeg,"numpy":np.__version__,
-        "scipy":__import__('scipy').__version__,"corrections":"Saved crop, note/chord and drum identity selections in recipes/cc-songs.json",
-        "sourceTimeConvention":"Per-ingredient decoded seconds. Stem-to-master offsets/rearrangements are not claimed to be verified.",
+        "scipy":__import__('scipy').__version__,"corrections":recipe.get("corrections","Saved crop, note/chord and drum identity selections in recipes/cc-songs.json"),
+        "sourceTimeConvention":recipe.get("sourceTimeConvention","Per-ingredient decoded seconds. Stem-to-master offsets/rearrangements are not claimed to be verified."),
         "changes":"Crops, DC removal, boundary fades, bounded gain calibration; individually documented preparation-only filters/pitch variants"})
-    files["qa/report.json"]=canonical_bytes({"profile":PROFILE,"structuralValidation":"actual PRDE1 loader", "assets":audit,
-        "humanListening":"not_performed","isolation":"Artist stems; possible baked effects/residual percussion bleed; provisional percussion labels",
+    files["qa/report.json"]=canonical_bytes({"profile":profile,"structuralValidation":"actual PRDE1 loader", "assets":audit,
+        "humanListening":"not_performed","isolation":recipe.get("isolation","Artist stems; possible baked effects/residual percussion bleed; provisional percussion labels"),
         "releaseQualityGate":"open","loops":"None; natural sample limits are reported during playback", "syntheticAssets":0})
     preview=next(s for s in samples if s["role"]=="rhythm");files["preview/audition.wav"]=files[preview["path"]]
     files["ATTRIBUTION.json"]=canonical_bytes({"attribution":recipe["attribution"],
         "licenseUrl":recipe["licenseUrl"],"sourcePage":recipe["sourcePage"],
         "changes":"Cropped/cleaned source stems; listed pre-rendered note variants; estimated drum MIDI.",
         "endorsement":"No artist endorsement implied."})
-    manifest={"schemaVersion":VERSION,"packId":recipe["packId"],"builder":{"version":"curated-stem-preparation-0.2.0","profileVersion":PROFILE,"modelVersion":"none — artist stems"},
-        "source":{"title":recipe["title"],"sha256":recipe["inputs"]["mix"]["sha256"],"kind":"authorized_recording",
-                  "rightsDeclaration":"Selected under user's authorization; primary artist source pages list CC BY 3.0. Credits/license and modifications retained.",
+    manifest={"schemaVersion":VERSION,"packId":recipe["packId"],"builder":{"version":recipe.get("builderVersion","curated-stem-preparation-0.2.0"),"profileVersion":profile,"modelVersion":recipe.get("modelVersion","none — artist stems")},
+        "source":{"title":recipe["title"],"sha256":recipe["inputs"][primary]["sha256"],"kind":"authorized_recording",
+                  "rightsDeclaration":recipe.get("rightsDeclaration","Selected under user's authorization; primary artist source pages list CC BY 3.0. Credits/license and modifications retained."),
                   "license":recipe["license"],"attribution":recipe["attribution"]},
         "audio":{"sampleRate":RATE,"bitsPerSample":24,"tuningHz":440,"tuning":"12-TET"},
         "maps":{"harmony":"analysis/harmony.json","coverage":"analysis/coverage.json"},"instruments":instruments,"samples":samples,"mappings":mappings,
@@ -302,7 +305,9 @@ if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sources",type=Path,required=True);parser.add_argument("--output",type=Path,default=ROOT/"packs")
     parser.add_argument("--work",type=Path,default=ROOT/"out"/"source-preparation")
-    parser.add_argument("--only",choices=["reach_out","where_you_are_now","auld_lang_syne_bossa"])
-    args=parser.parse_args();recipes=json.loads((ROOT/"recipes"/"cc-songs.json").read_text())
+    parser.add_argument("--recipes",type=Path,default=ROOT/"recipes"/"cc-songs.json")
+    parser.add_argument("--only",help="Prepare only this pack ID from the selected recipe file")
+    args=parser.parse_args();recipes=json.loads(args.recipes.read_text())
+    if args.only and args.only not in {recipe["packId"] for recipe in recipes}:parser.error("Unknown pack ID in selected recipe file")
     for recipe in recipes:
         if not args.only or recipe["packId"]==args.only:prepare(recipe,args.sources,args.output,args.work/recipe["packId"])

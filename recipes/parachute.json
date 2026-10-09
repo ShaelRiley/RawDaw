@@ -1,0 +1,1334 @@
+[
+  {
+    "packId": "parachute",
+    "title": "Parachute",
+    "artist": "Shael Riley",
+    "sourcePage": "user-upload:Parachute-Stems.zip",
+    "bpm": 165,
+    "vocalLead": true,
+    "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+    "licenseUrl": "",
+    "attribution": "Parachute \u2014 created by Shael Riley using Suno; source supplied and pack creation authorized by Shael Riley on 2026-10-09.",
+    "rightsDeclaration": "Shael Riley states that he created Parachute with Suno, holds a paid Suno account, and that using the supplied stems to make this Song Pack is within his license. Pack preparation and inclusion in the existing private development repository/build are authorized. This records the user declaration, not independent legal verification or a Creative Commons grant.",
+    "primarySourceInput": "archive",
+    "profileVersion": "curated-user-stems-0.2.1",
+    "builderVersion": "curated-stem-preparation-0.2.1",
+    "modelVersion": "no local separation model; user-supplied Suno stems",
+    "licenseEvidence": {
+      "declaredDate": "2026-10-09",
+      "declaredBy": "Shael Riley",
+      "basis": "User states he created the song using his paid Suno account and authorizes this use.",
+      "independentlyVerified": false,
+      "creativeCommonsGrant": false,
+      "distributionScope": "existing private PRDE1 repository and development build"
+    },
+    "separation": "Nine user-supplied Suno stems. Lead Vocals, Bass, Guitar and Drums are the chosen ensemble identities. No local separation model, unrelated source, synthesized replacement, or full stem summation is used.",
+    "isolation": "User-supplied separated stems; possible model bleed and baked source processing. Drum labels are estimates.",
+    "corrections": "Saved native crop/pitch/chord selections and partial drum-onset assignments in recipes/parachute.json.",
+    "sourceTimeConvention": "All nine supplied stems have the same 7,315,200 frames, 48 kHz stereo, and zero file origin. Crops use exact ingredient-local frame positions. No original master was supplied; acoustic alignment is not independently verified.",
+    "inputs": {
+      "lead": {
+        "path": "parachute/0 Lead Vocals.wav",
+        "sha256": "99ce27d4306c56207e5899ea1eb4822f751bb68cb38627aff70d743e50f8c318",
+        "bytes": 29260916,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive",
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "durationSeconds": 152.4,
+        "timeOriginSeconds": 0
+      },
+      "backingVocals": {
+        "path": "parachute/1 Backing Vocals.wav",
+        "sha256": "969aa57bffeacbaec14177feb4467447cdbf2dfd95f219a6105336bfc7572867",
+        "bytes": 29260916,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive",
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "durationSeconds": 152.4,
+        "timeOriginSeconds": 0
+      },
+      "drums": {
+        "path": "parachute/2 Drums.wav",
+        "sha256": "3604b4ba2a394934ac3df500c63fcfa1afb1772e11cfb0555fa7df1a29be3ef5",
+        "bytes": 29260916,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive",
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "durationSeconds": 152.4,
+        "timeOriginSeconds": 0
+      },
+      "bass": {
+        "path": "parachute/3 Bass.wav",
+        "sha256": "8d78826caeaa75e1a88ed7cb0887d92c0f0bbda28ffab1939847e7cfbac13dbd",
+        "bytes": 29260916,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive",
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "durationSeconds": 152.4,
+        "timeOriginSeconds": 0
+      },
+      "rhythm": {
+        "path": "parachute/4 Guitar.wav",
+        "sha256": "57c5d3db1d75cc8d8b888f1d1d12849174462a1680d46cfb3c8f32221f7cfdcc",
+        "bytes": 29260916,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive",
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "durationSeconds": 152.4,
+        "timeOriginSeconds": 0
+      },
+      "keyboard": {
+        "path": "parachute/5 Keyboard.wav",
+        "sha256": "88442e6aa0c0cf3f3186ada344e4d603d7171a2fe397245efcf12b327db94bb9",
+        "bytes": 29260916,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive",
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "durationSeconds": 152.4,
+        "timeOriginSeconds": 0
+      },
+      "percussion": {
+        "path": "parachute/6 Percussion.wav",
+        "sha256": "ba369e0aee4cdb7d07e3a083e3115df657ac187bbebe900297399ac198734c22",
+        "bytes": 29260916,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive",
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "durationSeconds": 152.4,
+        "timeOriginSeconds": 0
+      },
+      "synth": {
+        "path": "parachute/7 Synth.wav",
+        "sha256": "48cc67defe96832a4e04a07e00b57174effd73f948abe93380d4e91e2322f512",
+        "bytes": 29260916,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive",
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "durationSeconds": 152.4,
+        "timeOriginSeconds": 0
+      },
+      "other": {
+        "path": "parachute/8 Other.wav",
+        "sha256": "c0abe55b81be02f162293927c739ba40e6f73ed7ef131b64823d3f776c3b4ff1",
+        "bytes": 29260916,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive",
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "durationSeconds": 152.4,
+        "timeOriginSeconds": 0
+      },
+      "archive": {
+        "path": "parachute/Parachute-Stems.zip",
+        "sha256": "0a6202d0a6aa58f4b9a1172c146b75225d6cffd2a497c0255a27f15fbad62054",
+        "bytes": 145164169,
+        "sourcePage": "user-upload:Parachute-Stems.zip",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "licenseUrl": "",
+        "origin": "user-supplied Suno stem archive"
+      }
+    },
+    "crops": [
+      {
+        "id": "lead_58",
+        "role": "lead",
+        "pitches": [
+          58
+        ],
+        "confidence": 0.987,
+        "source": {
+          "input": "lead",
+          "start": 94.576,
+          "end": 95.408
+        },
+        "estimate": {
+          "note": 58,
+          "start": 94.576,
+          "end": 95.408,
+          "cents": 5.67,
+          "spreadCents": 21.65,
+          "error": 0.013189859005129742,
+          "rms": 0.08976164568159078
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_60",
+        "role": "lead",
+        "pitches": [
+          60
+        ],
+        "confidence": 0.911,
+        "source": {
+          "input": "lead",
+          "start": 147.6,
+          "end": 147.936
+        },
+        "estimate": {
+          "note": 60,
+          "start": 147.6,
+          "end": 147.936,
+          "cents": -2.74,
+          "spreadCents": 15.73,
+          "error": 0.08881851793114237,
+          "rms": 0.05493703657928454
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_61",
+        "role": "lead",
+        "pitches": [
+          61
+        ],
+        "confidence": 0.976,
+        "source": {
+          "input": "lead",
+          "start": 92.512,
+          "end": 92.88
+        },
+        "estimate": {
+          "note": 61,
+          "start": 92.512,
+          "end": 92.88,
+          "cents": 7.12,
+          "spreadCents": 16.62,
+          "error": 0.02443488237933504,
+          "rms": 0.08467785357415
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_63",
+        "role": "lead",
+        "pitches": [
+          63
+        ],
+        "confidence": 0.956,
+        "source": {
+          "input": "lead",
+          "start": 99.376,
+          "end": 100.226
+        },
+        "estimate": {
+          "note": 63,
+          "start": 99.376,
+          "end": 100.288,
+          "cents": 3.45,
+          "spreadCents": 18.95,
+          "error": 0.04440285455818495,
+          "rms": 0.09848831962882754
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_65",
+        "role": "lead",
+        "pitches": [
+          65
+        ],
+        "confidence": 0.966,
+        "source": {
+          "input": "lead",
+          "start": 110.768,
+          "end": 111.536
+        },
+        "estimate": {
+          "note": 65,
+          "start": 110.768,
+          "end": 111.536,
+          "cents": 4.88,
+          "spreadCents": 22.8,
+          "error": 0.034299107666307574,
+          "rms": 0.12766515528317998
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_66",
+        "role": "lead",
+        "pitches": [
+          66
+        ],
+        "confidence": 0.922,
+        "source": {
+          "input": "lead",
+          "start": 63.632,
+          "end": 63.984
+        },
+        "estimate": {
+          "note": 66,
+          "start": 63.632,
+          "end": 63.984,
+          "cents": 2.06,
+          "spreadCents": 14.57,
+          "error": 0.07754297802978463,
+          "rms": 0.09872844720187546
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_68",
+        "role": "lead",
+        "pitches": [
+          68
+        ],
+        "confidence": 0.974,
+        "source": {
+          "input": "lead",
+          "start": 105.536,
+          "end": 105.76
+        },
+        "estimate": {
+          "note": 68,
+          "start": 105.536,
+          "end": 105.76,
+          "cents": 0.86,
+          "spreadCents": 23.43,
+          "error": 0.026234579021845603,
+          "rms": 0.10880692374640835
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_69",
+        "role": "lead",
+        "pitches": [
+          69
+        ],
+        "confidence": 0.993,
+        "source": {
+          "input": "lead",
+          "start": 111.616,
+          "end": 112.144
+        },
+        "estimate": {
+          "note": 69,
+          "start": 111.616,
+          "end": 112.144,
+          "cents": 9.55,
+          "spreadCents": 29.39,
+          "error": 0.006685254775486534,
+          "rms": 0.12021819522575371
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_70",
+        "role": "lead",
+        "pitches": [
+          70
+        ],
+        "confidence": 0.962,
+        "source": {
+          "input": "lead",
+          "start": 117.2,
+          "end": 117.80799999999999
+        },
+        "estimate": {
+          "note": 70,
+          "start": 117.2,
+          "end": 117.80799999999999,
+          "cents": 5.71,
+          "spreadCents": 35.54,
+          "error": 0.0383461233258005,
+          "rms": 0.10562127628644696
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_72",
+        "role": "lead",
+        "pitches": [
+          72
+        ],
+        "confidence": 0.971,
+        "source": {
+          "input": "lead",
+          "start": 45.984,
+          "end": 46.416
+        },
+        "estimate": {
+          "note": 72,
+          "start": 45.984,
+          "end": 46.416,
+          "cents": -7.55,
+          "spreadCents": 32.43,
+          "error": 0.02876533976880492,
+          "rms": 0.10147916743454645
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_73",
+        "role": "lead",
+        "pitches": [
+          73
+        ],
+        "confidence": 0.973,
+        "source": {
+          "input": "lead",
+          "start": 133.856,
+          "end": 134.706
+        },
+        "estimate": {
+          "note": 73,
+          "start": 133.856,
+          "end": 135.264,
+          "cents": -0.36,
+          "spreadCents": 13.65,
+          "error": 0.02735301838933132,
+          "rms": 0.10325389220435778
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "lead_75",
+        "role": "lead",
+        "pitches": [
+          75
+        ],
+        "confidence": 0.941,
+        "source": {
+          "input": "lead",
+          "start": 132.08,
+          "end": 132.93
+        },
+        "estimate": {
+          "note": 75,
+          "start": 132.08,
+          "end": 133.76,
+          "cents": 0.57,
+          "spreadCents": 20.89,
+          "error": 0.05860045040094819,
+          "rms": 0.1277129140030107
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-vocal vowel fragment; excludes adjacent pitch changes; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "bass_29",
+        "role": "bass",
+        "pitches": [
+          29
+        ],
+        "confidence": 0.908,
+        "source": {
+          "input": "bass",
+          "start": 117.92,
+          "end": 118.77
+        },
+        "estimate": {
+          "note": 29,
+          "start": 117.92,
+          "end": 120.016,
+          "cents": 1.77,
+          "spreadCents": 21.81,
+          "error": 0.0920498926219935,
+          "rms": 0.08140753633763362
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-bass note; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "bass_34",
+        "role": "bass",
+        "pitches": [
+          34
+        ],
+        "confidence": 0.962,
+        "source": {
+          "input": "bass",
+          "start": 24.032,
+          "end": 24.882
+        },
+        "estimate": {
+          "note": 34,
+          "start": 24.032,
+          "end": 24.944,
+          "cents": 8.69,
+          "spreadCents": 10.99,
+          "error": 0.0376833611287258,
+          "rms": 0.09127280994345208
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-bass note; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "bass_37",
+        "role": "bass",
+        "pitches": [
+          37
+        ],
+        "confidence": 0.914,
+        "source": {
+          "input": "bass",
+          "start": 72.256,
+          "end": 72.864
+        },
+        "estimate": {
+          "note": 37,
+          "start": 72.256,
+          "end": 72.864,
+          "cents": 10.99,
+          "spreadCents": 27.38,
+          "error": 0.08561331902033989,
+          "rms": 0.07130224794320059
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-bass note; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "bass_39",
+        "role": "bass",
+        "pitches": [
+          39
+        ],
+        "confidence": 0.972,
+        "source": {
+          "input": "bass",
+          "start": 30.128,
+          "end": 30.978
+        },
+        "estimate": {
+          "note": 39,
+          "start": 30.128,
+          "end": 32.048,
+          "cents": 0.32,
+          "spreadCents": 10.53,
+          "error": 0.02840721372193593,
+          "rms": 0.09777532579042959
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-bass note; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "bass_41",
+        "role": "bass",
+        "pitches": [
+          41
+        ],
+        "confidence": 0.951,
+        "source": {
+          "input": "bass",
+          "start": 32.16,
+          "end": 33.01
+        },
+        "estimate": {
+          "note": 41,
+          "start": 32.16,
+          "end": 33.84,
+          "cents": -0.44,
+          "spreadCents": 8.0,
+          "error": 0.04872883903906634,
+          "rms": 0.08235102701273801
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-bass note; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "bass_42",
+        "role": "bass",
+        "pitches": [
+          42
+        ],
+        "confidence": 0.914,
+        "source": {
+          "input": "bass",
+          "start": 46.72,
+          "end": 47.12
+        },
+        "estimate": {
+          "note": 42,
+          "start": 46.72,
+          "end": 47.12,
+          "cents": 2.74,
+          "spreadCents": 6.6,
+          "error": 0.08607977238460385,
+          "rms": 0.046727837871157266
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-bass note; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "bass_46",
+        "role": "bass",
+        "pitches": [
+          46
+        ],
+        "confidence": 0.965,
+        "source": {
+          "input": "bass",
+          "start": 90.496,
+          "end": 91.34599999999999
+        },
+        "estimate": {
+          "note": 46,
+          "start": 90.496,
+          "end": 95.728,
+          "cents": 3.38,
+          "spreadCents": 14.8,
+          "error": 0.034624427365336004,
+          "rms": 0.03914610341010877
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-bass note; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "bass_51",
+        "role": "bass",
+        "pitches": [
+          51
+        ],
+        "confidence": 0.984,
+        "source": {
+          "input": "bass",
+          "start": 96.16,
+          "end": 97.00999999999999
+        },
+        "estimate": {
+          "note": 51,
+          "start": 96.16,
+          "end": 98.96000000000001,
+          "cents": -4.62,
+          "spreadCents": 18.17,
+          "error": 0.016076491348129385,
+          "rms": 0.03874745450468879
+        },
+        "onsetFrame": 96,
+        "decision": "Stable source-bass note; no synthetic or stock audio. Saved YIN-style pitch estimate; attack/isolation/listening validation remains open."
+      },
+      {
+        "id": "guitar_10_minor",
+        "role": "rhythm",
+        "pitches": [
+          46,
+          53,
+          58,
+          61,
+          70,
+          77
+        ],
+        "chord": {
+          "root": 10,
+          "quality": "minor",
+          "inversion": 0
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 70.012,
+          "end": 70.692
+        },
+        "onsetFrame": 864,
+        "decision": "Native whole guitar chord, cut before the next detected strum; all sounding pitch classes retained. Root-position/voicing labels are spectral estimates; full inversion and listening verification remain open."
+      },
+      {
+        "id": "guitar_1_major7",
+        "role": "rhythm",
+        "pitches": [
+          49,
+          56,
+          60,
+          61,
+          65,
+          73,
+          80,
+          84
+        ],
+        "chord": {
+          "root": 1,
+          "quality": "major7",
+          "inversion": 0
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 16.822,
+          "end": 17.182
+        },
+        "onsetFrame": 864,
+        "decision": "Native whole guitar chord, cut before the next detected strum; all sounding pitch classes retained. Root-position/voicing labels are spectral estimates; full inversion and listening verification remain open."
+      },
+      {
+        "id": "guitar_3_minor",
+        "role": "rhythm",
+        "pitches": [
+          51,
+          54,
+          58,
+          63,
+          66,
+          70
+        ],
+        "chord": {
+          "root": 3,
+          "quality": "minor",
+          "inversion": 0
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 72.872,
+          "end": 73.462
+        },
+        "onsetFrame": 864,
+        "decision": "Native whole guitar chord, cut before the next detected strum; all sounding pitch classes retained. Root-position/voicing labels are spectral estimates; full inversion and listening verification remain open."
+      },
+      {
+        "id": "guitar_6_major",
+        "role": "rhythm",
+        "pitches": [
+          42,
+          49,
+          54,
+          58,
+          61,
+          73
+        ],
+        "chord": {
+          "root": 6,
+          "quality": "major",
+          "inversion": 0
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 48.052,
+          "end": 48.422
+        },
+        "onsetFrame": 864,
+        "decision": "Native whole guitar chord, cut before the next detected strum; all sounding pitch classes retained. Root-position/voicing labels are spectral estimates; full inversion and listening verification remain open."
+      },
+      {
+        "id": "guitar_5_major",
+        "role": "rhythm",
+        "pitches": [
+          41,
+          48,
+          53,
+          60,
+          65,
+          69
+        ],
+        "chord": {
+          "root": 5,
+          "quality": "major",
+          "inversion": 0
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 120.142,
+          "end": 120.862
+        },
+        "onsetFrame": 864,
+        "decision": "Native whole guitar chord, cut before the next detected strum; all sounding pitch classes retained. Root-position/voicing labels are spectral estimates; full inversion and listening verification remain open."
+      },
+      {
+        "id": "drum_kick",
+        "role": "drums",
+        "pitches": [],
+        "articulation": "parachute_kick",
+        "source": {
+          "input": "drums",
+          "start": 118.482,
+          "end": 118.665
+        },
+        "onsetFrame": 864,
+        "fadeInMs": 0.5,
+        "fadeOutMs": 4,
+        "peak": 0.5,
+        "decision": "Single source drum transient with 18 ms pre-roll, ending before the next unrelated onset; identity inferred from the spectral body and source timing. Listening/bleed review remains open."
+      },
+      {
+        "id": "drum_snare",
+        "role": "drums",
+        "pitches": [],
+        "articulation": "parachute_snare",
+        "source": {
+          "input": "drums",
+          "start": 13.542,
+          "end": 13.745
+        },
+        "onsetFrame": 864,
+        "fadeInMs": 0.5,
+        "fadeOutMs": 4,
+        "peak": 0.42,
+        "decision": "Single source drum transient with 18 ms pre-roll, ending before the next unrelated onset; identity inferred from the spectral body and source timing. Listening/bleed review remains open."
+      },
+      {
+        "id": "drum_hatClosed",
+        "role": "drums",
+        "pitches": [],
+        "articulation": "parachute_hatClosed",
+        "source": {
+          "input": "drums",
+          "start": 9.562,
+          "end": 9.745
+        },
+        "onsetFrame": 864,
+        "fadeInMs": 0.5,
+        "fadeOutMs": 4,
+        "peak": 0.42,
+        "decision": "Single source drum transient with 18 ms pre-roll, ending before the next unrelated onset; identity inferred from the spectral body and source timing. Listening/bleed review remains open."
+      }
+    ],
+    "variants": [],
+    "roleLabels": {
+      "lead": "Parachute \u2014 sampled lead vocal",
+      "rhythm": "Parachute \u2014 whole guitar chords",
+      "bass": "Parachute \u2014 sampled bass"
+    },
+    "drums": {
+      "kick": {
+        "sampleId": "drum_kick",
+        "label": "Kick",
+        "soundIdentity": "parachute_kick",
+        "midiAddress": 36
+      },
+      "snare": {
+        "sampleId": "drum_snare",
+        "label": "Snare",
+        "soundIdentity": "parachute_snare",
+        "midiAddress": 38
+      },
+      "hatClosed": {
+        "sampleId": "drum_hatClosed",
+        "label": "Closed hat",
+        "soundIdentity": "parachute_hatClosed",
+        "midiAddress": 42
+      },
+      "hatOpen": {
+        "reason": "No confidently isolated hatOpen identified in the supplied stems; withheld rather than substituted."
+      },
+      "tom1": {
+        "reason": "No confidently isolated tom1 identified in the supplied stems; withheld rather than substituted."
+      },
+      "tom2": {
+        "reason": "No confidently isolated tom2 identified in the supplied stems; withheld rather than substituted."
+      },
+      "extra1": {
+        "reason": "Unused: short resonant events in the Percussion stem have uncertain identity/pitch. No optional sound is assigned without an accepted identity; keyboard/synth/backing vocals are not drum replacements."
+      },
+      "extra2": {
+        "reason": "Unused: short resonant events in the Percussion stem have uncertain identity/pitch. No optional sound is assigned without an accepted identity; keyboard/synth/backing vocals are not drum replacements."
+      }
+    },
+    "clip": {
+      "id": "parachute_source_groove",
+      "role": "drums",
+      "length": "4",
+      "events": [
+        {
+          "id": "source_hit_0",
+          "beat": "0",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "parachute_hatClosed"
+          },
+          "expression": {
+            "velocity": 0.52,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "source_hit_1",
+          "beat": "1/2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "parachute_kick"
+          },
+          "expression": {
+            "velocity": 0.78,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "source_hit_2",
+          "beat": "1",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "parachute_snare"
+          },
+          "expression": {
+            "velocity": 0.78,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "source_hit_3",
+          "beat": "3/2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "parachute_kick"
+          },
+          "expression": {
+            "velocity": 0.78,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "source_hit_4",
+          "beat": "2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "parachute_kick"
+          },
+          "expression": {
+            "velocity": 0.78,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "source_hit_5",
+          "beat": "3",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "parachute_snare"
+          },
+          "expression": {
+            "velocity": 0.78,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "source_hit_6",
+          "beat": "7/2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "parachute_kick"
+          },
+          "expression": {
+            "velocity": 0.78,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        }
+      ],
+      "provenance": {
+        "sourceClip": "Parachute drums, estimated measure starting at 11.028 seconds",
+        "license": "Shael Riley authorized source \u2014 Suno paid-account declaration",
+        "changes": "Partial audio-derived transcription; major onsets selected from source, timing normalized to sixteenths at estimated 165 quarter-note BPM. Secondary tails and overlapping hits are not represented as verified transcription."
+      }
+    },
+    "analysis": {
+      "tempoMap": [
+        {
+          "seconds": 0,
+          "quarterBpm": 165,
+          "confidence": 0.62,
+          "kind": "estimate"
+        }
+      ],
+      "meter": {
+        "numerator": 4,
+        "denominator": 4,
+        "confidence": 0.7,
+        "downbeatsVerified": false
+      },
+      "tempoEvidence": {
+        "method": "Drum log-spectral-flux autocorrelation plus eighth-grid phase fit over 8\u2013145 seconds",
+        "bestGridQuarterBpm": 164.94,
+        "phaseCoherence": 0.621,
+        "alternativeHalfTimeBpm": 82.5,
+        "variableTempoExcluded": false
+      },
+      "tonalCandidates": [
+        {
+          "tonic": 10,
+          "mode": "natural_minor",
+          "reason": "Bb, Db, Eb, F, Gb and Ab source pitches plus Bbm/Ebm/Gb/Dbmaj7 guitar"
+        },
+        {
+          "tonic": 10,
+          "mode": "harmonic_minor",
+          "reason": "F-major source chord and A-natural vocal region; potential minor-key dominant color"
+        }
+      ],
+      "tonalityMapVerified": false,
+      "chordEvents": [
+        {
+          "seconds": 16.822,
+          "endSeconds": 17.182,
+          "root": 1,
+          "quality": "major7",
+          "inversion": 0,
+          "kind": "accepted-crop spectral estimate"
+        },
+        {
+          "seconds": 48.052,
+          "endSeconds": 48.422,
+          "root": 6,
+          "quality": "major",
+          "inversion": 0,
+          "kind": "accepted-crop spectral estimate"
+        },
+        {
+          "seconds": 70.012,
+          "endSeconds": 70.692,
+          "root": 10,
+          "quality": "minor",
+          "inversion": 0,
+          "kind": "accepted-crop spectral estimate"
+        },
+        {
+          "seconds": 72.872,
+          "endSeconds": 73.462,
+          "root": 3,
+          "quality": "minor",
+          "inversion": 0,
+          "kind": "accepted-crop spectral estimate"
+        },
+        {
+          "seconds": 120.142,
+          "endSeconds": 120.862,
+          "root": 5,
+          "quality": "major",
+          "inversion": 0,
+          "kind": "accepted-crop spectral estimate"
+        }
+      ],
+      "fullSourceProgression": "Not reconstructed; these crop identities are not a full-song chord map or a claimed modulation.",
+      "selectedRoleInputs": {
+        "lead": "lead",
+        "rhythm": "rhythm",
+        "bass": "bass",
+        "drums": "drums"
+      },
+      "sourceArchiveSha256": "0a6202d0a6aa58f4b9a1172c146b75225d6cffd2a497c0255a27f15fbad62054",
+      "sourceDimensions": {
+        "sampleRate": 48000,
+        "bitsPerSample": 16,
+        "channels": 2,
+        "frames": 7315200,
+        "seconds": 152.4,
+        "sameDimensionsForAllNineStems": true
+      },
+      "retainedDrumAssignments": [
+        {
+          "seconds": 11.04,
+          "estimatedSlot": "hatClosed",
+          "measuredBeat": "23/697",
+          "correctedBeat": "0",
+          "features": {
+            "start": 11.04,
+            "end": 11.195,
+            "bands": [
+              0.04607027116373042,
+              0.035188795309801936,
+              0.09663018137821858,
+              0.822109941593053
+            ],
+            "lowPeakHz": 173.828125,
+            "rms": 0.010757045820355415,
+            "centroidHz": 4877.242379845189,
+            "flatness": 0.3504633960887877
+          }
+        },
+        {
+          "seconds": 11.21,
+          "estimatedSlot": "kick",
+          "measuredBeat": "480/959",
+          "correctedBeat": "1/2",
+          "features": {
+            "start": 11.21,
+            "end": 11.375,
+            "bands": [
+              0.9512581484517155,
+              0.03913562280467051,
+              0.0075808615973200115,
+              0.002025322837456324
+            ],
+            "lowPeakHz": 76.171875,
+            "rms": 0.17268963158130646,
+            "centroidHz": 114.44962111579478,
+            "flatness": 0.004149225238780002
+          }
+        },
+        {
+          "seconds": 11.39,
+          "estimatedSlot": "snare",
+          "measuredBeat": "885/889",
+          "correctedBeat": "1",
+          "features": {
+            "start": 11.39,
+            "end": 11.475,
+            "bands": [
+              0.12604431616181314,
+              0.8185445598122393,
+              0.0488012444192236,
+              0.006609796908058235
+            ],
+            "lowPeakHz": 193.359375,
+            "rms": 0.16351282596588135,
+            "centroidHz": 320.97420390191144,
+            "flatness": 0.01789864164861991
+          }
+        },
+        {
+          "seconds": 11.59,
+          "estimatedSlot": "kick",
+          "measuredBeat": "17/11",
+          "correctedBeat": "3/2",
+          "features": {
+            "start": 11.59,
+            "end": 11.745,
+            "bands": [
+              0.9879563571839661,
+              0.006867534332534082,
+              0.0028780762594152825,
+              0.002298002111923181
+            ],
+            "lowPeakHz": 72.265625,
+            "rms": 0.14558279514312744,
+            "centroidHz": 94.96002409246579,
+            "flatness": 0.00272870300334432
+          }
+        },
+        {
+          "seconds": 11.76,
+          "estimatedSlot": "kick",
+          "measuredBeat": "1858/923",
+          "correctedBeat": "2",
+          "features": {
+            "start": 11.76,
+            "end": 11.945,
+            "bands": [
+              0.9857590358200116,
+              0.01127112836880693,
+              0.0018518937939992124,
+              0.0011179332978377534
+            ],
+            "lowPeakHz": 72.265625,
+            "rms": 0.15281492471694946,
+            "centroidHz": 92.87934851631438,
+            "flatness": 0.001977851319482058
+          }
+        },
+        {
+          "seconds": 12.11,
+          "estimatedSlot": "snare",
+          "measuredBeat": "1336/449",
+          "correctedBeat": "3",
+          "features": {
+            "start": 12.11,
+            "end": 12.295,
+            "bands": [
+              0.19574602385419312,
+              0.7180360877054736,
+              0.07460620440736151,
+              0.01161168356897969
+            ],
+            "lowPeakHz": 183.59375,
+            "rms": 0.1484583467245102,
+            "centroidHz": 338.3901413078345,
+            "flatness": 0.02238919024863494
+          }
+        },
+        {
+          "seconds": 12.31,
+          "estimatedSlot": "kick",
+          "measuredBeat": "1590/451",
+          "correctedBeat": "7/2",
+          "features": {
+            "start": 12.31,
+            "end": 12.475,
+            "bands": [
+              0.989140529303383,
+              0.005125698368607695,
+              0.004425819282928622,
+              0.00130791097235381
+            ],
+            "lowPeakHz": 66.40625,
+            "rms": 0.1822088062763214,
+            "centroidHz": 87.86022665103046,
+            "flatness": 0.0024288681344053695
+          }
+        }
+      ],
+      "corrections": {
+        "kind": "engineering review of numerical diagnostics",
+        "humanListening": "not_performed",
+        "completeSourceReconstruction": false
+      }
+    },
+    "demonstrations": [
+      {
+        "tonic": 10,
+        "mode": "natural_minor",
+        "bpm": 165,
+        "segments": 4,
+        "chords": [
+          [
+            10,
+            "minor",
+            0
+          ],
+          [
+            1,
+            "major7",
+            0
+          ],
+          [
+            6,
+            "major",
+            0
+          ],
+          [
+            3,
+            "minor",
+            0
+          ]
+        ]
+      },
+      {
+        "tonic": 10,
+        "mode": "harmonic_minor",
+        "bpm": 132,
+        "segments": 8,
+        "chords": [
+          [
+            10,
+            "minor",
+            0
+          ],
+          [
+            3,
+            "minor",
+            0
+          ],
+          [
+            6,
+            "major",
+            0
+          ],
+          [
+            5,
+            "major",
+            0
+          ]
+        ]
+      }
+    ]
+  }
+]

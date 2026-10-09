@@ -10,7 +10,9 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
 2. **Authorized source proof — prototype assembled:** user-authorized selection
    of three CC BY songs; verified artist stems, source hashes, saved crops,
    preparation-only note variants, source drum MIDI and three coverage-limited
-   packs with two arrangements each. Keep the source-quality gate open until
+   packs with two arrangements each. Version 0.2.1 adds Shael Riley's authorized
+   Parachute stems as a fourth pack, with separate rights provenance and two
+   arrangements. Keep the source-quality gate open until
    listening, stem alignment and full tonal-map checks succeed. Missing kit slots
    remain unavailable. This is not a general separator or public builder skill.
 3. **Native desktop slice:** Qt prototype, pack load → custom/preset Governor →

@@ -1,0 +1,28 @@
+{
+  "version": "0.2.1",
+  "archive": "PRDE1_0.2.1_Linux_x86_64.tar.gz",
+  "bytes": 31095506,
+  "sha256": "7793a3ed65863a693f5521e05795281a3d3e22865895cd0ebf99b3f4ccd5d4cc",
+  "parts": [
+    {
+      "file": "PRDE1_0.2.1_Linux_x86_64.tar.gz.part01",
+      "bytes": 8388608,
+      "sha256": "59f6475e2b61744722467daa403446a60b81e940eeff25d0ba8c7de56ea88e92"
+    },
+    {
+      "file": "PRDE1_0.2.1_Linux_x86_64.tar.gz.part02",
+      "bytes": 8388608,
+      "sha256": "9bd934a4234383046eb9f980efcf7a5f68b44cba9f50d03cbffdb894c0e4b180"
+    },
+    {
+      "file": "PRDE1_0.2.1_Linux_x86_64.tar.gz.part03",
+      "bytes": 8388608,
+      "sha256": "9ffb16ee136072eba3635038976b7fb273e75714acb72677bc27d29136b500f8"
+    },
+    {
+      "file": "PRDE1_0.2.1_Linux_x86_64.tar.gz.part04",
+      "bytes": 5929682,
+      "sha256": "5b425bf59e27ea0390abdac9b2726e375bd077a56ff030dcb4640f5958a542c1"
+    }
+  ]
+}

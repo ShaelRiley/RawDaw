@@ -2,8 +2,9 @@
 
 | Component | Version / distribution | License / state |
 | --- | --- | --- |
-| PRDE1 application code and authored synthetic fixtures | 0.2.0 source / compiled Linux renderer | MIT, `LICENSE` |
-| Three prepared Song Packs and source-derived estimated drum MIDI | Curated CC stem profile 0.2.0; 69 assets | CC BY 3.0; source credits/license/change notices embedded and listed in `SONG_PACKS.md` |
+| PRDE1 application code and authored synthetic fixtures | 0.2.1 source / compiled Linux renderer | MIT, `LICENSE` |
+| Three prepared CC Song Packs and source-derived estimated drum MIDI | Curated CC stem profile 0.2.0; 69 assets | CC BY 3.0; source credits/license/change notices embedded and listed in `SONG_PACKS.md` |
+| Parachute Song Pack and estimated source drum MIDI | Curated user-stem profile 0.2.1; 28 native assets | Shael Riley's authorization and Suno paid-account declaration; not independently verified or relicensed as CC/MIT; existing private development build |
 | nlohmann/json | 3.12.0 vendored single header | MIT; original license/embedded notices retained |
 | Python | System interpreter 3.11+; tested with 3.12.14 | PSF terms; not bundled |
 | GNU compiler / libstdc++ / libgcc / glibc | System g++ 13 / Ubuntu 24.04 libraries | Compiler and system runtime terms/exceptions apply; libraries not bundled |
@@ -26,7 +27,8 @@ SHA256 46a65cffd1ea955132d95a8dd921640714a8d6b537d2e4e482d31145ae95b603
 
 Prepared media does not contain the original complete mixes/stems. No plug-ins,
 models, fonts or external MIDI collections are bundled. Source recordings were
-licensed on their primary upload pages; the estimated source drum MIDI is
+licensed on their primary upload pages for the three CC packs; Parachute uses
+the user's supplied source and rights declaration. The estimated source drum MIDI is
 labeled as a transcription, not artist-original data. MIT application licensing
 does not relicense dependencies or content.
 
