@@ -4,12 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "prde1-core"
-version = "0.1.0"
+version = "0.2.0"
 description = "PRDE1 prepared-sample contracts, Governor, and offline render checkpoint"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{name = "Shael Riley"}]
 dependencies = []
+
+[project.optional-dependencies]
+preparation = ["numpy==2.3.5", "scipy==1.17.0"]
 
 [project.scripts]
 prde1 = "prde1.cli:main"

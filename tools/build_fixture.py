@@ -95,8 +95,11 @@ def variable(value):
     return bytes(result)
 
 
-def midi_drums(pattern,addresses):
-    data=[(0,0,b"\xff\x51\x03\x07\xa1\x20"),(0,0,b"\xff\x58\x04\x04\x02\x18\x08")]
+def midi_drums(pattern,addresses,quarter_bpm=120):
+    if not 20<=quarter_bpm<=300:
+        raise ValueError("MIDI tempo outside preparation profile")
+    tempo=round(60000000/quarter_bpm).to_bytes(3,"big")
+    data=[(0,0,b"\xff\x51\x03"+tempo),(0,0,b"\xff\x58\x04\x04\x02\x18\x08")]
     from fractions import Fraction
     for hit in pattern["events"]:
         tick=round(Fraction(hit["beat"])*480)

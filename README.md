@@ -1,85 +1,77 @@
 # PRDE1 — Pop Rock Development Environment 1
 
-Checkpoint 1 is an executable offline prepared-sample core. It validates song
-packs, resolves editable musical events under the Chord Governor, saves/reopens
-native project manifests, and renders two different harmonic arrangements.
-**It is not yet the desktop DAW or a source-extraction system.**
+Build **0.2.0** includes an offline Linux sample renderer, **three CC Song Packs**,
+and six editable demo arrangements. The Governor selects prepared samples;
+harmonic changes never pitch-shift or stretch audio during playback.
+
+This is a development build. Desktop editing/device playback, recording, full
+DSP and VST hosting remain to be implemented. Pack listening and complete source
+analysis remain open; see [the checkpoint](docs/CHECKPOINT.md).
 
 The [live SDD](https://docs.google.com/document/d/1qb6LWTgkk3vVJB3aFnwkXvtZ1-IxRIY0VezW0P9e_HE/edit)
-is the canonical product/design authority. Read [the checkpoint](docs/CHECKPOINT.md)
-for precise implementation and verification limits.
+is the canonical product/design authority.
 
-## Build and hear the checkpoint
+## Run the three packs
 
-Requires Linux, Python 3.11+, GNU Make, and a C++20 compiler. No API key, Python
-package installation, model, download, or network access is used by these commands.
-The sole C++ source dependency is vendored with its license and hash.
+The distribution in `dist/PRDE1_0.2.0_Linux_x86_64.tar.gz` contains a compiled
+Linux x86_64 renderer, Python control code, three packs, six projects and six
+ready-rendered WAV auditions. Extract it, enter its folder and run:
 
 ```bash
-cd prde1
+./run-demos.sh
+```
+
+Python 3.11+ is required. The supplied binary was built/tested on Ubuntu 24.04
+x86_64; rebuild with `make all` on other supported Linux systems. No source
+preparation packages, model downloads or network access are needed to play
+these prepared packs. This is not a tested Steam Deck installer.
+
+From a source checkout, GNU Make and a C++20 compiler are also required:
+
+```bash
 make check
-make demo
+make cc-demo
 ```
 
-Open `out/demo/major.wav` and `out/demo/minor.wav` in a media player. Each is an
-eight-second, 48 kHz, 24-bit stereo passage. They use the same prepared synthetic
-bank under C-major I–V–vi–IV and A-natural-minor i–VI–III–VII. Every sound is
-explicitly synthetic; there is no extraction-quality or human-listening claim.
+Open `out/cc-auditions/*.wav`. Each four-bar arrangement has different harmony,
+tempo or variation settings. All six exports use actual source assets and need
+no altered-render approval.
 
-The downloadable checkpoint includes ready-rendered auditions under `auditions/`.
-Build from source for your machine; container-built binaries are not a tested
-Steam Deck release.
+| Song Pack | Source sound and demonstrations |
+| --- | --- |
+| Reach Out (Stems) — spinningmerkaba | Acoustic whole chords, electric guitar lead, low bass; B natural minor and D major |
+| Where You Are Now — Benjamin Orth / WolfFly | Credited Rhiannon vocal, synth pad and bass; C natural minor and C Dorian |
+| Auld Lang Syne (Bossa) — unreal_dm | Melodic lead, piano triads/sevenths and hand percussion; F major and D natural minor |
 
-## Edit, validate, and render
+Prepared content is **CC BY 3.0** with attribution and changes recorded in each
+pack. Code is MIT. [Source credits, coverage and preparation](docs/SONG_PACKS.md)
+identify every ingredient and the remaining listening checks.
+
+## Edit, validate and render
 
 ```bash
-python3 -m prde1 validate-pack out/demo/synthetic.prdepack
-python3 -m prde1 rank out/demo/synthetic.prdepack --tonic 0 --mode major
-python3 -m prde1 resolve out/demo/synthetic.prdepack out/demo/major.prdeproj out/demo/events.json
-python3 -m prde1 render out/demo/synthetic.prdepack out/demo/major.prdeproj out/demo/edited.wav
-python3 -m prde1 save-project out/demo/major.prdeproj out/demo/reopened.prdeproj
+python3 -m prde1 validate-pack packs/reach_out.prdepack
+python3 -m prde1 rank packs/reach_out.prdepack --tonic 11 --mode natural_minor
+python3 -m prde1 resolve packs/reach_out.prdepack packs/reach_out_a.prdeproj out/events.json
+python3 -m prde1 render packs/reach_out.prdepack packs/reach_out_a.prdeproj out/edited.wav
+python3 -m prde1 save-project packs/reach_out_a.prdeproj out/reopened.prdeproj
 ```
 
-Edit the project JSON to change harmony, quarter-note tempo, rational event
-positions, notes, gates, gain/pan, and static compressor settings. Chord quality
-is explicit: uppercase V is not a spelling variant of lowercase v. Musical
-positions such as `1/3` remain rational; the Governor display grid does not snap
-performance events. Project/pack references are exact and versioned.
+Project JSON preserves exact pack references, harmony, rational event timing,
+quarter-note tempo maps, gates, variation seed, gain/pan and compressor state.
+Explicit qualities and inversions are distinct. Governor segments do not snap
+performance timing. Missing sounds block ordinary export; `resolve` reports
+conflicts and natural sample-duration limits. Unsupported active effects or
+vocal processing also block export. Explicit `--approve-altered-render` permits
+reported missing material or unsupported VST instrument placeholders to remain
+silent. It is unnecessary for the six included arrangements.
 
-The `resolve` command reports preserved harmonic conflicts and duration limits.
-Missing prepared sounds block ordinary export. An explicit
-`--approve-altered-render` permits the reported missing material to stay silent.
-This is also required for unsupported VST instrument placeholders. Active
-unsupported effects or vocal processing block export; their settings are not
-silently dropped. Future native hosting is still required.
+Add `--seek-frame 123457` to `render` to reconstruct state from the beginning.
+For this engine, the rendered result equals the corresponding full-render slice,
+including compressor and dither state. This is not a promise for future plug-ins.
 
-For a seek comparison, add `--seek-frame 123457` to `render`. This checkpoint
-reconstructs state from the beginning; the output matches that slice of a full
-render, including compressor state and deterministic TPDF dither.
+`make demo` retains the two explicitly synthetic regression fixtures. They prove
+core behavior and are separate from the three actual-source packs.
 
-## What is implemented
-
-* Shared experimental JSON contracts, secure archive loading, checksums, PCM and
-  marker checks, bounded SMF inspection, explicit missing/empty roles and slots.
-* Strict chord-tone Governor, explicit quality/inversion, prepared asset selection,
-  semantic drum identity, pitched-extra withholding and coverage-only ranking.
-* Rational timing and tempo maps; deterministic Play/Change, double-trigger,
-  gate and nearby-note variation; independent/linked copy helpers.
-* Native sample-clock mixing, 64-voice rejection, monophonic scheduling, hat
-  choke, validated sustain-only looping, natural limits and 5 ms de-click fades.
-* Static gain/pan, one common final compressor, transactional 24-bit stereo WAV
-  exports and native JSON manifest saves.
-
-## Remaining production gates
-
-Authorized real-source extraction and listening; public pack-builder skill;
-desktop workspace/device playback; complete musical/pattern libraries; Freeze
-Variation UI and undo history; microphone capture/retakes/comp playback and
-recovery; reversible vocal correction; complete fixed effects graph; Linux VST3
-hosting/state recovery and cleared starter bundle; full project/media migrations;
-device stress, accessibility, usability, installer and release testing.
-
-These capabilities remain approved v1 scope. See [the development plan](docs/DEVELOPMENT_PLAN.md).
-
-Application code: MIT. Dependencies and content retain their own terms; see
-[the component manifest](docs/COMPONENTS.md).
+Application code: MIT. Dependencies/content retain their terms;
+see [components](docs/COMPONENTS.md) and [remaining scope](docs/DEVELOPMENT_PLAN.md).

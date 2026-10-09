@@ -7,14 +7,12 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
    contracts, safe loader, strict selection-only Governor, rational timing,
    deterministic probabilities/variation, native sample renderer, save/reopen,
    synthetic MIDI/audio fixtures, invariant tests and reproducible source builds.
-2. **Next bounded checkpoint — authorized source proof:** accept an explicitly
-   authorized recording and rights declaration; preflight extraction tools;
-   preserve ingest/crop/analysis corrections; obtain enough clean notes/chords/
-   drum hits for two complete arrangements; audit hashes, quality, source MIDI
-   and extras. Start with one short eligible recording; do not acquire large
-   libraries or claim a pack-building skill until the actual pipeline works.
-   No recording is attached to this production request. Synthetic tests proceed
-   independently but do not close the SDD's first sound-quality gate.
+2. **Authorized source proof — prototype assembled:** user-authorized selection
+   of three CC BY songs; verified artist stems, source hashes, saved crops,
+   preparation-only note variants, source drum MIDI and three coverage-limited
+   packs with two arrangements each. Keep the source-quality gate open until
+   listening, stem alignment and full tonal-map checks succeed. Missing kit slots
+   remain unavailable. This is not a general separator or public builder skill.
 3. **Native desktop slice:** Qt prototype, pack load → custom/preset Governor →
    pattern selection/edit/copy → sample-clock playback → save/reopen → stereo
    render. Test layout/focus/keyboard/scale, context persistence and explicit

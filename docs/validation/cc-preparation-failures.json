@@ -1,0 +1,23 @@
+{
+  "packs": [
+    {
+      "pack": "reach_out.prdepack",
+      "changedSourceHashRejected": true,
+      "priorPackPreserved": true,
+      "semitoneWrongWholeChordRejected": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "changedSourceHashRejected": true,
+      "priorPackPreserved": true,
+      "semitoneWrongWholeChordRejected": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "changedSourceHashRejected": true,
+      "priorPackPreserved": true,
+      "semitoneWrongWholeChordRejected": true
+    }
+  ],
+  "outsideVariantBudgetRejected": true
+}
