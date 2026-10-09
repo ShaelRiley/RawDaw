@@ -1,18 +1,29 @@
-# Current checkpoint — 0.2.1 with four source Song Packs
+# Current checkpoint — 0.3.0 native desktop with four source Song Packs
 
-Completed: an offline Linux/C++20 renderer, shared experimental contracts,
-four real-source Song Packs and eight editable four-bar arrangements. The source
+Completed: a launchable Qt desktop editor, an offline Linux/C++20 renderer,
+shared experimental contracts, four real-source Song Packs and eight editable
+four-bar arrangements. The source
 packs contain 97 actual source-derived assets. Whole chords are selected intact;
 all harmonic preparation occurs before playback. No runtime pitch shifting,
 stretching or harmonic synthesis is added.
 
 The private repository is [ShaelRiley/prde1](https://github.com/ShaelRiley/prde1).
 Checkpoint 1 was verified at `71d551a27ab2b6b0b8d6e37e56f8d99fc0406328`.
-The 0.2.1 build is in `dist/PRDE1_0.2.1_Linux_x86_64.tar.gz`; the accompanying
+The 0.3.0 build is in `dist/PRDE1_0.3.0_Linux_x86_64.tar.gz`; the accompanying
 SHA-256 file and archive-internal `BUILD_INFO.json` bind the exact package inputs.
 The archive is transported as hashed 8 MiB parts in git; the standard-library
 `tools/assemble_build.py` restores it atomically and verifies the full hash.
 This is a private development build, not a public product release.
+
+Run `./run-prde1.sh` after pulling. It installs the optional pinned desktop
+libraries on first setup and restores the verified compiled renderer from the
+build parts when necessary. Later launches work offline. Parachute A opens ready
+to preview. The desktop exposes the Governor, track timeline, step/event editors,
+pack/progression/pattern browser, static mixer, independent or linked copies,
+undo/redo, variation regeneration, project save/reopen and local recovery. Native
+render preparation runs outside the UI; PCM preview, pause/seek and WAV export
+reuse the saved musical realization. Cancellation and music edits reject stale
+results. The launcher and extracted build both use the same project/render core.
 
 The fourth pack is **Parachute**, created/supplied by Shael Riley using Suno.
 His paid-account rights declaration and explicit authorization are retained
@@ -30,13 +41,21 @@ SDD's listening/source-analysis gates. No new product-policy amendment was made.
 
 ## Verification
 
-* `make check`: **48 Python invariant/integration tests passed**, including the
+* `QT_QPA_PLATFORM=offscreen make check`: **62 Python invariant/integration tests
+  passed**, including the
   four real packs, no-synthetic lineage, explicit gaps, source-MIDI tempo/semantic
   addresses, eight-project save/reopen, actual mapping resolution and immutable
   assets. Native checks passed for allocation-free processing, unchanged frame
   copies, sustain-only looping, release, silence and the 64-voice cap.
   Distribution assembly tests cover exact restoration plus missing, altered,
   duplicate and traversing parts and a wrong final hash, preserving prior output.
+* Seven native Qt integration checks cover keyboard editing/undo, local recovery,
+  cancellation without replacing prior exports, visible unavailable harmony,
+  actual 48 kHz PCM decoding with pause/seek, and 100/125/150% layouts. All eight
+  GUI exports are byte-identical to their bundled source auditions and preserve
+  pack bytes. Screens were inspected at 1366×800, 1280×800 and 1024×768; transport
+  stays visible when enlarged. Renderer-install tests verify hashes, executable
+  permissions and rejection of substituted/symlink payloads.
 * `make source-demo`: **eight ordinary source-pack exports**, no harmonic conflicts,
   48 kHz / 24-bit stereo. Repeated renders are byte-identical. Seek frame 123457
   equals the exact full-render slice including compressor/dither state. Pack
@@ -54,7 +73,9 @@ SDD's listening/source-analysis gates. No new product-policy amendment was made.
   keys/entries, checksums, mappings, unsafe loops, malformed MIDI, resource budgets,
   numeric bounds, unsupported active processing and transactional export/save.
 
-Version 0.2.1 evidence: `validation/source-check-0.2.1.log`,
+Version 0.3.0 evidence: `validation/desktop-check-0.3.0.log`,
+`synthetic-regression-0.3.0.log` and `PRDE1-0.3.0-desktop.png`.
+Version 0.2.1 source evidence remains: `validation/source-check-0.2.1.log`,
 `source-render-0.2.1.json`, `parachute-preparation.json` and
 `synthetic-regression-0.2.1.log`. Earlier CC evidence: `cc-check.log`, `cc-render.json`,
 `cc-preparation-failures.json`, `synthetic-regression.log` and the original core
@@ -82,10 +103,12 @@ microphone testing or usability testing was performed. The compiled Linux
 x86_64 binary is a convenience build on Ubuntu 24.04, with system libstdc++,
 libgcc, libm and glibc; source/Makefiles are included for rebuilding.
 
-Desktop workspace/device I/O, full progression/pattern libraries, variation UI
-and undo, durable vocal takes/comp/correction, complete fixed DSP, Linux VST3
-hosting and release installers remain unimplemented approved scope. Unsupported
-processing continues to block exports instead of being silently omitted.
+Native real-time device callbacks, full progression/pattern libraries, Freeze
+Variation, section plans, durable vocal takes/comp/correction, complete fixed DSP,
+Linux VST3 hosting and release installers remain unimplemented approved scope.
+Desktop preview plays a prepared mix and is not a recording/monitoring engine.
+Unsupported processing continues to block exports instead of being silently
+omitted. No physical output-device or screen-reader pilot is claimed.
 
 The preparation tool is a bounded curated-stem prototype, not the public pack
 builder skill or a general arbitrary-song separator. See `SONG_PACKS.md` for

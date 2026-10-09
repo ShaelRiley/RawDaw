@@ -67,7 +67,7 @@ def main():
             with tarfile.open(fileobj=compressed,mode='w',format=tarfile.PAX_FORMAT) as archive:
                 for name,data in sorted(files.items()):
                     info=tarfile.TarInfo(NAME+'/'+name);info.size=len(data);info.mtime=STAMP
-                    info.mode=0o755 if name in ('run-demos.sh','build/prde1-render') else 0o644
+                    info.mode=0o755 if name in ('run-demos.sh','run-prde1.sh','build/prde1-render') else 0o644
                     archive.addfile(info,io.BytesIO(data))
     temporary.replace(output)
     digest=hashlib.sha256(output.read_bytes()).hexdigest()

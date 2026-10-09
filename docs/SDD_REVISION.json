@@ -9,5 +9,7 @@
   "sourcePackRequirementsRevisionReadBeforeCode": "AHj4eMRUwVgqIsJ674TC4WgL7rU4kCC4aSF_QbzbC0_YClZ18SB8llE-IBEyyQwMArFHXeXPnQWVm9_OhV3YMzVDVkqPJ5gvEgRR92bEyQ",
   "sourcePackScope": "Curated prototype profile only; existing listening/source-analysis release gates remain open. No new product-policy amendment.",
   "parachuteRequirementsRevisionReadBeforeCode": "AHj4eMRUwVgqIsJ674TC4WgL7rU4kCC4aSF_QbzbC0_YClZ18SB8llE-IBEyyQwMArFHXeXPnQWVm9_OhV3YMzVDVkqPJ5gvEgRR92bEyQ",
-  "parachuteScope": "User-authorized fourth source pack, from the supplied Suno stems. Same selection-only core and prototype gates; no new product-policy amendment."
+  "parachuteScope": "User-authorized fourth source pack, from the supplied Suno stems. Same selection-only core and prototype gates; no new product-policy amendment.",
+  "desktopRequirementsRevisionReadBeforeCode": "ANLCKQlWMC4zhxf3oZ-oqUwlgdMXpdYYcguZWxl3RuR50l5qbkZ4NCYtkX0hTyoKWuHqbL3lbLuG5M87N1SOR-cIjIs3pXgzFtsfnTF_AA",
+  "desktopScope": "Native graphical composition slice against sections 9, 19\u201322 and 28.8; rendered PCM preview, real project editing/save/export; approved recording, DSP, native real-time device and VST work remains open. No SDD amendment."
 }

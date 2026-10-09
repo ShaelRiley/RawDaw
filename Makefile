@@ -2,7 +2,7 @@ CXX ?= g++
 CXXFLAGS ?= -O2 -std=c++20 -Wall -Wextra -Wpedantic -Werror
 PYTHON ?= python3
 
-.PHONY: all check demo cc-demo source-demo clean
+.PHONY: all check gui-check gui demo cc-demo source-demo clean
 all: build/prde1-render
 
 build/prde1-render: native/renderer.cpp native/engine.hpp third_party/nlohmann/json.hpp
@@ -16,6 +16,12 @@ build/engine-test: native/engine_test.cpp native/engine.hpp
 check: all build/engine-test
 	./build/engine-test
 	$(PYTHON) -m unittest discover -s tests -v
+
+gui: all
+	./run-prde1.sh
+
+gui-check: all
+	QT_QPA_PLATFORM=offscreen $(PYTHON) -m unittest discover -s tests -p 'test_gui.py' -v
 
 demo: all
 	$(PYTHON) tools/build_fixture.py --output out/demo

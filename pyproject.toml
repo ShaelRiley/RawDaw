@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "prde1-core"
-version = "0.2.0"
-description = "PRDE1 prepared-sample contracts, Governor, and offline render checkpoint"
+version = "0.3.0"
+description = "PRDE1 native desktop composition and prepared-sample renderer"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{name = "Shael Riley"}]
@@ -13,9 +13,11 @@ dependencies = []
 
 [project.optional-dependencies]
 preparation = ["numpy==2.3.5", "scipy==1.17.0"]
+desktop = ["PySide6==6.8.3"]
 
 [project.scripts]
 prde1 = "prde1.cli:main"
+prde1-desktop = "prde1.gui:main"
 
 [tool.setuptools]
 packages = ["prde1"]

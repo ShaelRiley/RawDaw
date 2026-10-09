@@ -1,4 +1,4 @@
-"""Developer-facing checkpoint commands; the desktop workflow is the next gate."""
+"""Offline core commands and a lazy native desktop entry point."""
 from __future__ import annotations
 
 import argparse
@@ -16,6 +16,8 @@ from .project import load_project, save_project
 def main(argv=None):
     parser=argparse.ArgumentParser(prog="prde1",description="PRDE1 offline prepared-sample core (development checkpoint)")
     commands=parser.add_subparsers(dest="command",required=True)
+    desktop=commands.add_parser("gui",help="Open the native desktop editor (requires the desktop extra)")
+    desktop.add_argument('--project',type=Path);desktop.add_argument('--pack',type=Path)
     inspect=commands.add_parser("validate-pack",help="Validate archive, musical mappings and prepared audio")
     inspect.add_argument("pack",type=Path)
     ranking=commands.add_parser("rank",help="Show initial six-template coverage ranking, not a finished catalog")
@@ -30,6 +32,14 @@ def main(argv=None):
     roundtrip.add_argument("input",type=Path); roundtrip.add_argument("output",type=Path)
     options=parser.parse_args(argv)
     try:
+        if options.command=='gui':
+            try:from .gui import main as desktop_main
+            except ImportError as error:
+                raise ContractError('Desktop libraries are unavailable. Run ./run-prde1.sh to install them') from error
+            args=[]
+            if options.project:args.extend(['--project',str(options.project)])
+            if options.pack:args.extend(['--pack',str(options.pack)])
+            return desktop_main(args)
         if options.command=="save-project":
             save_project(options.output,load_project(options.input))
             print(json.dumps({"saved":str(options.output)})); return 0

@@ -1,31 +1,58 @@
 # PRDE1 — Pop Rock Development Environment 1
 
-Build **0.2.1** includes an offline Linux sample renderer, **four Song Packs**
-(three CC sources plus Shael Riley's **Parachute**), and eight editable demo
-arrangements. The Governor selects prepared samples;
+Build **0.3.0** adds a **native graphical desktop editor** to the Linux sample
+renderer, with four Song Packs and eight editable arrangements. It opens with
+**Parachute** ready to edit and play. The Chord Governor selects prepared samples;
 harmonic changes never pitch-shift or stretch audio during playback.
 
-This is a development build. Desktop editing/device playback, recording, full
-DSP and VST hosting remain to be implemented. Pack listening and complete source
-analysis remain open; see [the checkpoint](docs/CHECKPOINT.md).
+This is a development build. Recording/comping, full DSP, VST hosting, complete
+catalogs, and a real-time native device engine remain approved work. The desktop
+auditions a background-rendered version of the arrangement through Qt Multimedia.
+Pack listening and reference-device testing remain open; see
+[the checkpoint](docs/CHECKPOINT.md).
 
 The [live SDD](https://docs.google.com/document/d/1qb6LWTgkk3vVJB3aFnwkXvtZ1-IxRIY0VezW0P9e_HE/edit)
 is the canonical product/design authority.
 
-## Run the four packs
+## Launch the desktop
 
-The distribution in `dist/PRDE1_0.2.1_Linux_x86_64.tar.gz` contains a compiled
+From your existing repository folder:
+
+```bash
+git pull --ff-only origin main
+./run-prde1.sh
+```
+
+First launch installs PySide6 into a local virtual environment if it is absent.
+That setup needs an internet connection; the installed composer then operates
+offline without an API key. The launcher restores the verified compiled renderer
+from the pulled build parts when needed. Python 3.11+ is required. On Ubuntu/Linux
+Lite, a missing virtual-environment or X11 cursor dependency can be installed with
+`sudo apt install python3-venv libxcb-cursor0`.
+
+Press **Play** to hear Parachute. Select a pattern in the timeline and click its
+steps to edit. **Edit chord** and **Custom progression** change harmony; **Save**
+writes a native project and **Export WAV** creates the stereo mix. The Browser
+loads all eight included arrangements. [Desktop controls](docs/DESKTOP.md)
+explain the remaining controls and current boundaries.
+
+![PRDE1 desktop](docs/validation/PRDE1-0.3.0-desktop.png)
+
+## Compiled distribution and command-line auditions
+
+The distribution in `dist/PRDE1_0.3.0_Linux_x86_64.tar.gz` contains the desktop code, a compiled
 Linux x86_64 renderer, Python control code, four packs, eight projects and eight
 ready-rendered WAV auditions. Git stores bounded `.partNN` files with hashes;
 restore the single archive from the checkout with:
 
 ```bash
 python3 tools/assemble_build.py
-tar -xzf dist/PRDE1_0.2.1_Linux_x86_64.tar.gz
-cd PRDE1_0.2.1_Linux_x86_64
+tar -xzf dist/PRDE1_0.3.0_Linux_x86_64.tar.gz
+cd PRDE1_0.3.0_Linux_x86_64
+./run-prde1.sh
 ```
 
-Then run:
+For command-line regeneration of the included auditions, run:
 
 ```bash
 ./run-demos.sh

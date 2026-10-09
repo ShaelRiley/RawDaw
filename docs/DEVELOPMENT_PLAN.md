@@ -15,14 +15,20 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
    arrangements. Keep the source-quality gate open until
    listening, stem alignment and full tonal-map checks succeed. Missing kit slots
    remain unavailable. This is not a general separator or public builder skill.
-3. **Native desktop slice:** Qt prototype, pack load → custom/preset Governor →
-   pattern selection/edit/copy → sample-clock playback → save/reopen → stereo
-   render. Test layout/focus/keyboard/scale, context persistence and explicit
-   unavailable choices. Bind the existing core; avoid duplicate rule systems.
+3. **Native desktop slice — 0.3.0 implemented:** Qt workspace, pack load,
+   custom/preset Governor, exact-timing step/event editing, independent/linked
+   copies, static mixer, undo/redo, recovery, native save/reopen and stereo export.
+   Preview uses a background native render followed by Qt PCM media playback,
+   with pause/seek and output selection. All eight GUI exports match the source
+   auditions. Keyboard and enlarged-layout checks passed offscreen. Real-time
+   native device callbacks, physical audio/Steam Deck testing, accessibility
+   and first-user pilots remain open; the UI does not duplicate Governor rules.
 4. **Variation/arrangement completion:** full independent/Linked Repeat workflow,
    Include Harmony warning, undo/redo and autosave, explicit regeneration, Freeze
    Variation, whole-song plans/locked sections, normalized MIDI adapters and
-   exact rational/pulse behavior. Current helpers are not a complete UI workflow.
+   exact rational/pulse behavior. The desktop now exposes copy/link/detach,
+   Include Harmony warning, undo/recovery and regeneration. Freeze, full section
+   plans and complete pattern-library workflows remain to be implemented.
 5. **Fixed DSP graph:** role/drum EQ, every channel/group's independent reverb and
    synchronized delay, static settings, master inserts/ambience, common final
    compression, no duplicate drum route, finite export tails and deliberate seek

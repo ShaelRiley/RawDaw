@@ -29,11 +29,13 @@ MIT application code, authored for Shael Riley. The native runner uses the pinne
 MIT nlohmann/json 3.12.0 header for non-real-time plan parsing; original notices
 are retained. The core Python package requires only the standard library.
 
-Qt6/PySide6 is the shortlisted native desktop surface, with LGPL obligations,
-module boundaries and dynamic replacement/source distribution to be addressed
-before bundling. PortAudio is the shortlisted MIT device layer; official callback
-guidance informed the native/control separation. Neither is bundled or claimed
-implemented in this checkpoint. The native Linux VST3 SDK's MIT licensing was
+Qt6/PySide6 6.8.3 now provides the native desktop surface in 0.3.0. Widgets and
+Multimedia are installed separately and dynamically imported; their libraries
+and licenses are not folded into the MIT application or this archive. A bundled
+Qt installer still needs its complete notices/source/replacement obligations.
+PortAudio remains a shortlisted MIT native device layer; official callback
+guidance informed the native/control separation. It is not implemented here.
+The native Linux VST3 SDK's MIT licensing was
 verified; the actual SDK/host and plug-in bundle are still absent. No commercial
 framework or proprietary SDK obligation was imposed on the application.
 
@@ -119,3 +121,25 @@ successful fsync/rename. A seek reconstructs engine/compressor state from zero;
 future state snapshots can improve seek speed without changing realization.
 Effects and their finite tail policy remain a later DSP gate; dry rendering ends
 at the saved song length, including click-free scheduled endings.
+
+## ADR-006: desktop composition and rendered preview
+
+The optional Qt desktop imports `editor.py` for validated project edits and the
+same `resolve()` used by the CLI for its native plans. Undo uses bounded project
+snapshots; autosave is a separate atomic recovery manifest with the exact pack
+reference. Pack activation is transactional and never overwrites pack bytes.
+Unknown media/processing remains saved and visibly blocks unsupported exports.
+
+A `QProcess` executes the existing native renderer outside the UI thread. Each
+job owns a temporary plan/output and a session fingerprint. Stop, close or a new
+music edit cancels the direct child; stale completions cannot start playback or
+replace an export. Successful exports alone enter the atomic file-commit step.
+No Python, Qt or filesystem operations are added to `Engine::process()`.
+
+Qt `QMediaPlayer`/`QAudioOutput` auditions the completed 48 kHz PCM render at 1×
+speed, with pause/seek and an explicit output choice. The arrangement realization
+is saved/deterministic and identical to export. Device conversion by Qt is audio
+infrastructure, not harmonic transposition. This buffered preview has preparation
+latency and does not implement the future native real-time device/recording path.
+Cloud PCM decode/state tests do not establish physical-device fidelity, monitoring
+latency, subjective quality or Steam Deck performance.

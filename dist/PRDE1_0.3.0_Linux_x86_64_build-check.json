@@ -1,0 +1,37 @@
+{
+  "version": "0.3.0",
+  "archive": "PRDE1_0.3.0_Linux_x86_64.tar.gz",
+  "sha256": "7b394cbbc7e1966a739018e0a9e1418db7da2ee2bd0d1d2e1e236e71a15da386",
+  "bytes": 31293261,
+  "sourceTreeBeforeDistribution": "bd823038827f01e4c6060524e9cb14ec3f34f23b",
+  "checks": {
+    "pythonInvariantAndIntegrationTests": 62,
+    "nativeInvariants": "passed",
+    "syntheticRegression": "passed",
+    "repeatPackageByteIdentical": true,
+    "allBuildInfoFileHashesAndLengths": 90,
+    "transportAssemblyByteIdentical": true,
+    "extractedBuildNativeQtTests": 7,
+    "guiExportsByteIdenticalToSourceAuditions": 8,
+    "rendererInstallMatchesCompiledBinary": true,
+    "pulledCheckoutLaunchWithoutCompilation": true,
+    "launcherExecutable": true,
+    "packCount": 4,
+    "sampleAssets": 97,
+    "packFilesChangedByDesktop": false,
+    "testedQtVersion": "6.8.3",
+    "layoutsInspected": [
+      "1366x800 at 100%",
+      "1280x800 at 125%",
+      "1024x768 at 150%"
+    ]
+  },
+  "notPerformed": [
+    "human listening",
+    "physical audio output/interface or Steam Deck testing",
+    "microphone recording",
+    "screen-reader pilot",
+    "first-user usability study"
+  ],
+  "releaseStatus": "private development checkpoint; coverage-limited packs; listening gate open"
+}
