@@ -1,0 +1,250 @@
+{
+  "type": "object",
+  "properties": {
+    "formatVersion": {
+      "const": "1.0.0-dev.1"
+    },
+    "sampleRate": {
+      "const": 48000
+    },
+    "endFrame": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400000
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "channels": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "frames": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1440000
+          },
+          "onsetFrame": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1440000
+          },
+          "loopStart": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1440000
+          },
+          "loopEnd": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1440000
+          }
+        },
+        "required": [
+          "id",
+          "path",
+          "channels",
+          "frames",
+          "onsetFrame",
+          "loopStart",
+          "loopEnd"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 1024,
+      "minItems": 0
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "assetIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1023
+          },
+          "startFrame": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 86400000
+          },
+          "endFrame": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 86400240
+          },
+          "releaseFrames": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4800
+          },
+          "attackFrames": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4800
+          },
+          "gain": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "pan": {
+            "type": "number",
+            "minimum": -1,
+            "maximum": 1
+          },
+          "notePitches": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 127
+            },
+            "maxItems": 16,
+            "minItems": 0
+          },
+          "role": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "endReason": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "id",
+          "assetIndex",
+          "startFrame",
+          "endFrame",
+          "releaseFrames",
+          "attackFrames",
+          "gain",
+          "pan",
+          "notePitches",
+          "role",
+          "endReason"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100000,
+      "minItems": 0
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "eventId",
+          "code",
+          "message"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100000,
+      "minItems": 0
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 4096
+      },
+      "maxItems": 100000,
+      "minItems": 0
+    },
+    "compressor": {
+      "type": "object",
+      "properties": {
+        "on": {
+          "type": "boolean"
+        },
+        "thresholdDb": {
+          "type": "number",
+          "minimum": -48,
+          "maximum": 0
+        },
+        "ratio": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "attackMs": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 100
+        },
+        "releaseMs": {
+          "type": "number",
+          "minimum": 10,
+          "maximum": 2000
+        }
+      },
+      "required": [
+        "on",
+        "thresholdDb",
+        "ratio",
+        "attackMs",
+        "releaseMs"
+      ],
+      "additionalProperties": false
+    },
+    "masterGain": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "peakCeilingDb": {
+      "type": "number",
+      "minimum": -1,
+      "maximum": 0
+    }
+  },
+  "required": [
+    "formatVersion",
+    "sampleRate",
+    "endFrame",
+    "assets",
+    "events",
+    "conflicts",
+    "warnings",
+    "compressor",
+    "masterGain",
+    "peakCeilingDb"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:prde1:events:1.0.0-dev.1",
+  "title": "PRDE1 experimental v1 events contract"
+}

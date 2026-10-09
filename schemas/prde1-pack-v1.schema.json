@@ -1,0 +1,613 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0-dev.1"
+    },
+    "packId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+    },
+    "builder": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "profileVersion": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "modelVersion": {
+          "type": "string",
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "version",
+        "profileVersion",
+        "modelVersion"
+      ],
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "authorized_recording",
+            "synthetic_fixture"
+          ]
+        },
+        "rightsDeclaration": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "license": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "attribution": {
+          "type": "string",
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "title",
+        "sha256",
+        "kind",
+        "rightsDeclaration",
+        "license",
+        "attribution"
+      ],
+      "additionalProperties": false
+    },
+    "audio": {
+      "type": "object",
+      "properties": {
+        "sampleRate": {
+          "const": 48000
+        },
+        "bitsPerSample": {
+          "const": 24
+        },
+        "tuningHz": {
+          "const": 440
+        },
+        "tuning": {
+          "const": "12-TET"
+        }
+      },
+      "required": [
+        "sampleRate",
+        "bitsPerSample",
+        "tuningHz",
+        "tuning"
+      ],
+      "additionalProperties": false
+    },
+    "maps": {
+      "type": "object",
+      "properties": {
+        "harmony": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "coverage": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      },
+      "required": [
+        "harmony",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "instruments": {
+      "type": "object",
+      "properties": {
+        "lead": {
+          "$ref": "#/$defs/status"
+        },
+        "rhythm": {
+          "$ref": "#/$defs/status"
+        },
+        "bass": {
+          "$ref": "#/$defs/status"
+        },
+        "drums": {
+          "type": "object",
+          "properties": {
+            "kick": {
+              "$ref": "#/$defs/status"
+            },
+            "snare": {
+              "$ref": "#/$defs/status"
+            },
+            "hatClosed": {
+              "$ref": "#/$defs/status"
+            },
+            "hatOpen": {
+              "$ref": "#/$defs/status"
+            },
+            "tom1": {
+              "$ref": "#/$defs/status"
+            },
+            "tom2": {
+              "$ref": "#/$defs/status"
+            },
+            "extra1": {
+              "$ref": "#/$defs/status"
+            },
+            "extra2": {
+              "$ref": "#/$defs/status"
+            }
+          },
+          "required": [
+            "kick",
+            "snare",
+            "hatClosed",
+            "hatOpen",
+            "tom1",
+            "tom2",
+            "extra1",
+            "extra2"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "lead",
+        "rhythm",
+        "bass",
+        "drums"
+      ],
+      "additionalProperties": false
+    },
+    "samples": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sample"
+      },
+      "maxItems": 1024,
+      "minItems": 0
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mapping"
+      },
+      "maxItems": 8192,
+      "minItems": 0
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "clips": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "libraryVersion": {
+          "type": "string",
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "index",
+        "libraryVersion"
+      ],
+      "additionalProperties": false
+    },
+    "channelPresets": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "provenance": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "qa": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "preview": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "coverage-limited"
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "status",
+        "notes"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "packId",
+    "builder",
+    "source",
+    "audio",
+    "maps",
+    "instruments",
+    "samples",
+    "mappings",
+    "files",
+    "clips",
+    "channelPresets",
+    "provenance",
+    "qa",
+    "preview",
+    "validation"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "status": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "available",
+            "unavailable",
+            "empty"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "sampleId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 100
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "soundIdentity": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "midiAddress": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 127
+        },
+        "pitchClass": {
+          "type": "string",
+          "enum": [
+            "pitched",
+            "unpitched",
+            "uncertain"
+          ]
+        },
+        "pitches": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 127
+          },
+          "maxItems": 16,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "status",
+        "reason",
+        "sampleId",
+        "displayName",
+        "soundIdentity",
+        "midiAddress",
+        "pitchClass",
+        "pitches"
+      ],
+      "additionalProperties": false
+    },
+    "sample": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "lead",
+            "rhythm",
+            "bass",
+            "drums"
+          ]
+        },
+        "articulation": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sampleRate": {
+          "const": 48000
+        },
+        "bitsPerSample": {
+          "const": 24
+        },
+        "channels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        },
+        "frames": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440000
+        },
+        "onsetFrame": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1440000
+        },
+        "gainDb": {
+          "type": "number",
+          "minimum": -24,
+          "maximum": 12
+        },
+        "pitches": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 127
+          },
+          "maxItems": 16,
+          "minItems": 0
+        },
+        "chord": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": true
+        },
+        "loop": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "startFrame": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1440000
+            },
+            "endFrame": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1440000
+            },
+            "validated": {
+              "const": true
+            }
+          },
+          "required": [
+            "startFrame",
+            "endFrame",
+            "validated"
+          ],
+          "additionalProperties": false
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "seconds": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 86400
+            },
+            "quarterBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            },
+            "durationSeconds": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 30
+            }
+          },
+          "required": [
+            "seconds",
+            "quarterBeat",
+            "durationSeconds"
+          ],
+          "additionalProperties": false
+        },
+        "lineage": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "native",
+                "pre-rendered",
+                "synthetic"
+              ]
+            },
+            "sourceAsset": {
+              "type": "string",
+              "maxLength": 4096
+            },
+            "recipe": {
+              "type": "string",
+              "maxLength": 4096
+            },
+            "transformationCost": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "kind",
+            "sourceAsset",
+            "recipe",
+            "transformationCost"
+          ],
+          "additionalProperties": false
+        },
+        "quality": {
+          "type": "object",
+          "properties": {
+            "accepted": {
+              "const": true
+            },
+            "confidence": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "notes": {
+              "type": "string",
+              "maxLength": 4096
+            }
+          },
+          "required": [
+            "accepted",
+            "confidence",
+            "notes"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "role",
+        "articulation",
+        "path",
+        "sha256",
+        "sampleRate",
+        "bitsPerSample",
+        "channels",
+        "frames",
+        "onsetFrame",
+        "gainDb",
+        "pitches",
+        "chord",
+        "loop",
+        "source",
+        "lineage",
+        "quality"
+      ],
+      "additionalProperties": false
+    },
+    "mapping": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": [
+            "lead",
+            "rhythm",
+            "bass"
+          ]
+        },
+        "note": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 127
+        },
+        "root": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 11
+        },
+        "quality": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "inversion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "sampleId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+        }
+      },
+      "required": [
+        "role",
+        "note",
+        "root",
+        "quality",
+        "inversion",
+        "sampleId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:prde1:pack:1.0.0-dev.1",
+  "title": "PRDE1 experimental v1 pack contract"
+}
