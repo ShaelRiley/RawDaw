@@ -2,7 +2,7 @@
 
 | Component | Version / distribution | License / state |
 | --- | --- | --- |
-| PRDE1 application code and authored synthetic fixtures | 0.3.0 desktop/source / compiled Linux renderer | MIT, `LICENSE` |
+| PRDE1 application code and authored synthetic fixtures | 0.3.1 desktop/source / compiled Linux renderer | MIT, `LICENSE` |
 | Three prepared CC Song Packs and source-derived estimated drum MIDI | Curated CC stem profile 0.2.0; 69 assets | CC BY 3.0; source credits/license/change notices embedded and listed in `SONG_PACKS.md` |
 | Parachute Song Pack and estimated source drum MIDI | Curated user-stem profile 0.2.1; 28 native assets | Shael Riley's authorization and Suno paid-account declaration; not independently verified or relicensed as CC/MIT; existing private development build |
 | nlohmann/json | 3.12.0 vendored single header | MIT; original license/embedded notices retained |

@@ -20,7 +20,7 @@ from prde1 import __version__
 from source_catalog import recipes, projects
 from assemble_build import CHUNK_BYTES
 NAME='PRDE1_'+__version__+'_Linux_x86_64'
-STAMP=1791504000  # Stable build-content timestamp: 2026-10-09 UTC.
+STAMP=1791590400  # Stable build-content timestamp: 2026-10-10 UTC.
 
 
 def source_tree():

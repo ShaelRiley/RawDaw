@@ -1,0 +1,73 @@
+{
+  "project": "parachute_full.prdeproj",
+  "version": "0.3.1",
+  "durationSeconds": 162.90908333333334,
+  "bars": 112,
+  "events": 2806,
+  "peakDbFS": -9.25788588106774,
+  "silentPadding": false,
+  "quietestBarRmsDbFS": -39.18,
+  "sections": [
+    {
+      "name": "Intro",
+      "startSeconds": 0.0,
+      "rmsDbFS": -31.04,
+      "peakDbFS": -13.11
+    },
+    {
+      "name": "Verse 1",
+      "startSeconds": 5.818182,
+      "rmsDbFS": -27.41,
+      "peakDbFS": -11.93
+    },
+    {
+      "name": "Pre-chorus 1",
+      "startSeconds": 29.090909,
+      "rmsDbFS": -25.54,
+      "peakDbFS": -11.44
+    },
+    {
+      "name": "Chorus 1",
+      "startSeconds": 40.727273,
+      "rmsDbFS": -24.02,
+      "peakDbFS": -9.26
+    },
+    {
+      "name": "Verse 2",
+      "startSeconds": 64.0,
+      "rmsDbFS": -26.6,
+      "peakDbFS": -11.93
+    },
+    {
+      "name": "Pre-chorus 2",
+      "startSeconds": 87.272727,
+      "rmsDbFS": -25.54,
+      "peakDbFS": -11.44
+    },
+    {
+      "name": "Chorus 2",
+      "startSeconds": 98.909091,
+      "rmsDbFS": -24.02,
+      "peakDbFS": -9.26
+    },
+    {
+      "name": "Bridge",
+      "startSeconds": 122.181818,
+      "rmsDbFS": -26.05,
+      "peakDbFS": -11.41
+    },
+    {
+      "name": "Final chorus",
+      "startSeconds": 133.818182,
+      "rmsDbFS": -24.01,
+      "peakDbFS": -9.26
+    },
+    {
+      "name": "Outro",
+      "startSeconds": 157.090909,
+      "rmsDbFS": -30.57,
+      "peakDbFS": -14.65
+    }
+  ],
+  "subjectiveListening": "pending creator audition of this full-length demo"
+}

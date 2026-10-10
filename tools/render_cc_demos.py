@@ -1,16 +1,18 @@
-"""Render the six shipped arrangements and verify actual PCM repeat/seek identity."""
+"""Render the catalog's source arrangements and verify actual PCM repeat/seek identity."""
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
 import subprocess
+import sys
 import tempfile
 import wave
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent.parent
-from source_catalog import projects
+sys.path.insert(0,str(ROOT))
+from source_catalog import projects, pack_for_project
 
 
 def render(pack,project,output,seek=0):
@@ -34,22 +36,23 @@ def main(output):
     if set(expected)!=set((ROOT/'packs').glob('*.prdeproj')):
         raise ValueError('Source catalog differs from available arrangements')
     for project in sorted(expected):
-        pack=project.with_name(project.stem[:-2]+'.prdepack')
+        pack=pack_for_project(project)
         before=hashlib.sha256(pack.read_bytes()).hexdigest()
         path=output/(project.stem+'.wav')
         report=render(pack,project,path)
         if report['conflicts'] or not 0<report['peak']<1:raise ValueError('Source demo export failed quality/coverage screen')
         data=pcm(path)
+        seek=report['frames']*3//4 if report['frames']>=120*48000 else 123457
         with tempfile.TemporaryDirectory(prefix='prde1-cc-repeat-') as folder:
             repeated=Path(folder)/'repeated.wav';sought=Path(folder)/'sought.wav'
             render(pack,project,repeated)
             if repeated.read_bytes()!=path.read_bytes():raise ValueError('Non-repeatable source-pack render')
-            render(pack,project,sought,123457)
-            if pcm(sought)!=data[123457*6:]:raise ValueError('Source-pack seek differs from full-render slice')
+            render(pack,project,sought,seek)
+            if pcm(sought)!=data[seek*6:]:raise ValueError('Source-pack seek differs from full-render slice')
         if hashlib.sha256(pack.read_bytes()).hexdigest()!=before:raise ValueError('Source pack modified during playback')
         report.update(project=project.name,pack=pack.name,packSha256=before,
                       wavSha256=hashlib.sha256(path.read_bytes()).hexdigest(),repeatByteIdentical=True,
-                      seekFrame123457ExactSlice=True,packUnchanged=True,humanListening='not_performed')
+                      verifiedSeekFrame=seek,seekExactSlice=True,packUnchanged=True,humanListening='not_performed')
         reports.append(report)
         print(project.name,report['eventCount'],'events',round(report['peakDbFS'],2),'dBFS; repeat/seek/hash passed',flush=True)
     if len(reports)!=len(expected):raise ValueError('Missing verified source arrangement')

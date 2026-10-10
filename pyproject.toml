@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "prde1-core"
-version = "0.3.0"
+version = "0.3.1"
 description = "PRDE1 native desktop composition and prepared-sample renderer"
 requires-python = ">=3.11"
 license = "MIT"

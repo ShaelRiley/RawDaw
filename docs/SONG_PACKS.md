@@ -43,7 +43,7 @@ No fixed-slot fallback, stock content or synthetic fill was introduced.
 
 Coverage is intentionally limited. Many progression presets or requested notes,
 qualities/inversions will be unavailable. Runtime checks use the stored bank's
-actual mappings. The eight supplied arrangements request covered material; their
+actual mappings. The nine supplied arrangements request covered material; their
 reports retain natural-duration warnings. All samples are one-shots with no
 sustain loops. Short vocal fragments are a lead sound bank, not complete words
 or a replacement for future microphone/comp/correction features.
@@ -165,9 +165,10 @@ identified as new authorship rather than additions to the source transcription.
 ## Verification and release gate
 
 The loader checks the actual four `.prdepack` archives, checksums, PCM dimensions,
-prepared mappings, JSON contracts and source MIDI. All eight projects resolve and
+prepared mappings, JSON contracts and source MIDI. All nine projects resolve and
 reopen. Native exports require no missing-material approval. Repeated exports
-are byte-identical; seek frame 123457 equals the full-render PCM slice; source
+are byte-identical; verified seeks equal the full-render PCM slices (frame 123457
+for short auditions; three quarters into the full Parachute song); source
 packs remain unchanged. See `docs/validation/cc-check.log` and `cc-render.json`.
 
 **Human listening was not performed.** Source-wide key/mode/chord timing and

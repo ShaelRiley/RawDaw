@@ -44,12 +44,12 @@ class NativeDesktop(unittest.TestCase):
         self.assertEqual(w.editor.plan(),before)
         self.assertEqual(w.player.playbackRate(),1.0)
 
-    def test_all_eight_gui_exports_equal_bundled_auditions_and_keep_packs_intact(self):
+    def test_all_catalog_gui_exports_equal_bundled_auditions_and_keep_packs_intact(self):
         import hashlib
         w=self.window
         for path in sorted((ROOT/'packs').glob('*.prdeproj')):
             with self.subTest(project=path.name):
-                self.assertTrue(w.load_session(path));digest=hashlib.sha256(w.pack.path.read_bytes()).digest()
+                self.assertTrue(w.load_full_demo() if path.stem=='parachute_full' else w.load_session(path));digest=hashlib.sha256(w.pack.path.read_bytes()).digest()
                 output=Path(self.folder.name)/(path.stem+'.wav');self.assertTrue(w.request_render(destination=output));self.wait_render()
                 self.assertTrue(output.exists(),w.message.text())
                 audition=ROOT/'out/source-auditions'/(path.stem+'.wav')

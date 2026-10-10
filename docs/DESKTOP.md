@@ -1,4 +1,4 @@
-# Desktop composition — 0.3.0
+# Desktop composition — 0.3.1
 
 Run `./run-prde1.sh` in the checkout or extracted distribution. Parachute opens
 as an editable starter. Click Play; preparation runs in a separate native process,
@@ -6,6 +6,11 @@ then the rendered mix plays through the selected audio output. Pause, Resume,
 Stop, and the playback-position slider use that same realization. The blue line
 is the edit cursor; the green line is playback. Selecting a clip does not change
 the musical random state. Music edits stop an obsolete preview.
+
+Version 0.3.1 adds the **Full Parachute demo · 2:43** button in Browser → Packs.
+It opens the complete editable 112-bar project, with the same save/undo/mixer and
+export controls. Use `./run-prde1.sh --project packs/parachute_full.prdeproj` to
+open it directly. [Section timings and score](PARACHUTE_DEMO.md) describe its form.
 
 ## Write and edit
 
@@ -74,6 +79,6 @@ preserved. Preview preparation adds latency before the first audible result; it
 is not a low-latency monitoring engine.
 
 Cloud checks cover Qt controls, keyboard editing, scaling, recovery, actual PCM
-decoding/pause/seek, all eight source exports, cancellation, exact pack identity
+decoding/pause/seek, all nine source exports, cancellation, exact pack identity
 and unchanged pack bytes. No human listening, physical audio-interface/Steam Deck
 test, screen-reader pilot or first-user usability study is claimed.

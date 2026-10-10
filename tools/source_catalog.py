@@ -1,6 +1,6 @@
 """Shared inventory for preparation, integration checks, and distribution.
 
-Only recipe metadata is read here; playback has no preparation dependencies.
+Only recipe/project metadata is read here; playback has no preparation dependencies.
 """
 import json
 from pathlib import Path
@@ -23,4 +23,11 @@ def recipes():
 
 def projects():
     return [ROOT / "packs" / (recipe["packId"] + "_" + suffix + ".prdeproj")
-            for recipe in recipes() for suffix in ("a", "b")]
+            for recipe in recipes() for suffix in ("a", "b")] + [ROOT / "packs/parachute_full.prdeproj"]
+
+
+def pack_for_project(project):
+    """Full song names need not have the short auditions' _a/_b suffix."""
+    from prde1.project import load_project
+    project = Path(project)
+    return project.parent / (load_project(project)['packReference']['packId'] + '.prdepack')

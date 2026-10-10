@@ -1,0 +1,31 @@
+{
+  "version": "0.3.1",
+  "archive": "PRDE1_0.3.1_Linux_x86_64.tar.gz",
+  "sha256": "197f153e447ae456b25e96761203813fd0b5c724e5bccd194b61dc7c0f2933db",
+  "bytes": 70350551,
+  "sourceTreeBeforeDistribution": "2ef3d33305f798d0ee63cd096dcf003cbf30930e",
+  "packCount": 4,
+  "assetCount": 97,
+  "projectCount": 9,
+  "auditionCount": 9,
+  "fullDemoDurationSeconds": 162.90908333333334,
+  "fullDemoWavSha256": "fc4903e32690e2bb6da830fd196d42ca2cec06224c6520f7bc6000a4770854ef",
+  "checks": {
+    "pythonInvariantAndIntegrationTests": 64,
+    "nativeInvariants": "passed",
+    "syntheticRegression": "passed",
+    "repeatPackageByteIdentical": true,
+    "allBuildInfoFileHashesAndLengths": 102,
+    "transportAssemblyByteIdentical": true,
+    "extractedBuildNativeQtTests": 7,
+    "extractedFullSongTests": 2,
+    "guiExportsByteIdenticalToSourceAuditions": 9,
+    "stdlibFullRenderByteIdentical": true,
+    "rendererInstallMatchesCompiledBinary": true,
+    "pulledCheckoutLaunchWithoutCompilation": true,
+    "allSourcePacksUnchanged": true,
+    "noMissingHarmonyOrSamples": true,
+    "noSilentPadding": true
+  },
+  "releaseStatus": "private development checkpoint; full song awaits creator audition; formal pack/hardware gates remain open"
+}

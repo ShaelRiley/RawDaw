@@ -6,7 +6,11 @@ Shael Riley's user-authorized Suno source, with its separate rights declaration
 preserved. Every pack retains credit and processing changes in its provenance.
 
 Each `_a.prdeproj` and `_b.prdeproj` is a new four-bar arrangement using that pack.
-Run `make source-demo` from the repository root to export and verify all eight.
+`parachute_full.prdeproj` is the complete 112-bar, **2:42.91** demo at 165 BPM,
+with a recurring chorus hook and contrasting sections. Its companion
+`.arrangement.json` documents the form. Open it in the desktop or read
+[the full demo score](../docs/PARACHUTE_DEMO.md).
+Run `make source-demo` from the repository root to export and verify all nine.
 
 | Pack | A | B |
 | --- | --- | --- |
