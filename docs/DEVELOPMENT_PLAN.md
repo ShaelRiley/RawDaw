@@ -38,6 +38,12 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
    compact/enlarged layouts and protects panel transfers, with saved-preference,
    injected native dock-fault and scale/size/Focus/Reset checks. On-device relaunch
    and listening remain open; no approved product scope is removed.
+   The subsequent physical run at `058d2f2` still failed after responsive layout
+   setup and before the event loop. An explicit recovery launch bypasses native
+   docks and saved workspace restoration, preserves layout/scale preferences,
+   and adds first-show/display diagnostics. Matching Python 3.13.5/Qt 6.8.3
+   headless tests pass; native root cause and on-device recovery launch remain
+   open. The diagnostic workaround does not close the physical release gate.
 4. **Variation/arrangement completion:** full independent/Linked Repeat workflow,
    Include Harmony warning, undo/redo and autosave, explicit regeneration, Freeze
    Variation, whole-song plans/locked sections, normalized MIDI adapters and

@@ -1,0 +1,40 @@
+{
+  "applicationVersion": "0.3.4",
+  "baseCommit": "058d2f2ae8c6f66eae9ddc2e3f42317c9757ad12",
+  "reportedDevice": {
+    "python": "3.13.5",
+    "qt": "6.8.3",
+    "startupResult": "segmentation_fault_after_responsive_workspace_ready",
+    "traceLocation": "prde1/gui.py:877 combined MainWindow construction/window.show/event-loop statement",
+    "firstLayoutHotfixPhysicalLaunch": "failed",
+    "nativeRootCause": "unresolved"
+  },
+  "recoveryMode": {
+    "flag": "--safe-workspace",
+    "nativeDocksCreated": false,
+    "savedWorkspaceRestored": false,
+    "initialInterfaceScale": 1,
+    "widgetStyle": "Fusion",
+    "savedGeometryLayoutScalePreserved": true,
+    "editingPlaybackExportControlsRetained": true
+  },
+  "cloudVerification": {
+    "python": "3.13.5",
+    "qt": "6.8.3",
+    "platform": "Linux x86_64",
+    "display": "offscreen",
+    "original058d2HotfixAlsoOpensHeadless": true,
+    "physicalFailureReproduced": false,
+    "pythonQtTestsPassed": 83,
+    "nativeEngineChecksPassed": true,
+    "legacyPreferencesSurviveRecoveryResetScaleAndClose": true,
+    "fullReachOutRecoveryEntrypointShown": true,
+    "exactShellRecoveryLauncherReachedFirstShowAndEventLoop": true,
+    "sourceGuiExportChecks": "all twelve exports match existing 0.3.4 auditions; packs preserved"
+  },
+  "unchangedRendererSha256": "c0576c1ccc9e261c10fd803a30f3948119653e3f38afc64bcebab6632179e79a",
+  "requirementsRevisionReadBeforeCode": "AHj4eMRUwVgqIsJ674TC4WgL7rU4kCC4aSF_QbzbC0_YClZ18SB8llE-IBEyyQwMArFHXeXPnQWVm9_OhV3YMzVDVkqPJ5gvEgRR92bEyQ",
+  "physicalSteamDeckRecoveryLaunch": "not_verified",
+  "fullSongListeningOnDeck": "not_performed",
+  "physicalMixAndWavAcceptance": "not_verified"
+}

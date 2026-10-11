@@ -1,4 +1,48 @@
-# Desktop startup protection and 0.3.4 layout hotfix
+# Desktop startup protection and 0.3.4 workspace recovery
+
+## October 11 follow-up: first window display still fails
+
+Shael pulled `058d2f2ae8c6f66eae9ddc2e3f42317c9757ad12` on the physical
+Deck. Its new log passes project loading, workspace restoration and
+`Responsive workspace ready`, then records another SIGSEGV at `gui.py:877`.
+That line combined construction, `window.show()` and entry into the event loop;
+the event-loop stage was never reached. The earlier saved-log traceback at
+`gui.py:728` belongs to the pre-hotfix build. The source-layout hotfix therefore
+has **not** established successful on-device startup.
+
+The next source update provides an explicit recovery launch:
+
+```sh
+cd "$HOME/prde1" && git pull --ff-only origin main && ./run-prde1.sh --safe-workspace --project packs/reach_out_full.prdeproj
+```
+
+`--safe-workspace` builds Inspector and Browser directly as central tabs, without
+creating native docks or restoring saved geometry, dock layout or scale. It
+starts at 100% scale with Qt's built-in Fusion widget style. All editing, mixer,
+dynamics, playback, recovery and export controls remain available. Scale can
+still be adjusted during this run. Reset workspace, scale changes and closing
+the recovery window leave the saved geometry/layout/scale values intact. Project
+and pack preferences and ordinary project save/recovery continue to work.
+Omit the flag to use the regular workspace again; the normal launch path is not
+silently changed. No system packages or renderer replacement are required.
+
+This is a reversible workaround and a diagnostic boundary, not a confirmed
+native root-cause fix. A successful recovery launch would narrow the problem to
+the paths it bypasses; it would not by itself prove which one was responsible.
+Both launch modes now log the selected Qt display platform, widget style,
+available screen and device scale. Window construction, first show and event-loop
+entry occupy separate Python lines and stages, so the next fatal traceback can
+locate them separately.
+
+Verification now includes Linux x86_64 with **Python 3.13.5 and PySide6/Qt 6.8.3**,
+matching the Deck's reported versions. The unmodified hotfix opened in this
+headless environment, so the physical failure was not reproduced here. New
+real-Qt checks open the full Reach Out song in recovery mode, verify accessible
+transport/panels across scales, retain its musical fingerprint, and preserve
+genuine legacy tabified workspace preferences through Reset and closing. The
+actual desktop entry point records the display and first-show stages and reaches
+its event loop. See `validation/desktop-recovery-0.3.4.*` for final results.
+Physical recovery-mode launch, full-song audio and listening remain unverified.
 
 ## October 11 Steam Deck layout crash
 
@@ -30,8 +74,9 @@ underlying Qt defect. Additional real-Qt tests cycle 100/125/150% scale and wind
 widths, check single panel ownership, access to transport and panels, Focus view,
 Reset workspace, and unchanged musical state. All 81 tests pass. Evidence is in
 `validation/desktop-layout-hotfix-0.3.4.log` and
-`validation/desktop-layout-hotfix-0.3.4.json`. Physical Deck relaunch and listening
-remain unverified until the creator reports them.
+`validation/desktop-layout-hotfix-0.3.4.json`. The creator's subsequent physical
+relaunch failed as recorded above. These automated results remain valid within
+their stated headless/fault-fixture limits.
 
 ## Preserved audio-only startup protection
 
@@ -81,6 +126,33 @@ If startup still crashes, obtain the printed log with:
 ```sh
 cat "${XDG_STATE_HOME:-$HOME/.local/state}/prde1/startup.log"
 ```
+
+To capture terminal messages as well, run this in Bash/Konsole after pulling:
+
+```bash
+cd "$HOME/prde1"
+set -o pipefail
+./run-prde1.sh --safe-workspace --project packs/reach_out_full.prdeproj 2>&1 | tee "$HOME/prde1-0.3.4-launch.log"
+```
+
+After a failure, collect the available files with these separate commands. A
+missing terminal log is skipped; no log is uploaded automatically.
+
+```bash
+prde1_diag="$HOME/prde1-diagnostics-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$prde1_diag"
+git -C "$HOME/prde1" log -1 --format='%H %s' > "$prde1_diag/revision.txt"
+for prde1_log in "${XDG_STATE_HOME:-$HOME/.local/state}/prde1"/startup*.log "$HOME/prde1-0.3.4-launch.log"; do
+    if [ -f "$prde1_log" ]; then cp -- "$prde1_log" "$prde1_diag/"; fi
+done
+printf 'Diagnostic folder: %s\n' "$prde1_diag"
+```
+
+If SteamOS retained a core dump, `coredumpctl --no-pager info` immediately after
+this crash can provide the native stack. Confirm that its command line is the
+PRDE1 desktop launch before sharing it. This requires no debugger installation;
+availability and access depend on the system's core-dump configuration. The
+startup log remains the first diagnostic if core information is unavailable.
 
 ## Verification and limits
 

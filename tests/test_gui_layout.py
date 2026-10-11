@@ -5,8 +5,8 @@ import unittest
 
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 try:
-    from PySide6.QtCore import Qt
-    from PySide6.QtWidgets import QApplication
+    from PySide6.QtCore import QSettings, Qt
+    from PySide6.QtWidgets import QApplication, QDockWidget, QMainWindow, QWidget
     from prde1.gui import MainWindow
     HAS_QT = True
 except ImportError:
@@ -92,6 +92,60 @@ class ResponsiveWorkspace(unittest.TestCase):
             self.app.processEvents()
             self.assert_panels_accessible(compact)
             self.assertEqual(w.editor.fingerprint, fingerprint)
+
+    def test_recovery_workspace_opens_full_song_without_replacing_saved_preferences(self):
+        """Recovery must preserve preferences even after Reset, scaling and closing."""
+        with tempfile.TemporaryDirectory() as folder:
+            settings = QSettings(folder + '/preferences.ini', QSettings.Format.IniFormat)
+            legacy = QMainWindow()
+            docks = [QDockWidget(title, legacy) for title in ('Inspector', 'Browser')]
+            for dock, name, area in zip(docks, ('inspectorDock', 'browserDock'),
+                                       (Qt.DockWidgetArea.LeftDockWidgetArea, Qt.DockWidgetArea.RightDockWidgetArea)):
+                dock.setObjectName(name)
+                dock.setWidget(QWidget())
+                legacy.addDockWidget(area, dock)
+            legacy.tabifyDockWidget(*docks)
+            legacy.resize(1280, 800)
+            saved = dict(geometry=legacy.saveGeometry(), layout=legacy.saveState(), scale=1.5)
+            for key, value in saved.items():settings.setValue(key, value)
+            settings.sync()
+            from unittest.mock import patch
+            with patch('prde1.gui.QSettings', return_value=settings):
+                recovered = MainWindow('packs/reach_out_full.prdeproj', data_dir=folder, safe_workspace=True)
+            try:
+                recovered.show()
+                self.app.processEvents()
+                self.assertTrue(recovered.isVisible())
+                self.assertEqual(recovered.editor.project['projectId'], 'reach_out_full')
+                self.assertEqual(recovered._scale_value, 1)
+                self.assertIsNone(recovered.inspector_dock)
+                self.assertIsNone(recovered.browser_dock)
+                fingerprint = recovered.editor.fingerprint
+                for width, scale in ((1280, 1.25), (1024, 1.5), (1366, 1)):
+                    recovered.resize(width, 800)
+                    recovered._apply_scale(scale)
+                    recovered.focus_action.setChecked(True)
+                    recovered.focus_view()
+                    recovered.reset_layout()
+                    self.app.processEvents()
+                    self.assertTrue(recovered.play_button.isVisible())
+                    self.assertTrue(recovered.export_button.isVisible())
+                    for panel, title in ((recovered.inspector_panel, 'Inspector'), (recovered.browser_tabs, 'Browser')):
+                        index = recovered.dock_tabs.indexOf(panel)
+                        self.assertGreaterEqual(index, 0)
+                        self.assertEqual(recovered.dock_tabs.tabText(index), title)
+                        recovered.dock_tabs.setCurrentWidget(panel)
+                        self.app.processEvents()
+                        self.assertTrue(panel.isVisible())
+                    self.assertEqual(recovered.editor.fingerprint, fingerprint)
+                    for key, value in saved.items():self.assertEqual(settings.value(key), value)
+            finally:
+                recovered.editor.saved = canonical_bytes(recovered.editor.project)
+                recovered.close()
+                self.app.processEvents()
+                legacy.close()
+            settings.sync()
+            for key, value in saved.items():self.assertEqual(settings.value(key), value)
 
 
 if __name__ == '__main__':

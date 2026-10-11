@@ -96,8 +96,9 @@ class DrumEqDialog(QDialog):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self,project_path=None,pack_path=None,*,data_dir=None,remember=True):
+    def __init__(self,project_path=None,pack_path=None,*,data_dir=None,remember=True,safe_workspace=False):
         super().__init__();self.setObjectName('prde1Window');self.setWindowTitle('PRDE1 — Pop Rock Development Environment')
+        self._safe_workspace=safe_workspace
         self.resize(1366,800);self.setMinimumSize(900,650);self.setStyleSheet(STYLE)
         self.editor=None;self.pack=None;self.selected_id='';self.role='rhythm';self.cursor=Fraction(0)
         self._refreshing=False;self._closing=False;self._plan=None;self._job=None;self._generation=0;self._compact=None;self._scale_value=1
@@ -122,8 +123,11 @@ class MainWindow(QMainWindow):
         self.recover_button.setVisible(bool(self._recoveries))
         startup_stage('Loading project')
         self._bootstrap(project_path,pack_path)
-        startup_stage('Restoring workspace and interface scale')
-        if self._settings:
+        if self._safe_workspace:
+            startup_stage('Recovery workspace: central tabs; saved geometry, docks and scale preserved')
+            self._apply_scale(1)
+        elif self._settings:
+            startup_stage('Restoring workspace and interface scale')
             geometry=self._settings.value('geometry');state=self._settings.value('layout')
             if geometry:self.restoreGeometry(geometry)
             if state:self.restoreState(state)
@@ -216,7 +220,9 @@ class MainWindow(QMainWindow):
         self.message=QLabel();self.message.setObjectName('warning');self.message.setWordWrap(True);layout.addWidget(self.message)
 
     def _make_inspector(self):
-        self.inspector_dock=QDockWidget('Inspector',self);self.inspector_dock.setObjectName('inspectorDock')
+        self.inspector_dock=None
+        if not self._safe_workspace:
+            self.inspector_dock=QDockWidget('Inspector',self);self.inspector_dock.setObjectName('inspectorDock')
         panel=QWidget();layout=QVBoxLayout(panel);self.selection_label=QLabel('Select a track');self.selection_label.setWordWrap(True);layout.addWidget(self.selection_label)
         form=QFormLayout();self.track=QComboBox()
         for role in ROLES:self.track.addItem(role.title(),role)
@@ -229,11 +235,17 @@ class MainWindow(QMainWindow):
         layout.addStretch();scale_label=QLabel('Interface scale');layout.addWidget(scale_label);self.scale=QComboBox()
         for label,value in [('100%',1),('125%',1.25),('150%',1.5)]:self.scale.addItem(label,value)
         self.scale.currentIndexChanged.connect(lambda:self._apply_scale(self.scale.currentData()));layout.addWidget(self.scale)
-        self.inspector_panel=panel;self.inspector_dock.setWidget(panel);self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea,self.inspector_dock)
+        self.inspector_panel=panel
+        if self._safe_workspace:self.dock_tabs.addTab(panel,'Inspector')
+        else:self.inspector_dock.setWidget(panel);self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea,self.inspector_dock)
 
     def _make_browser(self):
-        self.browser_dock=QDockWidget('Browser',self);self.browser_dock.setObjectName('browserDock')
-        tabs=QTabWidget();self.browser_tabs=tabs;self.browser_dock.setWidget(tabs);self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea,self.browser_dock)
+        self.browser_dock=None
+        tabs=QTabWidget();self.browser_tabs=tabs
+        if self._safe_workspace:self.dock_tabs.addTab(tabs,'Browser')
+        else:
+            self.browser_dock=QDockWidget('Browser',self);self.browser_dock.setObjectName('browserDock')
+            self.browser_dock.setWidget(tabs);self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea,self.browser_dock)
         pack_panel=QWidget();layout=QVBoxLayout(pack_panel);layout.addWidget(button('Load Song Pack…',self.load_pack_dialog))
         self.pack_label=QLabel();self.pack_label.setWordWrap(True);layout.addWidget(self.pack_label)
         layout.addWidget(QLabel('Full-length demos'))
@@ -256,7 +268,7 @@ class MainWindow(QMainWindow):
         preset_panel=QWidget();layout=QVBoxLayout(preset_panel);help_text=QLabel('Six development templates, ranked by actual prepared coverage. Custom harmony is always available.');help_text.setWordWrap(True);layout.addWidget(help_text)
         self.presets=QListWidget();self.presets.setAccessibleName('Progression templates and coverage');layout.addWidget(self.presets,1);layout.addWidget(button('Apply selected progression',self.apply_preset));layout.addWidget(button('Custom progression…',self.custom_dialog));tabs.addTab(preset_panel,'Progressions')
         pattern_panel=QWidget();layout=QVBoxLayout(pattern_panel);self.source_clips=QListWidget();layout.addWidget(QLabel('Patterns recovered from active source'));layout.addWidget(self.source_clips,1);layout.addWidget(button('Place source pattern here',self.place_source));tabs.addTab(pattern_panel,'Patterns')
-        self.resizeDocks([self.inspector_dock,self.browser_dock],[205,245],Qt.Orientation.Horizontal)
+        if not self._safe_workspace:self.resizeDocks([self.inspector_dock,self.browser_dock],[205,245],Qt.Orientation.Horizontal)
 
     def _make_mixer(self):
         panel=QWidget();layout=QVBoxLayout(panel);self.mixer=QTableWidget(0,5);self.mixer.setHorizontalHeaderLabels(['Channel / bus','Level · dB','Pan · %','Mute','Drum EQ'])
@@ -709,7 +721,7 @@ class MainWindow(QMainWindow):
             self.timeline.header=max(108,self.timeline.fontMetrics().horizontalAdvance('GOVERNOR')+18)
             self.timeline.refresh(self.editor,self.selected_id,self.cursor)
         self.scale.blockSignals(True);self.scale.setCurrentIndex(self.scale.findData(value));self.scale.blockSignals(False)
-        if self._settings:self._settings.setValue('scale',value)
+        if self._settings and not self._safe_workspace:self._settings.setValue('scale',value)
         self._responsive_layout()
 
     def resizeEvent(self,event):
@@ -718,6 +730,8 @@ class MainWindow(QMainWindow):
 
     def _responsive_layout(self):
         if not self._layout_ready or self._layout_changing:return
+        if self._safe_workspace:
+            self._compact='tabs';return
         compact='tabs' if self.width()<1280 or self._scale_value>1 else 'wide'
         if self._compact==compact or self.focus_action.isChecked():return
         self._layout_changing=True
@@ -743,10 +757,15 @@ class MainWindow(QMainWindow):
 
     def focus_view(self):
         focus=self.focus_action.isChecked()
+        if self._safe_workspace:
+            if focus:self.dock_tabs.setCurrentIndex(0)
+            return
         if focus:self.inspector_dock.hide();self.browser_dock.hide()
         else:self._compact=None;self._responsive_layout()
 
     def reset_layout(self):
+        if self._safe_workspace:
+            self.focus_action.setChecked(False);self.splitter.setSizes([360,260]);return
         self._layout_changing=True
         try:self.inspector_dock.setFloating(False);self.browser_dock.setFloating(False)
         finally:self._layout_changing=False
@@ -862,7 +881,7 @@ class MainWindow(QMainWindow):
     def closeEvent(self,event):
         if not self.confirm_discard():event.ignore();return
         self._closing=True;self.stop();self.autosave_timer.stop()
-        if self._settings:self._settings.setValue('geometry',self.saveGeometry());self._settings.setValue('layout',self.saveState())
+        if self._settings and not self._safe_workspace:self._settings.setValue('geometry',self.saveGeometry());self._settings.setValue('layout',self.saveState())
         self.player.setSource(QUrl());self.recovery_file.unlink(missing_ok=True)
         if self.pack:self.pack.close();self.pack=None
         self.workspace.cleanup();event.accept()
@@ -871,10 +890,21 @@ class MainWindow(QMainWindow):
 def main(argv=None):
     parser=argparse.ArgumentParser(description='PRDE1 desktop editor')
     parser.add_argument('--project',type=Path);parser.add_argument('--pack',type=Path)
+    parser.add_argument('--safe-workspace',action='store_true',help='Use central tabs and the built-in Fusion style without restoring or replacing saved layout/scale')
     options=parser.parse_args(argv)
     begin_startup_log();startup_stage('Creating desktop application with Qt ' + qVersion())
     app=QApplication.instance() or QApplication(sys.argv[:1]);app.setApplicationName('PRDE1');app.setOrganizationName('ShaelRiley')
-    window=MainWindow(options.project,options.pack);window.show();startup_stage('Entering desktop event loop');return app.exec()
+    if options.safe_workspace:app.setStyle('Fusion')
+    startup_stage('Display platform: '+app.platformName()+'; widget style: '+app.style().objectName())
+    screen=app.primaryScreen()
+    if screen:
+        geometry=screen.availableGeometry()
+        startup_stage(f'Available screen: {geometry.width()}x{geometry.height()}; device scale: {screen.devicePixelRatio():g}')
+    window=MainWindow(options.project,options.pack,safe_workspace=options.safe_workspace)
+    startup_stage('Showing desktop window')
+    window.show()
+    startup_stage('Desktop window shown; entering event loop')
+    return app.exec()
 
 
 if __name__=='__main__':raise SystemExit(main())

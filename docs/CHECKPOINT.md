@@ -1,5 +1,16 @@
 # Current checkpoint — 0.3.4 drum punch and kick-to-bass sidechain
 
+The physical Deck then pulled `058d2f2` and still crashed after `Responsive
+workspace ready`, before the event loop, at the combined construction/show line.
+On-device startup therefore remains failed. The follow-up source update adds
+`--safe-workspace`: Inspector/Browser are central tabs from construction,
+saved geometry/dock state/scale are bypassed and preserved, and the built-in
+Fusion style is selected. First show and event-loop entry have separate trace
+lines/stages, with display platform/style/screen diagnostics. Matching Python
+3.13.5/Qt 6.8.3 headless checks open Reach Out and preserve legacy preferences.
+See `validation/desktop-recovery-0.3.4.*`. Physical recovery-mode launch and
+listening remain open; no native root cause is claimed.
+
 The October 11 physical Deck trace locates a separate native crash at automatic
 dock tabification during saved-scale restoration. A source hotfix replaces the
 native merge with labeled central tabs for compact/enlarged layouts, guards
@@ -8,7 +19,8 @@ visibility. The existing 0.3.4 renderer and all musical settings remain intact.
 All 81 tests pass, including an injected native dock fault, legacy saved
 preferences and repeated scale/size transitions; the twelve source exports
 retain their original 0.3.4 hashes. See [DESKTOP_STARTUP.md](DESKTOP_STARTUP.md) and
-`validation/desktop-layout-hotfix-0.3.4.*`. Physical relaunch remains open.
+`validation/desktop-layout-hotfix-0.3.4.*`. The subsequent physical relaunch failed
+as recorded above.
 
 This checkpoint adds native per-drum stereo EQ, combined drum bus compression
 with +3 dB makeup, and kick-signal-driven bass ducking capped at 6 dB, followed

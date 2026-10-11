@@ -19,6 +19,36 @@ HAS_QT = importlib.util.find_spec('PySide6') is not None
 
 
 class DesktopStartup(unittest.TestCase):
+    @unittest.skipUnless(HAS_QT, 'Qt desktop entry point')
+    def test_recovery_entrypoint_shows_full_song_and_records_the_display_stages(self):
+        with tempfile.TemporaryDirectory() as folder:
+            env = dict(os.environ, QT_QPA_PLATFORM='offscreen', XDG_STATE_HOME=folder,
+                       XDG_CONFIG_HOME=folder, XDG_DATA_HOME=folder)
+            code = '''from prde1.desktop_startup import main
+from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QApplication
+app = QApplication([])
+def finish():
+    windows = [w for w in app.topLevelWidgets() if w.objectName() == 'prde1Window']
+    assert len(windows) == 1 and windows[0].isVisible()
+    assert windows[0].editor.project['projectId'] == 'reach_out_full'
+    assert windows[0]._safe_workspace
+    print('Recovery desktop opened', flush=True)
+    windows[0].close()
+    app.quit()
+QTimer.singleShot(400, finish)
+raise SystemExit(main(['--safe-workspace', '--project', 'packs/reach_out_full.prdeproj']))
+'''
+            result = subprocess.run([sys.executable, '-X', 'faulthandler', '-c', code], cwd=ROOT,
+                                    env=env, capture_output=True, text=True, timeout=25)
+            log = (Path(folder) / 'prde1/startup.log').read_text()
+            self.assertEqual(result.returncode, 0, result.stderr + log)
+            self.assertIn('Recovery desktop opened', result.stdout)
+            self.assertIn('Display platform: offscreen; widget style: fusion', log)
+            self.assertIn('Recovery workspace: central tabs', log)
+            self.assertIn('Showing desktop window', log)
+            self.assertIn('Desktop window shown; entering event loop', log)
+
     def test_pcm_startup_disables_video_drivers_and_preserves_display_selection(self):
         with patch.dict(os.environ, {HW_KEYS[0]: 'vaapi', HW_KEYS[1]: 'vulkan',
                                      'QT_QPA_PLATFORM': 'wayland', 'PULSE_SERVER': 'test-server'}):
