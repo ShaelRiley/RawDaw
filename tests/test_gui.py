@@ -20,6 +20,7 @@ try:
 except ImportError:HAS_QT=False
 from prde1.contracts import ROOT,canonical_bytes
 from prde1.project import load_project
+from prde1.mixing import DRUM_COMPRESSOR, BASS_SIDECHAIN, apply_punch_mix
 
 
 @unittest.skipUnless(HAS_QT,'Install the desktop extra for native UI tests')
@@ -106,6 +107,22 @@ class NativeDesktop(unittest.TestCase):
             self.assertTrue(w.play_button.isVisible());self.assertTrue(w.export_button.isVisible());self.assertTrue(w.dock_tabs.isVisible())
             self.assertGreaterEqual(w.tempo.font().pointSizeF(),10*scale-.1)
         w._apply_scale(1)
+
+    def test_saved_dynamics_controls_apply_to_the_same_native_preview_and_recover(self):
+        w=self.window;before=w.editor.plan()
+        w.change(lambda:w.editor.apply('Punch drums',apply_punch_mix))
+        self.assertTrue(w.dynamics_controls['drumBusCompressor']['on'].isChecked())
+        self.assertTrue(w.dynamics_controls['bassSidechain']['on'].isChecked())
+        widget=w.dynamics_controls['bassSidechain']['maxDuckDb'];widget.setValue(3.5)
+        w.set_dynamics('bassSidechain')
+        self.assertEqual(w.editor.plan()['processing']['bassSidechain']['maxDuckDb'],3.5)
+        w.autosave();saved=w.editor.project.copy()
+        other=MainWindow(data_dir=self.folder.name,remember=False);other.show();self.app.processEvents()
+        try:
+            other.recover();self.assertEqual(other.editor.project,saved)
+            self.assertEqual(other.editor.plan(),w.editor.plan())
+        finally:other.editor.saved=canonical_bytes(other.editor.project);other.close();self.app.processEvents()
+        w.undo();w.undo();self.assertEqual(w.editor.plan(),before)
 
 
 if __name__=='__main__':unittest.main()

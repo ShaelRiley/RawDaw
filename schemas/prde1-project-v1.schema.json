@@ -258,6 +258,11 @@
               "type": "number",
               "minimum": 10,
               "maximum": 2000
+            },
+            "makeupDb": {
+              "type": "number",
+              "minimum": -12,
+              "maximum": 12
             }
           },
           "required": [
@@ -266,6 +271,90 @@
             "ratio",
             "attackMs",
             "releaseMs"
+          ],
+          "additionalProperties": false
+        },
+        "drumBusCompressor": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean"
+            },
+            "thresholdDb": {
+              "type": "number",
+              "minimum": -48,
+              "maximum": 0
+            },
+            "ratio": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 20
+            },
+            "attackMs": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 100
+            },
+            "releaseMs": {
+              "type": "number",
+              "minimum": 10,
+              "maximum": 2000
+            },
+            "makeupDb": {
+              "type": "number",
+              "minimum": -12,
+              "maximum": 12
+            }
+          },
+          "required": [
+            "on",
+            "thresholdDb",
+            "ratio",
+            "attackMs",
+            "releaseMs",
+            "makeupDb"
+          ],
+          "additionalProperties": false
+        },
+        "bassSidechain": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean"
+            },
+            "thresholdDb": {
+              "type": "number",
+              "minimum": -60,
+              "maximum": 0
+            },
+            "ratio": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 20
+            },
+            "attackMs": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 100
+            },
+            "releaseMs": {
+              "type": "number",
+              "minimum": 10,
+              "maximum": 2000
+            },
+            "maxDuckDb": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 18
+            }
+          },
+          "required": [
+            "on",
+            "thresholdDb",
+            "ratio",
+            "attackMs",
+            "releaseMs",
+            "maxDuckDb"
           ],
           "additionalProperties": false
         }
@@ -861,6 +950,54 @@
           },
           "maxItems": 3,
           "minItems": 0
+        },
+        "eq": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean"
+            },
+            "highpassHz": {
+              "type": "number",
+              "minimum": 20,
+              "maximum": 2000
+            },
+            "bellHz": {
+              "type": "number",
+              "minimum": 30,
+              "maximum": 16000
+            },
+            "bellDb": {
+              "type": "number",
+              "minimum": -12,
+              "maximum": 12
+            },
+            "bellQ": {
+              "type": "number",
+              "minimum": 0.3,
+              "maximum": 4
+            },
+            "shelfHz": {
+              "type": "number",
+              "minimum": 1000,
+              "maximum": 18000
+            },
+            "shelfDb": {
+              "type": "number",
+              "minimum": -12,
+              "maximum": 12
+            }
+          },
+          "required": [
+            "on",
+            "highpassHz",
+            "bellHz",
+            "bellDb",
+            "bellQ",
+            "shelfHz",
+            "shelfDb"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

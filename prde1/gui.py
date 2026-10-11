@@ -31,6 +31,7 @@ from .gui_widgets import COLORS, ROLES, SLOT_NAMES, ChordDialog, EventDialog, Fl
 from .music import MODES, NAMES, at, beat, diatonic, quarter_seconds, roman
 from .pack import Pack
 from .project import load_project, save_project
+from .mixing import DRUM_PRESETS, DRUM_COMPRESSOR, BASS_SIDECHAIN, apply_punch_mix, drum_eq
 
 STYLE='''
 QMainWindow, QDialog, QWidget { background: #171e27; color: #e3ebf4; }
@@ -71,6 +72,27 @@ def item(text,data=None):
     result=QTableWidgetItem(str(text));result.setFlags(Qt.ItemFlag.ItemIsSelectable|Qt.ItemFlag.ItemIsEnabled)
     if data is not None:result.setData(Qt.ItemDataRole.UserRole,data)
     return result
+
+
+class DrumEqDialog(QDialog):
+    def __init__(self,slot,settings,parent=None):
+        super().__init__(parent);self.setWindowTitle(SLOT_NAMES[slot]+' · EQ');self.resize(380,380)
+        layout=QVBoxLayout(self);help_text=QLabel('Independent high-pass, body/presence bell and air shelf. These affect playback and export.');help_text.setWordWrap(True);layout.addWidget(help_text)
+        self.on=QCheckBox('EQ enabled');self.on.setChecked(settings['on']);layout.addWidget(self.on)
+        form=QFormLayout();self.controls={}
+        for key,label,low,high,digits,suffix in [
+            ('highpassHz','Low cut',20,2000,0,' Hz'),('bellHz','Bell frequency',30,16000,0,' Hz'),
+            ('bellDb','Bell boost / cut',-12,12,1,' dB'),('bellQ','Bell width · Q',.3,4,2,''),
+            ('shelfHz','Air shelf frequency',1000,18000,0,' Hz'),('shelfDb','Air shelf boost / cut',-12,12,1,' dB')]:
+            widget=spin(low,high,settings[key],digits,suffix);widget.setAccessibleName(label);self.controls[key]=widget;form.addRow(label,widget)
+        layout.addLayout(form)
+        def reset():
+            values=drum_eq(slot);self.on.setChecked(True)
+            for key,widget in self.controls.items():widget.setValue(values[key])
+        layout.addWidget(button('Use '+DRUM_PRESETS[slot][0],reset))
+        buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Ok|QDialogButtonBox.StandardButton.Cancel)
+        buttons.accepted.connect(self.accept);buttons.rejected.connect(self.reject);layout.addWidget(buttons)
+    def values(self):return dict(on=self.on.isChecked(),**{key:widget.value() for key,widget in self.controls.items()})
 
 
 class MainWindow(QMainWindow):
@@ -231,13 +253,30 @@ class MainWindow(QMainWindow):
         self.resizeDocks([self.inspector_dock,self.browser_dock],[205,245],Qt.Orientation.Horizontal)
 
     def _make_mixer(self):
-        panel=QWidget();layout=QVBoxLayout(panel);self.mixer=QTableWidget(0,4);self.mixer.setHorizontalHeaderLabels(['Channel / bus','Level · dB','Pan · %','Mute'])
+        panel=QWidget();layout=QVBoxLayout(panel);self.mixer=QTableWidget(0,5);self.mixer.setHorizontalHeaderLabels(['Channel / bus','Level · dB','Pan · %','Mute','Drum EQ'])
         self.mixer.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch);layout.addWidget(self.mixer,1)
-        controls=QHBoxLayout();self.compressor=QCheckBox('Final compressor');self.compressor.clicked.connect(self.set_compressor);controls.addWidget(self.compressor)
-        self.threshold=spin(-48,0,-12,1,' dB');self.threshold.editingFinished.connect(self.set_compressor);controls.addWidget(QLabel('Threshold'));controls.addWidget(self.threshold)
-        self.ratio=spin(1,20,2,1,':1');self.ratio.editingFinished.connect(self.set_compressor);controls.addWidget(QLabel('Ratio'));controls.addWidget(self.ratio);controls.addStretch();layout.addLayout(controls)
-        label=QLabel('Static levels, pan and final compression are active. EQ, reverb, delay and VST inserts remain in the next development stages.');label.setWordWrap(True);label.setObjectName('muted');layout.addWidget(label)
+        layout.addWidget(button('Apply punch mix · drum EQ + buses + kick → bass',lambda:self.change(lambda:self.editor.apply('Apply punch mix',apply_punch_mix))))
+        label=QLabel('Each drum → its EQ → drum compressor + boost → master. The kick ducks only bass. Older saved mixes retain their sound until you apply a preset.');label.setWordWrap(True);label.setObjectName('muted');layout.addWidget(label)
         self.dock_tabs.insertTab(2,panel,'Mixer')
+        processing_panel=QWidget();processing_layout=QVBoxLayout(processing_panel);scroll=QScrollArea();scroll.setWidgetResizable(True)
+        inner=QWidget();form=QFormLayout(inner);self.dynamics_controls={}
+        definitions=[('drumBusCompressor','Drum bus compressor',DRUM_COMPRESSOR),
+                     ('bassSidechain','Kick → bass sidechain',BASS_SIDECHAIN),
+                     ('compressor','Master compressor',dict(on=True,thresholdDb=-18,ratio=2,attackMs=10,releaseMs=150,makeupDb=0))]
+        for key,title,defaults in definitions:
+            enabled=QCheckBox(title);enabled.clicked.connect(lambda _,key=key:self.set_dynamics(key));form.addRow(enabled)
+            widgets={'on':enabled}
+            for parameter,label_text in [('thresholdDb','Threshold'),('ratio','Ratio'),('attackMs','Attack'),('releaseMs','Release'),('makeupDb','Makeup / boost'),('maxDuckDb','Maximum duck')]:
+                if parameter not in defaults:continue
+                low,high,digits,suffix={'thresholdDb':(-60 if key=='bassSidechain' else -48,0,1,' dB'),'ratio':(1,20,1,':1'),
+                    'attackMs':(.1,100,1,' ms'),'releaseMs':(10,2000,0,' ms'),'makeupDb':(-12,12,1,' dB'),'maxDuckDb':(0,18,1,' dB')}[parameter]
+                widget=spin(low,high,defaults[parameter],digits,suffix);widget.setAccessibleName(title+' '+label_text)
+                widget.editingFinished.connect(lambda key=key:self.set_dynamics(key));widgets[parameter]=widget;form.addRow(label_text,widget)
+            self.dynamics_controls[key]=widgets
+        self.compressor=self.dynamics_controls['compressor']['on'];self.threshold=self.dynamics_controls['compressor']['thresholdDb'];self.ratio=self.dynamics_controls['compressor']['ratio']
+        scroll.setWidget(inner);processing_layout.addWidget(scroll)
+        note=QLabel('Static settings are saved and undoable. Bypass removes that processor’s gain as well. Reverb, delay and VST inserts remain forthcoming.');note.setWordWrap(True);processing_layout.addWidget(note)
+        self.dock_tabs.insertTab(3,processing_panel,'Dynamics')
 
     def _bootstrap(self,project_path,pack_path):
         if project_path:
@@ -521,9 +560,19 @@ class MainWindow(QMainWindow):
         if self.editor and not self._refreshing:self.change(lambda:self.editor.set_mix(self.role,gainDb=self.gain.value(),pan=self.pan.value()/100,muted=self.muted.isChecked()))
 
     def set_compressor(self):
+        self.set_dynamics('compressor')
+
+    def set_dynamics(self,key):
         if self.editor and not self._refreshing:
-            def mutate(p):p['mix']['compressor'].update(on=self.compressor.isChecked(),thresholdDb=self.threshold.value(),ratio=self.ratio.value())
-            self.change(lambda:self.editor.apply('Adjust final compression',mutate))
+            widgets=self.dynamics_controls[key]
+            values={name:widget.isChecked() if name=='on' else widget.value() for name,widget in widgets.items()}
+            self.change(lambda:self.editor.apply('Adjust '+key,lambda p:p['mix'].__setitem__(key,values)))
+
+    def edit_drum_eq(self,name):
+        if not self.editor:return
+        slot=name[6:];ch=self.editor.project['mix']['channels'][name]
+        dialog=DrumEqDialog(slot,ch.get('eq',drum_eq(slot,ch['eqPreset']=='drum-punch')),self)
+        if dialog.exec()==QDialog.DialogCode.Accepted:self.change(lambda:self.editor.set_mix(name,eqPreset='custom',eq=dialog.values()))
 
     def refresh(self):
         if not self.editor:return
@@ -599,13 +648,26 @@ class MainWindow(QMainWindow):
                 gain.editingFinished.connect(lambda name=name,w=gain:self.inspector_channel(name,gainDb=w.value()))
                 pan.setEnabled(name!='master');pan.editingFinished.connect(lambda name=name,w=pan:self.inspector_channel(name,pan=w.value()/100))
                 mute.clicked.connect(lambda checked,name=name:self.inspector_channel(name,muted=checked))
-                self.mixer.setCellWidget(row,1,gain);self.mixer.setCellWidget(row,2,pan);self.mixer.setCellWidget(row,3,mute);self._mix_widgets[name]=(gain,pan,mute)
+                self.mixer.setCellWidget(row,1,gain);self.mixer.setCellWidget(row,2,pan);self.mixer.setCellWidget(row,3,mute)
+                eq=button('EQ…',lambda _,name=name:self.edit_drum_eq(name)) if name.startswith('drums.') else None
+                if eq:self.mixer.setCellWidget(row,4,eq)
+                self._mix_widgets[name]=(gain,pan,mute,eq)
         for name,value in channels:
-            gain,pan,mute=self._mix_widgets[name]
+            gain,pan,mute,eq=self._mix_widgets[name]
             for widget in (gain,pan,mute):widget.blockSignals(True)
             gain.setValue(value['gainDb']);pan.setValue(value['pan']*100);mute.setChecked(value['muted'])
             for widget in (gain,pan,mute):widget.blockSignals(False)
-        values=project['mix']['compressor'];self.compressor.setChecked(values['on']);self.threshold.setValue(values['thresholdDb']);self.ratio.setValue(values['ratio'])
+            if eq:
+                enabled=value.get('eq',{}).get('on',value['eqPreset']=='drum-punch')
+                eq.setText(('On' if enabled else 'Off')+' · EQ…');eq.setAccessibleName(name+' EQ '+('On' if enabled else 'Off'))
+        for key,widgets in self.dynamics_controls.items():
+            defaults=DRUM_COMPRESSOR if key=='drumBusCompressor' else BASS_SIDECHAIN if key=='bassSidechain' else dict(makeupDb=0)
+            values=dict(defaults,**project['mix'].get(key,{'on':False}))
+            for name,widget in widgets.items():
+                widget.blockSignals(True)
+                if name=='on':widget.setChecked(values['on'])
+                else:widget.setValue(values[name])
+                widget.blockSignals(False)
 
     def inspector_channel(self,name,**values):
         if not self._refreshing:self.change(lambda:self.editor.set_mix(name,**values))

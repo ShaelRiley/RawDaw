@@ -1,0 +1,10 @@
+{
+  "version": "0.3.4",
+  "compiledUpgrade": true,
+  "oldExecutableReplaced": true,
+  "hashBound": true,
+  "matchingRendererNeedsNoArchive": true,
+  "nativeOutputMatchesCatalogAudition": true,
+  "compilerInvoked": false,
+  "rendererSha256": "c0576c1ccc9e261c10fd803a30f3948119653e3f38afc64bcebab6632179e79a"
+}

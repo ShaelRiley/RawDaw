@@ -129,6 +129,14 @@ future state snapshots can improve seek speed without changing realization.
 Effects and their finite tail policy remain a later DSP gate; dry rendering ends
 at the saved song length, including click-free scheduled endings.
 
+Version 0.3.4 adds an optional fixed drum/bass DSP graph. Each drum has independent
+stereo EQ before the combined drum compressor and makeup stage; its post-processor
+bus fader contributes once to the master. Actual kick PCM drives a stereo-linked,
+bounded bass-only sidechain detector. The full ensemble then reaches the common
+master compressor. See `MIXING.md` for editable parameters, calibrated new-song
+defaults, explicit legacy-save behavior and deliberate filter/envelope seek state.
+No allocations, I/O, locks or Python calls are added to block processing.
+
 ## ADR-006: desktop composition and rendered preview
 
 The optional Qt desktop imports `editor.py` for validated project edits and the

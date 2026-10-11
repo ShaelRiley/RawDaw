@@ -5,11 +5,11 @@ PYTHON ?= python3
 .PHONY: all check gui-check gui demo cc-demo source-demo clean
 all: build/prde1-render
 
-build/prde1-render: native/renderer.cpp native/engine.hpp third_party/nlohmann/json.hpp
+build/prde1-render: native/renderer.cpp native/engine.hpp native/dsp.hpp third_party/nlohmann/json.hpp
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) -Ithird_party native/renderer.cpp -o $@
 
-build/engine-test: native/engine_test.cpp native/engine.hpp
+build/engine-test: native/engine_test.cpp native/engine.hpp native/dsp.hpp
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) native/engine_test.cpp -o $@
 

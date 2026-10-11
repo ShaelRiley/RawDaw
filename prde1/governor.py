@@ -65,13 +65,12 @@ def vst_chord_notes(root, quality, inversion=0, base=60):
 
 
 def _supported_mix(project):
-    channels=[*project["mix"]["channels"].values(),project["mix"]["master"],
-              *[lane["channel"] for lane in project["vocals"]],*[track["channel"] for track in project["pluginTracks"]]]
-    for channel in channels:
-        if channel["eqPreset"]!="neutral" or channel["reverbOn"] or channel["delayOn"]:
-            raise ContractError("This core checkpoint cannot render EQ/reverb/delay; settings are preserved, not silently dropped")
-        if any(not insert["bypassed"] for insert in channel["inserts"]):
-            raise ContractError("Active VST effect insert cannot be rendered by this checkpoint; explicitly bypass it or use a future host")
+    from .mixing import validate_supported_channel
+    channels=[*project["mix"]["channels"].items(),('master',project["mix"]["master"]),
+              *[(lane['id'],lane["channel"]) for lane in project["vocals"]],
+              *[(track['id'],track["channel"]) for track in project["pluginTracks"]]]
+    for name,channel in channels:
+        validate_supported_channel(name,channel)
     master=project["mix"]["master"]
     if master["pan"]!=0:
         raise ContractError("Master pan is not supported by this checkpoint")
@@ -85,6 +84,8 @@ def resolve(project, pack, *, approve_altered=False):
     if reference!={"packId":pack.manifest["packId"],"manifestSha256":pack.manifest_hash}:
         raise ContractError("Exact pack identity/version does not match saved project")
     _supported_mix(project)
+    from .mixing import processing_settings
+    processing=processing_settings(project)
     if project["pluginTracks"] and not approve_altered:
         raise ContractError("VST host is not implemented. Plug-in tracks would be silent; an altered render requires explicit approval")
     end=beat(project["length"])
@@ -184,8 +185,8 @@ def resolve(project, pack, *, approve_altered=False):
                 group=project["mix"]["channels"]["drums"] if role=="drums" else None
                 if channel["muted"] or (group and group["muted"]) or project["mix"]["master"]["muted"]:
                     continue
-                gain=expression["velocity"]*10**((channel["gainDb"]+sample["gainDb"]+(group["gainDb"] if group else 0))/20)
-                pan=max(-1,min(1,channel["pan"]+(group["pan"] if group else 0)))
+                gain=expression["velocity"]*10**((channel["gainDb"]+sample["gainDb"]+(group["gainDb"] if group and processing is None else 0))/20)
+                pan=max(-1,min(1,channel["pan"]+(group["pan"] if group and processing is None else 0)))
                 if gain>8:
                     raise ContractError("Combined channel/sample gain exceeds core headroom profile")
                 resolved.append({"id":event_id,"assetIndex":indices[sample["id"]],"startFrame":first,"endFrame":last,
@@ -222,6 +223,7 @@ def resolve(project, pack, *, approve_altered=False):
                      "loopEnd":sample["loop"]["endFrame"] if sample["loop"] else 0} for sample in assets],
           "events":resolved,"conflicts":conflicts,"warnings":sorted(set(warnings)),
           "compressor":project["mix"]["compressor"],"masterGain":10**(project["mix"]["master"]["gainDb"]/20),"peakCeilingDb":-0.1}
+    if processing is not None:plan['processing']=processing
     validate(plan,"prde1-events-v1.schema.json")
     return plan
 

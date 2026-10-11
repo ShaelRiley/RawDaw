@@ -197,6 +197,8 @@ def compose():
         instance['linked'] = uses[instance['patternId']] > 1
     project['patterns'] = [pattern for key, pattern in patterns.items() if key in uses]
     assert cursor == 112
+    from prde1.mixing import apply_punch_mix
+    apply_punch_mix(project)
     validate_project(project)
     return project, dict(project='parachute_full.prdeproj', quarterBpm=BPM, meter='4/4', bars=cursor,
                          durationSeconds=round(cursor * 240 / BPM, 6), sections=sections,

@@ -1,0 +1,52 @@
+{
+  "version": "0.3.4",
+  "baseCommit": "9c8340725628505976dd2dd47f67836e54b0b475",
+  "realSourceArrangements": 12,
+  "sourcePacksUnchanged": true,
+  "allRepeatByteIdentical": true,
+  "allSeeksExactSlices": true,
+  "humanListening": "not_performed",
+  "physicalSteamDeck": "not_verified",
+  "fullDemos": [
+    {
+      "project": "auld_lang_syne_bossa_full.prdeproj",
+      "packSha256": "715c53d363b5dd9cd4ef51d59f18595f9fe3f9010c0cae0a058ab8583d806b31",
+      "wavSha256": "298ea8b05b9e6468d42919c267416b2616238e0d6f3664680e70a3353f87ae11",
+      "frames": 7798154,
+      "peakDbFS": -11.571999506855011,
+      "drumBusMaxReductionDb": 0.8193013695348943,
+      "bassMaxDuckDb": 6.000000000000001,
+      "masterMaxReductionDb": 0.39924391973759515
+    },
+    {
+      "project": "parachute_full.prdeproj",
+      "packSha256": "86cbbb967a7d8c00e004428272a389e3256a45e4010797fbfc7e69aa3cb0621c",
+      "wavSha256": "1d53abd43286df93dbc2a2b8f9e031245dde371d466a1b705cc0f32dd00bf7de",
+      "frames": 7819636,
+      "peakDbFS": -11.380092533027387,
+      "drumBusMaxReductionDb": 5.551574205812816,
+      "bassMaxDuckDb": 6.000000000000001,
+      "masterMaxReductionDb": 0.20445161678922458
+    },
+    {
+      "project": "reach_out_full.prdeproj",
+      "packSha256": "d03c80d14b5337b27a0a4361870a85c6c1fc6b7ad9d19f62fc205ca4b2f2e80b",
+      "wavSha256": "e9d6bd5809d015b03f60ae9810aa677396e6d1bba662bd1aeedcd9901b972465",
+      "frames": 7340177,
+      "peakDbFS": -11.024656210246862,
+      "drumBusMaxReductionDb": 1.8630014713323089,
+      "bassMaxDuckDb": 6.000000000000001,
+      "masterMaxReductionDb": 0.2926121675903617
+    },
+    {
+      "project": "where_you_are_now_full.prdeproj",
+      "packSha256": "f4892d2aac99613786fb0f8b6f9d479be08ebe7f2d621b7ab9b27d0cd0942f3a",
+      "wavSha256": "107d24952e39bfa6f80269c522ee3ae00a050a61093af8b8523ef3f401f51ba6",
+      "frames": 7372800,
+      "peakDbFS": -11.214484992398678,
+      "drumBusMaxReductionDb": 4.909532783791538,
+      "bassMaxDuckDb": 6.000000000000001,
+      "masterMaxReductionDb": 1.0599017264354824
+    }
+  ]
+}

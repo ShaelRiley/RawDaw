@@ -1,4 +1,21 @@
-# Current checkpoint — 0.3.3 with four full-length demos and startup hotfix
+# Current checkpoint — 0.3.4 drum punch and kick-to-bass sidechain
+
+This checkpoint adds native per-drum stereo EQ, combined drum bus compression
+with +3 dB makeup, and kick-signal-driven bass ducking capped at 6 dB, followed
+by common master compression. Mixer provides independent EQ dialogs; Dynamics
+exposes the three processors' bypass, threshold, ratio, attack/release and
+boost/duck controls. Settings are saved, undoable and recoverable. New songs
+and all four full demos use the preset; older user projects and the eight
+historical short demos retain their mix. See [MIXING.md](MIXING.md).
+
+The 0.3.4 compiled delivery is a small hashed renderer upgrade for the repository
+checkout, automatically installed by `./run-prde1.sh` after pull. It requires no
+local compiler and preserves prior archives/packs. The startup hotfix remains
+active; physical Steam Deck launch/playback and subjective listening remain
+unverified. Validation and exact source-render evidence are in
+`validation/desktop-check-0.3.4.log` and `validation/source-render-0.3.4.json`.
+
+## Preserved 0.3.3 source/content baseline
 
 Completed: a launchable Qt desktop editor, an offline Linux/C++20 renderer,
 shared experimental contracts, four real-source Song Packs, eight editable

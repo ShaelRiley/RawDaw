@@ -265,6 +265,8 @@ def compose(pack_id):
     uses = Counter(instance['patternId'] for instance in project['instances'])
     for instance in project['instances']: instance['linked'] = uses[instance['patternId']] > 1
     project['patterns'] = [pattern for key, pattern in patterns.items() if key in uses]
+    from prde1.mixing import apply_punch_mix
+    apply_punch_mix(project)
     validate_project(project)
     return project, dict(project=pack_id + '_full.prdeproj', quarterBpm=profile['bpm'], meter='4/4', bars=cursor,
         durationSeconds=round(cursor * 240 / profile['bpm'], 6), style=profile['style'], sections=sections,

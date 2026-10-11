@@ -1,4 +1,4 @@
-# Desktop composition — 0.3.3
+# Desktop composition — 0.3.4
 
 The current source includes a [startup hotfix](DESKTOP_STARTUP.md) for the
 Steam Deck crash report. Pull `main` to obtain it: unnecessary GPU video-driver
@@ -56,10 +56,14 @@ describe the click fix.
 
 Inspector adjusts the selected role. Mixer exposes individual drum parts, the
 drum group, sampled roles and master with static level, pan and mute controls.
-The common final compressor remains active and editable. Neutral EQ and ambience
-Off retain their existing state; their processing and VST inserts are not yet
-available in this slice. A project already requesting unsupported processing
-opens with its data intact and a visible export blocker.
+Use each drum's **EQ…** button for its independent On/Off, low cut, bell and air
+shelf. **Dynamics** contains the drum bus compressor/boost, kick → bass ducking,
+and master compressor, each with editable threshold, ratio, attack/release and
+bypass. New songs and full demos use the punch preset. For older saved mixes,
+**Mixer → Apply punch mix** explicitly enables the starting settings and is
+undoable. All controls are static saved state. [Mixing details](MIXING.md) explain
+the curves, default gains and single drum-group-to-master route. Ambience and
+VST inserts remain unavailable; their active saved settings visibly block export.
 
 Save writes a full native `.prdeproj` with the exact pack reference, harmony,
 patterns, variation, static mix, credits and editor context. Undo/Redo have named
@@ -84,7 +88,7 @@ exports. Space controls transport except inside an editor that owns the key.
 
 This is a working desktop composition slice, not the completed v1 DAW. The one
 vocal placeholder does not capture audio. Recording/retakes/comping/correction,
-full EQ/reverb/delay, real-time native audio-device callbacks, Linux VST3 hosting,
+role/vocal EQ and reverb/delay, real-time native audio-device callbacks, Linux VST3 hosting,
 Freeze Variation, comprehensive progression/MIDI catalogs, section plans and
 release installers remain in the development plan. Existing approved scope is
 preserved. Preview preparation adds latency before the first audible result; it

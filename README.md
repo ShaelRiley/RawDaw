@@ -1,10 +1,15 @@
 # PRDE1 — Pop Rock Development Environment 1
 
-Build **0.3.3** includes **four complete song demos**: Reach Out (2:32.92),
+Build **0.3.4** includes **four complete song demos**: Reach Out (2:32.92),
 Where You Are Now (2:33.60), Auld Lang Syne (Bossa) (2:42.46), and Parachute
 (2:42.91). Each has an intro, verses, pre-choruses, a recurring chorus hook,
 bridge, final chorus and outro. The native graphical editor ships four Song
 Packs and twelve editable arrangements, including the eight original short demos.
+Per-drum EQ now feeds a compressed drum bus with a +3 dB lift. The kick ducks
+only bass, then the whole ensemble reaches the master compressor. **Mixer** and
+**Dynamics** provide saved controls and bypasses; [mixing details](docs/MIXING.md)
+explain the defaults. New songs and four full demos use the punch preset; older
+saves have an explicit Apply punch mix button.
 The Chord Governor selects prepared samples;
 harmonic changes never pitch-shift or stretch audio during playback.
 
@@ -51,16 +56,17 @@ explain the remaining controls and current boundaries.
 
 ## Compiled distribution and command-line auditions
 
-The distribution in `dist/PRDE1_0.3.3_Linux_x86_64.tar.gz` contains the desktop code, a compiled
-Linux x86_64 renderer, Python control code, four packs, twelve projects and twelve
-ready-rendered WAV auditions. Git stores bounded `.partNN` files with hashes;
-restore the single archive from the checkout with:
+The current 0.3.4 parts contain a small verified **renderer upgrade** for the
+source checkout. `./run-prde1.sh` installs it automatically; keep using the
+repository's code, four existing packs and twelve projects. A compiler is not
+required for this upgrade. Do not extract this renderer-only update as a full app.
+
+The older complete 0.3.3 distribution remains preserved with its original WAV
+mixes. To reconstruct that historical build explicitly:
 
 ```bash
-python3 tools/assemble_build.py
+python3 tools/assemble_build.py dist/PRDE1_0.3.3_Linux_x86_64.parts.json
 tar -xzf dist/PRDE1_0.3.3_Linux_x86_64.tar.gz
-cd PRDE1_0.3.3_Linux_x86_64
-./run-prde1.sh --project packs/parachute_full.prdeproj
 ```
 
 For command-line regeneration of the included auditions, run:
@@ -74,7 +80,7 @@ x86_64; rebuild with `make all` on other supported Linux systems. No source
 preparation packages, model downloads or network access are needed to play
 these prepared packs. This is not a tested Steam Deck installer.
 
-From a source checkout, GNU Make and a C++20 compiler are also required:
+To rebuild and test the source, GNU Make and a C++20 compiler are required:
 
 ```bash
 make check

@@ -93,6 +93,15 @@ insert = obj({"pluginId": TEXT, "version":TEXT, "statePath":{ "type":["string","
               "bypassed":BOOLEAN, "missing":BOOLEAN})
 channel = obj({"gainDb":number(-96,12),"pan":number(-1,1),"muted":BOOLEAN,
                "eqPreset":TEXT,"reverbOn":BOOLEAN,"delayOn":BOOLEAN,"inserts":array(ref("insert"),3)})
+eq = obj({"on":BOOLEAN,"highpassHz":number(20,2000),"bellHz":number(30,16000),"bellDb":number(-12,12),
+          "bellQ":number(.3,4),"shelfHz":number(1000,18000),"shelfDb":number(-12,12)})
+channel['properties']['eq']=eq  # Optional extension: old saved mixes remain dry.
+compressor = obj({"on":BOOLEAN,"thresholdDb":number(-48,0),"ratio":number(1,20),
+                  "attackMs":number(.1,100),"releaseMs":number(10,2000)})
+compressor['properties']['makeupDb']=number(-12,12)
+drum_compressor = obj(dict(compressor['properties']))
+sidechain = obj({"on":BOOLEAN,"thresholdDb":number(-60,0),"ratio":number(1,20),
+                 "attackMs":number(.1,100),"releaseMs":number(10,2000),"maxDuckDb":number(0,18)})
 
 project = obj({"formatVersion":{"const":VERSION}, "projectId":ID, "title":TEXT,
                "packReference":obj({"packId":ID,"manifestSha256":HASH}),
@@ -106,8 +115,7 @@ project = obj({"formatVersion":{"const":VERSION}, "projectId":ID, "title":TEXT,
                "instances":array(obj({"id":ID,"patternId":ID,"beat":BEAT,"linked":BOOLEAN}),4096),
                "variation":obj({"seed":TEXT,"revision":integer(0,2147483647)}),
                "mix":obj({"channels":{ "type":"object","additionalProperties":ref("channel")},
-                           "master":ref("channel"),"compressor":obj({"on":BOOLEAN,"thresholdDb":number(-48,0),"ratio":number(1,20),
-                                "attackMs":number(0.1,100),"releaseMs":number(10,2000)})}),
+                           "master":ref("channel"),"compressor":compressor}),
                "pluginTracks":array(obj({"id":ID,"pluginId":TEXT,"version":TEXT,"statePath":{ "type":["string","null"]},
                    "missing":BOOLEAN,"mode":{"type":"string","enum":["chord","monophonic","percussion"]},
                    "patterns":array(ref("pattern"),4096),"percussionMap":{"type":"object","additionalProperties":MIDI},"channel":ref("channel")}),3),
@@ -118,6 +126,7 @@ project = obj({"formatVersion":{"const":VERSION}, "projectId":ID, "title":TEXT,
                "editorContext":obj({"selection":TEXT,"zoom":number(0.1,10),"scrollBeat":BEAT,"lastAction":TEXT}),
                "credits":array(obj({"source":TEXT,"license":TEXT,"attribution":TEXT,"changes":TEXT}),4096)})
 project["$defs"]={"chord":chord,"event":event,"pattern":pattern,"insert":insert,"channel":channel}
+project['properties']['mix']['properties'].update(drumBusCompressor=drum_compressor,bassSidechain=sidechain)
 
 resolved = obj({"formatVersion":{"const":VERSION},"sampleRate":{"const":48000},"endFrame":integer(1,86400000),
                 "assets":array(obj({"id":ID,"path":PATH,"channels":integer(1,2),"frames":integer(1,1440000),
@@ -129,6 +138,9 @@ resolved = obj({"formatVersion":{"const":VERSION},"sampleRate":{"const":48000},"
                 "conflicts":array(obj({"eventId":TEXT,"code":TEXT,"message":TEXT}),100000),
                 "warnings":array(TEXT,100000),"compressor":project["properties"]["mix"]["properties"]["compressor"],
                 "masterGain":number(0,4),"peakCeilingDb":number(-1,0)})
+resolved['properties']['processing']=obj({"version":{"const":"drum-mix-v1"},
+    "drumEq":obj({slot:eq for slot in SLOTS}),"drumBusCompressor":drum_compressor,"bassSidechain":sidechain,
+    "drumBusGain":number(0,4),"drumBusPan":number(-1,1)})
 
 if __name__ == "__main__":
     (ROOT / "schemas").mkdir(exist_ok=True)

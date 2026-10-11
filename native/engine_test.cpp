@@ -66,8 +66,66 @@ static void boundary_checks() {
     assert(std::abs(slow[(255+96)*2]-center)<0.000001f);
 }
 
+static std::vector<float> mix_probe(std::vector<prde1::Event> events,prde1::MixProcessing mix,std::size_t block=256) {
+    prde1::Asset held{std::vector<float>(48000,.08f),1,48000,0,100,1000};
+    prde1::Compressor master;master.on=false;
+    prde1::Engine engine({held},std::move(events),master,1,mix);
+    std::vector<float> out(24000*2);
+    processing=true;
+    for (std::size_t first=0;first<24000;first+=block) engine.process(out.data()+first*2,std::min(block,24000-first));
+    processing=false;
+    return out;
+}
+
+static void mix_checks() {
+    prde1::MixProcessing mix;mix.on=true;mix.drum_compressor.on=false;
+    prde1::Event kick{0,1000,7000,0,240,1,0};kick.channel=3;
+    prde1::Event snare=kick;snare.channel=4;
+    prde1::Event bass{0,0,24000,0,240,1,0};bass.channel=1;
+    prde1::Event lead=bass;lead.channel=0;
+    // A bypassed graph contributes the drum signal once, never a direct copy.
+    const auto dry=mix_probe({kick},mix);
+    mix.on=false;assert(dry==mix_probe({kick},mix));mix.on=true;
+    // Independent EQ does not reach the other drum or lead lane.
+    mix.drum_eq[1]={true,120,190,3,.9,4500,2};
+    assert(dry==mix_probe({kick},mix));
+    const auto lead_dry=mix_probe({lead},mix);
+    assert(mix_probe({snare},mix)!=dry);mix.drum_eq[1].on=false;
+    // Combined drums cross a threshold which each alone does not cross.
+    mix.drum_compressor={true,-24,4,1,50,0};
+    const auto combined=mix_probe({kick,snare},mix);
+    assert(combined[5000*2]<dry[5000*2]*1.6f);
+    assert(mix_probe({lead},mix)==lead_dry);
+    // Makeup lifts only drums; bypass removes the boost too.
+    mix.drum_compressor={true,-24,1,1,50,3};
+    assert(std::abs(mix_probe({kick},mix)[5000*2]/dry[5000*2]-std::pow(10.0,3.0/20))<.000001);
+    mix.drum_compressor.on=false;assert(mix_probe({kick},mix)==dry);
+    // Use bass isolated from its audible trigger to measure actual ducking.
+    mix.bass_sidechain={true,-36,8,1,40,6};
+    assert(mix_probe({bass},mix)==mix_probe({bass},prde1::MixProcessing{}));
+    assert(mix_probe({lead,kick},mix)[5000*2]==lead_dry[5000*2]+dry[5000*2]);
+    const auto ducked=mix_probe({bass,kick},mix);
+    const double bass_dry=lead_dry[5000*2];
+    const double duck_ratio=(ducked[5000*2]-dry[5000*2])/bass_dry;
+    assert(duck_ratio>.500 && duck_ratio<.503); // cap, not arbitrary rhythmic gain
+    assert((ducked[21000*2]-dry[21000*2])/lead_dry[21000*2]>.99); // recovery in a rest
+    assert(ducked==mix_probe({bass,kick},mix,1));assert(ducked==mix_probe({bass,kick},mix,17));
+    // Detector links the stereo pair; no channel-image movement while ducking.
+    for (std::size_t i=0;i<24000;++i) assert(ducked[i*2]==ducked[i*2+1]);
+    // A calibrated sine checks filter response, independently of coefficient code.
+    prde1::Biquad bell;bell.configure(prde1::Biquad::bell,1000,6,1);
+    double a=0,b=0;
+    for (int i=0;i<48000;++i) {
+        const double input=.05*std::sin(6.283185307179586*1000*i/48000);
+        const double output=bell.process(input,0);
+        if (i>24000) { a+=input*input;b+=output*output; }
+    }
+    assert(std::abs(10*std::log10(b/a)-6)<.01);
+}
+
 int main() {
     boundary_checks();
+    mix_checks();
     prde1::Asset asset{{0.25f,0.5f,-0.25f,0.125f,0.0f},1,5,0,2,4};
     prde1::Event event{0,0,4096,0,240,1,0};
     prde1::Compressor comp; comp.on=false;

@@ -209,6 +209,11 @@
           "type": "number",
           "minimum": 10,
           "maximum": 2000
+        },
+        "makeupDb": {
+          "type": "number",
+          "minimum": -12,
+          "maximum": 12
         }
       },
       "required": [
@@ -229,6 +234,517 @@
       "type": "number",
       "minimum": -1,
       "maximum": 0
+    },
+    "processing": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "drum-mix-v1"
+        },
+        "drumEq": {
+          "type": "object",
+          "properties": {
+            "kick": {
+              "type": "object",
+              "properties": {
+                "on": {
+                  "type": "boolean"
+                },
+                "highpassHz": {
+                  "type": "number",
+                  "minimum": 20,
+                  "maximum": 2000
+                },
+                "bellHz": {
+                  "type": "number",
+                  "minimum": 30,
+                  "maximum": 16000
+                },
+                "bellDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                },
+                "bellQ": {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 4
+                },
+                "shelfHz": {
+                  "type": "number",
+                  "minimum": 1000,
+                  "maximum": 18000
+                },
+                "shelfDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                }
+              },
+              "required": [
+                "on",
+                "highpassHz",
+                "bellHz",
+                "bellDb",
+                "bellQ",
+                "shelfHz",
+                "shelfDb"
+              ],
+              "additionalProperties": false
+            },
+            "snare": {
+              "type": "object",
+              "properties": {
+                "on": {
+                  "type": "boolean"
+                },
+                "highpassHz": {
+                  "type": "number",
+                  "minimum": 20,
+                  "maximum": 2000
+                },
+                "bellHz": {
+                  "type": "number",
+                  "minimum": 30,
+                  "maximum": 16000
+                },
+                "bellDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                },
+                "bellQ": {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 4
+                },
+                "shelfHz": {
+                  "type": "number",
+                  "minimum": 1000,
+                  "maximum": 18000
+                },
+                "shelfDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                }
+              },
+              "required": [
+                "on",
+                "highpassHz",
+                "bellHz",
+                "bellDb",
+                "bellQ",
+                "shelfHz",
+                "shelfDb"
+              ],
+              "additionalProperties": false
+            },
+            "hatClosed": {
+              "type": "object",
+              "properties": {
+                "on": {
+                  "type": "boolean"
+                },
+                "highpassHz": {
+                  "type": "number",
+                  "minimum": 20,
+                  "maximum": 2000
+                },
+                "bellHz": {
+                  "type": "number",
+                  "minimum": 30,
+                  "maximum": 16000
+                },
+                "bellDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                },
+                "bellQ": {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 4
+                },
+                "shelfHz": {
+                  "type": "number",
+                  "minimum": 1000,
+                  "maximum": 18000
+                },
+                "shelfDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                }
+              },
+              "required": [
+                "on",
+                "highpassHz",
+                "bellHz",
+                "bellDb",
+                "bellQ",
+                "shelfHz",
+                "shelfDb"
+              ],
+              "additionalProperties": false
+            },
+            "hatOpen": {
+              "type": "object",
+              "properties": {
+                "on": {
+                  "type": "boolean"
+                },
+                "highpassHz": {
+                  "type": "number",
+                  "minimum": 20,
+                  "maximum": 2000
+                },
+                "bellHz": {
+                  "type": "number",
+                  "minimum": 30,
+                  "maximum": 16000
+                },
+                "bellDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                },
+                "bellQ": {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 4
+                },
+                "shelfHz": {
+                  "type": "number",
+                  "minimum": 1000,
+                  "maximum": 18000
+                },
+                "shelfDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                }
+              },
+              "required": [
+                "on",
+                "highpassHz",
+                "bellHz",
+                "bellDb",
+                "bellQ",
+                "shelfHz",
+                "shelfDb"
+              ],
+              "additionalProperties": false
+            },
+            "tom1": {
+              "type": "object",
+              "properties": {
+                "on": {
+                  "type": "boolean"
+                },
+                "highpassHz": {
+                  "type": "number",
+                  "minimum": 20,
+                  "maximum": 2000
+                },
+                "bellHz": {
+                  "type": "number",
+                  "minimum": 30,
+                  "maximum": 16000
+                },
+                "bellDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                },
+                "bellQ": {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 4
+                },
+                "shelfHz": {
+                  "type": "number",
+                  "minimum": 1000,
+                  "maximum": 18000
+                },
+                "shelfDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                }
+              },
+              "required": [
+                "on",
+                "highpassHz",
+                "bellHz",
+                "bellDb",
+                "bellQ",
+                "shelfHz",
+                "shelfDb"
+              ],
+              "additionalProperties": false
+            },
+            "tom2": {
+              "type": "object",
+              "properties": {
+                "on": {
+                  "type": "boolean"
+                },
+                "highpassHz": {
+                  "type": "number",
+                  "minimum": 20,
+                  "maximum": 2000
+                },
+                "bellHz": {
+                  "type": "number",
+                  "minimum": 30,
+                  "maximum": 16000
+                },
+                "bellDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                },
+                "bellQ": {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 4
+                },
+                "shelfHz": {
+                  "type": "number",
+                  "minimum": 1000,
+                  "maximum": 18000
+                },
+                "shelfDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                }
+              },
+              "required": [
+                "on",
+                "highpassHz",
+                "bellHz",
+                "bellDb",
+                "bellQ",
+                "shelfHz",
+                "shelfDb"
+              ],
+              "additionalProperties": false
+            },
+            "extra1": {
+              "type": "object",
+              "properties": {
+                "on": {
+                  "type": "boolean"
+                },
+                "highpassHz": {
+                  "type": "number",
+                  "minimum": 20,
+                  "maximum": 2000
+                },
+                "bellHz": {
+                  "type": "number",
+                  "minimum": 30,
+                  "maximum": 16000
+                },
+                "bellDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                },
+                "bellQ": {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 4
+                },
+                "shelfHz": {
+                  "type": "number",
+                  "minimum": 1000,
+                  "maximum": 18000
+                },
+                "shelfDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                }
+              },
+              "required": [
+                "on",
+                "highpassHz",
+                "bellHz",
+                "bellDb",
+                "bellQ",
+                "shelfHz",
+                "shelfDb"
+              ],
+              "additionalProperties": false
+            },
+            "extra2": {
+              "type": "object",
+              "properties": {
+                "on": {
+                  "type": "boolean"
+                },
+                "highpassHz": {
+                  "type": "number",
+                  "minimum": 20,
+                  "maximum": 2000
+                },
+                "bellHz": {
+                  "type": "number",
+                  "minimum": 30,
+                  "maximum": 16000
+                },
+                "bellDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                },
+                "bellQ": {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 4
+                },
+                "shelfHz": {
+                  "type": "number",
+                  "minimum": 1000,
+                  "maximum": 18000
+                },
+                "shelfDb": {
+                  "type": "number",
+                  "minimum": -12,
+                  "maximum": 12
+                }
+              },
+              "required": [
+                "on",
+                "highpassHz",
+                "bellHz",
+                "bellDb",
+                "bellQ",
+                "shelfHz",
+                "shelfDb"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kick",
+            "snare",
+            "hatClosed",
+            "hatOpen",
+            "tom1",
+            "tom2",
+            "extra1",
+            "extra2"
+          ],
+          "additionalProperties": false
+        },
+        "drumBusCompressor": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean"
+            },
+            "thresholdDb": {
+              "type": "number",
+              "minimum": -48,
+              "maximum": 0
+            },
+            "ratio": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 20
+            },
+            "attackMs": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 100
+            },
+            "releaseMs": {
+              "type": "number",
+              "minimum": 10,
+              "maximum": 2000
+            },
+            "makeupDb": {
+              "type": "number",
+              "minimum": -12,
+              "maximum": 12
+            }
+          },
+          "required": [
+            "on",
+            "thresholdDb",
+            "ratio",
+            "attackMs",
+            "releaseMs",
+            "makeupDb"
+          ],
+          "additionalProperties": false
+        },
+        "bassSidechain": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean"
+            },
+            "thresholdDb": {
+              "type": "number",
+              "minimum": -60,
+              "maximum": 0
+            },
+            "ratio": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 20
+            },
+            "attackMs": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 100
+            },
+            "releaseMs": {
+              "type": "number",
+              "minimum": 10,
+              "maximum": 2000
+            },
+            "maxDuckDb": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 18
+            }
+          },
+          "required": [
+            "on",
+            "thresholdDb",
+            "ratio",
+            "attackMs",
+            "releaseMs",
+            "maxDuckDb"
+          ],
+          "additionalProperties": false
+        },
+        "drumBusGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "drumBusPan": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "version",
+        "drumEq",
+        "drumBusCompressor",
+        "bassSidechain",
+        "drumBusGain",
+        "drumBusPan"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

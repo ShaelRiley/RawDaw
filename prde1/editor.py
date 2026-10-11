@@ -30,7 +30,7 @@ def channel(gain=-6):
 def new_project(pack, tonic=0, mode='major', bars=4):
     from .music import REGISTRY_VERSION
     source=pack.manifest['source']
-    return dict(formatVersion=VERSION, projectId=identity('project'), title=source['title']+' — new song',
+    project=dict(formatVersion=VERSION, projectId=identity('project'), title=source['title']+' — new song',
         packReference=dict(packId=pack.manifest['packId'], manifestSha256=pack.manifest_hash),
         musicalRegistryVersion=REGISTRY_VERSION, tempoMap=[dict(beat='0', quarterBpm=120)],
         meterMap=[dict(beat='0', numerator=4, denominator=4, governorSegments=4)],
@@ -44,6 +44,9 @@ def new_project(pack, tonic=0, mode='major', bars=4):
         editorContext=dict(selection='', zoom=1, scrollBeat='0', lastAction='New project'),
         credits=[dict(source=source['title'], license=source['license'], attribution=source['attribution'],
                       changes='New arrangement using prepared source assets')])
+    from .mixing import apply_punch_mix
+    apply_punch_mix(project)
+    return project
 
 
 def measures(project):

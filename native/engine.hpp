@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <utility>
 #include <vector>
+#include "dsp.hpp"
 
 namespace prde1 {
 constexpr std::uint32_t sample_rate = 48000;
@@ -25,22 +26,25 @@ struct Event {
     std::uint32_t attack = 0, release = 240;
     float gain = 1, pan = 0;
     double left_gain = 0, right_gain = 0;
-};
-struct Compressor {
-    bool on = true;
-    double threshold_db = -12, ratio = 2, attack_ms = 10, release_ms = 150;
+    std::size_t channel = 0; // lead, bass, rhythm, then the eight drum slots
 };
 
 class Engine {
 public:
-    Engine(std::vector<Asset> assets, std::vector<Event> events, Compressor compressor, float master_gain)
-        : assets_(std::move(assets)), events_(std::move(events)), compressor_(compressor), master_gain_(master_gain) {
-        attack_coefficient_ = std::exp(-1.0 / (sample_rate * compressor.attack_ms / 1000));
-        release_coefficient_ = std::exp(-1.0 / (sample_rate * compressor.release_ms / 1000));
-        threshold_ = std::pow(10.0, compressor.threshold_db / 20);
+    Engine(std::vector<Asset> assets, std::vector<Event> events, Compressor compressor, float master_gain,
+           MixProcessing mix = {})
+        : assets_(std::move(assets)), events_(std::move(events)), master_gain_(master_gain), mix_(mix) {
+        master_dynamics_.configure(compressor);
+        drum_dynamics_.configure(mix.drum_compressor);
+        const auto& sc=mix.bass_sidechain;
+        sidechain_.configure({sc.on,sc.threshold_db,sc.ratio,sc.attack_ms,sc.release_ms,0},sc.max_duck_db);
+        for (std::size_t i=0;i<drum_count;++i) drum_eq_[i].configure(mix.drum_eq[i]);
+        const double angle=(mix.drum_pan+1)*0.78539816339744830962;
+        drum_left_=std::min(1.0,std::cos(angle)*1.4142135623730951)*mix.drum_gain;
+        drum_right_=std::min(1.0,std::sin(angle)*1.4142135623730951)*mix.drum_gain;
         std::size_t previous = 0;
         for (auto& event : events_) {
-            if (event.asset >= assets_.size() || event.end <= event.start || event.start < previous || event.release == 0)
+            if (event.asset >= assets_.size() || event.end <= event.start || event.start < previous || event.release == 0 || event.channel >= channel_count)
                 throw std::runtime_error("Invalid prepared event plan");
             previous = event.start;
             const auto& asset = assets_[event.asset];
@@ -84,6 +88,7 @@ public:
                 for (auto& voice : voices_) if (!voice) { voice = event; break; }
             }
             double left = 0, right = 0;
+            std::array<std::array<double,2>,channel_count> channels{};
             for (const auto* event : voices_) {
                 if (!event) continue;
                 const auto& asset = assets_[event->asset];
@@ -102,42 +107,49 @@ public:
                     envelope *= event->release > 1 ? smooth_boundary(static_cast<double>(remaining - 1) / (event->release - 1)) : 0;
                 const double gain = envelope * event->gain;
                 const std::size_t base = static_cast<std::size_t>(index) * asset.channels;
-                if (asset.channels == 1) {
-                    left += asset.pcm[base] * gain * event->left_gain;
-                    right += asset.pcm[base] * gain * event->right_gain;
-                } else {
-                    // Stereo balance preserves both channels at center, rather
-                    // than collapsing a prepared stereo chord to mono.
-                    left += asset.pcm[base] * gain * event->left_gain;
-                    right += asset.pcm[base + 1] * gain * event->right_gain;
+                const double l=asset.pcm[base]*gain*event->left_gain;
+                const double r=asset.pcm[base+(asset.channels==2 ? 1 : 0)]*gain*event->right_gain;
+                if (mix_.on) { channels[event->channel][0]+=l; channels[event->channel][1]+=r; }
+                else { left+=l; right+=r; } // exact legacy dry accumulation
+            }
+            if (mix_.on) {
+                double drums_left=0,drums_right=0,kick_detector=0;
+                for (std::size_t i=0;i<drum_count;++i) {
+                    auto& channel=channels[i+3];drum_eq_[i].process(channel[0],channel[1]);
+                    if (i==0) kick_detector=std::max(std::abs(channel[0]),std::abs(channel[1]));
+                    drums_left+=channel[0];drums_right+=channel[1];
                 }
+                const double duck=sidechain_.gain(kick_detector);
+                channels[1][0]*=duck;channels[1][1]*=duck;
+                const double drum_gain=drum_dynamics_.gain(std::max(std::abs(drums_left),std::abs(drums_right)));
+                // Exactly one drum-group contribution; detector is never audible.
+                left=channels[0][0]+channels[1][0]+channels[2][0]+drums_left*drum_gain*drum_left_;
+                right=channels[0][1]+channels[1][1]+channels[2][1]+drums_right*drum_gain*drum_right_;
             }
             left *= master_gain_; right *= master_gain_;
-            if (compressor_.on) {
-                const double detector = std::max(std::abs(left), std::abs(right));
-                const double coefficient = detector > envelope_ ? attack_coefficient_ : release_coefficient_;
-                envelope_ = coefficient * envelope_ + (1 - coefficient) * detector;
-                if (envelope_ > threshold_) {
-                    const double gain = std::pow(envelope_ / threshold_, 1 / compressor_.ratio - 1);
-                    left *= gain; right *= gain;
-                }
-            }
+            const double master_gain=master_dynamics_.gain(std::max(std::abs(left),std::abs(right)));
+            left*=master_gain;right*=master_gain;
             stereo[offset * 2] = static_cast<float>(left);
             stereo[offset * 2 + 1] = static_cast<float>(right);
         }
     }
     std::uint64_t clock() const noexcept { return clock_; }
+    double drum_reduction_db() const noexcept { return drum_dynamics_.max_reduction_db(); }
+    double bass_duck_db() const noexcept { return sidechain_.max_reduction_db(); }
+    double master_reduction_db() const noexcept { return master_dynamics_.max_reduction_db(); }
 private:
     // Cubic endpoints have zero slope: no linear-ramp corner at either side.
     // This changes amplitude only; the prepared frame clock advances at 1x.
     static double smooth_boundary(double x) noexcept { return x * x * (3 - 2 * x); }
     std::vector<Asset> assets_;
     std::vector<Event> events_;
-    Compressor compressor_;
     float master_gain_;
+    MixProcessing mix_;
+    std::array<DrumEq,drum_count> drum_eq_{};
+    Dynamics master_dynamics_,drum_dynamics_,sidechain_;
+    double drum_left_=1,drum_right_=1;
     std::array<const Event*, max_voices> voices_{};
     std::size_t next_event_ = 0;
     std::uint64_t clock_ = 0;
-    double envelope_ = 0, attack_coefficient_ = 0, release_coefficient_ = 0, threshold_ = 0;
 };
 } // namespace prde1

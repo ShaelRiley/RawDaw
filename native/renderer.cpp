@@ -148,6 +148,42 @@ private:
     std::uint64_t written_ = 0,expected_;
 };
 
+static prde1::Compressor read_compressor(const json& row, bool makeup_required=false) {
+    return {row.at("on").get<bool>(),finite(row,"thresholdDb",-48,0),finite(row,"ratio",1,20),
+            finite(row,"attackMs",.1,100),finite(row,"releaseMs",10,2000),
+            (makeup_required || row.contains("makeupDb")) ? finite(row,"makeupDb",-12,12) : 0};
+}
+
+static constexpr std::array<const char*,8> drum_slots{"kick","snare","hatClosed","hatOpen","tom1","tom2","extra1","extra2"};
+static std::size_t channel_index(const std::string& role) {
+    if (role=="lead") return 0;
+    if (role=="bass") return 1;
+    if (role=="rhythm") return 2;
+    for (std::size_t i=0;i<drum_slots.size();++i) if (role==std::string("drums.")+drum_slots[i]) return i+3;
+    throw std::runtime_error("Unknown fixed mix channel: "+role);
+}
+
+static prde1::MixProcessing read_processing(const json& plan) {
+    prde1::MixProcessing result;
+    if (!plan.contains("processing")) return result;
+    const auto& row=plan.at("processing");
+    if (row.at("version")!="drum-mix-v1") throw std::runtime_error("Unsupported DSP graph version");
+    result.on=true;
+    result.drum_gain=finite(row,"drumBusGain",0,4);result.drum_pan=finite(row,"drumBusPan",-1,1);
+    const auto& eq=row.at("drumEq");
+    if (!eq.is_object() || eq.size()!=drum_slots.size()) throw std::runtime_error("Every drum channel needs independent EQ settings");
+    for (std::size_t i=0;i<drum_slots.size();++i) {
+        const auto& e=eq.at(drum_slots[i]);
+        result.drum_eq[i]={e.at("on").get<bool>(),finite(e,"highpassHz",20,2000),finite(e,"bellHz",30,16000),
+                          finite(e,"bellDb",-12,12),finite(e,"bellQ",.3,4),finite(e,"shelfHz",1000,18000),finite(e,"shelfDb",-12,12)};
+    }
+    result.drum_compressor=read_compressor(row.at("drumBusCompressor"),true);
+    const auto& sc=row.at("bassSidechain");
+    result.bass_sidechain={sc.at("on").get<bool>(),finite(sc,"thresholdDb",-60,0),finite(sc,"ratio",1,20),
+                          finite(sc,"attackMs",.1,100),finite(sc,"releaseMs",10,2000),finite(sc,"maxDuckDb",0,18)};
+    return result;
+}
+
 int main(int argc,char** argv) {
     try {
         if (argc!=4 && argc!=5) throw std::runtime_error("Usage: prde1-render RESOLVED.json VALIDATED_PACK_ROOT OUTPUT.wav [SEEK_FRAME]");
@@ -179,12 +215,12 @@ int main(int argc,char** argv) {
             event.attack = static_cast<std::uint32_t>(bounded(row,"attackFrames",0,4800));
             event.release = static_cast<std::uint32_t>(bounded(row,"releaseFrames",1,std::min(std::uint64_t(4800),event.end-event.start)));
             event.gain = static_cast<float>(finite(row,"gain",0,8)); event.pan = static_cast<float>(finite(row,"pan",-1,1));
+            event.channel = channel_index(row.at("role").get<std::string>());
             events.push_back(event);
         }
-        const auto& comp = plan.at("compressor");
-        prde1::Compressor compressor{comp.at("on").get<bool>(),finite(comp,"thresholdDb",-48,0),finite(comp,"ratio",1,20),
-                                     finite(comp,"attackMs",0.1,100),finite(comp,"releaseMs",10,2000)};
-        prde1::Engine engine(std::move(assets),std::move(events),compressor,static_cast<float>(finite(plan,"masterGain",0,4)));
+        const auto processing=read_processing(plan);
+        prde1::Engine engine(std::move(assets),std::move(events),read_compressor(plan.at("compressor")),
+                            static_cast<float>(finite(plan,"masterGain",0,4)),processing);
         const double ceiling = std::pow(10.0,finite(plan,"peakCeilingDb",-1,0)/20);
         WavWriter output(argv[3],end-seek);
         std::array<float,256*2> block{};
@@ -197,6 +233,16 @@ int main(int argc,char** argv) {
             auto count=static_cast<std::size_t>(std::min(std::uint64_t(256),end-first));
             if (first<seek) count=static_cast<std::size_t>(std::min(std::uint64_t(count),seek-first));
             engine.process(block.data(),count);
+            // IIR EQ residuals remain continuous across steps/rests. Close the
+            // saved song ending smoothly instead of truncating a ringing filter.
+            if (processing.on) for (std::size_t i=0;i<count;++i) {
+                const auto remaining=end-(first+i);
+                if (remaining<=240) {
+                    const double x=static_cast<double>(remaining-1)/239;
+                    const float fade=static_cast<float>(x*x*(3-2*x));
+                    block[i*2]*=fade;block[i*2+1]*=fade;
+                }
+            }
             for (std::size_t i=0;i<count*2;++i) {
                 peak=std::max(peak,std::abs(static_cast<double>(block[i])));
                 if (!std::isfinite(block[i]) || std::abs(block[i])>ceiling) throw std::runtime_error("Export exceeds -0.1 dBFS; lower saved levels. Existing output retained.");
@@ -206,7 +252,10 @@ int main(int argc,char** argv) {
         output.commit();
         std::cout << json{{"frames",end-seek},{"sampleRate",48000},{"channels",2},{"bitsPerSample",24},
                           {"peak",peak},{"peakDbFS",peak>0 ? 20*std::log10(peak) : -200},
-                          {"eventCount",event_rows.size()},{"decodedBytes",decoded},{"seekFrame",seek}}.dump() << '\n';
+                          {"eventCount",event_rows.size()},{"decodedBytes",decoded},{"seekFrame",seek},
+                          {"drumBusMaxReductionDb",engine.drum_reduction_db()},
+                          {"bassMaxDuckDb",engine.bass_duck_db()},
+                          {"masterMaxReductionDb",engine.master_reduction_db()}}.dump() << '\n';
         return 0;
     } catch (const std::exception& error) {
         std::cerr << "PRDE1 render failed: " << error.what() << '\n';

@@ -45,6 +45,12 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
    synchronized delay, static settings, master inserts/ambience, common final
    compression, no duplicate drum route, finite export tails and deliberate seek
    state. Preserve original source samples throughout.
+   Version 0.3.4 implements each drum's EQ, drum bus compression with makeup,
+   real-kick-driven bass sidechain and the common master compressor, including
+   saved native UI controls and reconstruction on seek. New songs/full demos
+   use calibrated punch settings; older projects remain unchanged until an
+   explicit preset/edit. Role/vocal EQ, ambience and complete plug-in/tail policy
+   remain work within this stage. See `MIXING.md`.
 6. **Recording and comping:** one visible/four possible lanes, dry durable takes,
    newest-completed selection, retained alternatives, seconds anchoring with tempo
    warnings, non-destructive comp regions, latency/monitoring measurement,
