@@ -201,9 +201,17 @@ class MainWindow(QMainWindow):
         tabs=QTabWidget();self.browser_tabs=tabs;self.browser_dock.setWidget(tabs);self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea,self.browser_dock)
         pack_panel=QWidget();layout=QVBoxLayout(pack_panel);layout.addWidget(button('Load Song Pack…',self.load_pack_dialog))
         self.pack_label=QLabel();self.pack_label.setWordWrap(True);layout.addWidget(self.pack_label)
+        layout.addWidget(QLabel('Full-length demos'))
+        self.full_demos=QComboBox();self.full_demos.setAccessibleName('Full-length song demos')
+        self.full_demos.setMinimumContentsLength(16);self.full_demos.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon)
+        for path in sorted((ROOT/'packs').glob('*_full.prdeproj')):
+            project=load_project(path);seconds=round(quarter_seconds(beat(project['length']),project['tempoMap']))
+            title=project['title'].removesuffix(' — full-length demo')
+            self.full_demos.addItem(f'{title} · {seconds//60}:{seconds%60:02d}',project['packReference']['packId'])
+        self.full_demos.setCurrentIndex(max(0,self.full_demos.findData('parachute')));layout.addWidget(self.full_demos)
+        self.full_demo_button=button('Load full demo',lambda:self.load_full_demo(self.full_demos.currentData()))
+        self.full_demo_button.setEnabled(self.full_demos.count()>0);layout.addWidget(self.full_demo_button)
         label=QLabel('Included editable arrangements');label.setWordWrap(True);layout.addWidget(label)
-        if (ROOT/'packs/parachute_full.prdeproj').is_file():
-            layout.addWidget(button('Full Parachute demo · 2:43',self.load_full_demo))
         self.arrangements=QListWidget();self.arrangements.setAccessibleName('Included pack arrangements');self.arrangements.itemDoubleClicked.connect(lambda _:self.load_arrangement());layout.addWidget(self.arrangements,1)
         for path in sorted((ROOT/'packs').glob('*.prdeproj')):
             try:project=load_project(path)
@@ -307,8 +315,8 @@ class MainWindow(QMainWindow):
         row=self.arrangements.currentItem()
         if row and self.confirm_discard():self.load_session(Path(row.data(Qt.ItemDataRole.UserRole)))
 
-    def load_full_demo(self):
-        if self.confirm_discard():return self.load_session(ROOT/'packs/parachute_full.prdeproj')
+    def load_full_demo(self,pack_id='parachute'):
+        if self.confirm_discard():return self.load_session(ROOT/'packs'/(pack_id+'_full.prdeproj'))
         return False
 
     def new_song(self):

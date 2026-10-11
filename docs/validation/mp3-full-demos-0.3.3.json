@@ -1,0 +1,58 @@
+{
+  "version": "0.3.3",
+  "bundle": "PRDE1_0.3.3_Full_Length_Demos.zip",
+  "exports": [
+    {
+      "file": "reach_out_full.mp3",
+      "durationSeconds": 152.92035416666667,
+      "bytes": 6119545,
+      "sha256": "e4147d80371621978602d2fee25b77e61b64b51e4d7cab2ba6c504abbc566e14",
+      "bitrate": 320000,
+      "channels": 2,
+      "sampleRate": 48000,
+      "completeDecode": true,
+      "decodedFrames": 7340177,
+      "sourceFrames": 7340177,
+      "sourceWavSha256": "57eef883072e9322431a19c93041cbf738e70df2038cc551751b94d0f9d3920f"
+    },
+    {
+      "file": "where_you_are_now_full.mp3",
+      "durationSeconds": 153.6,
+      "bytes": 6146695,
+      "sha256": "bb73f93fd72ce0ebf48a01a160a43c893dbaa2c58923b8a06c07dcbc3de51ae0",
+      "bitrate": 320000,
+      "channels": 2,
+      "sampleRate": 48000,
+      "completeDecode": true,
+      "decodedFrames": 7372800,
+      "sourceFrames": 7372800,
+      "sourceWavSha256": "17932b91a451d80c7a3c8d799a9bc348a858886cf5b134b3c39b20b0b4a7a0f3"
+    },
+    {
+      "file": "auld_lang_syne_bossa_full.mp3",
+      "durationSeconds": 162.46154166666668,
+      "bytes": 6501644,
+      "sha256": "55fbd0ad3021a1ade0ef1404e5c21f6da036812d027498af5a7ff2848995485a",
+      "bitrate": 320000,
+      "channels": 2,
+      "sampleRate": 48000,
+      "completeDecode": true,
+      "decodedFrames": 7798154,
+      "sourceFrames": 7798154,
+      "sourceWavSha256": "2d60c21ccd4e27876734077e39315eccc328fa29dbde77fe9a54fa4ba84add30"
+    },
+    {
+      "file": "parachute_full.mp3",
+      "durationSeconds": 162.90908333333334,
+      "bytes": 6519214,
+      "sha256": "51d5202d3a9a9639cd336ecda7dfb01979ade1d0564efd5fb37c95bad3c81b20",
+      "bitrate": 320000,
+      "channels": 2,
+      "sampleRate": 48000,
+      "completeDecode": true,
+      "decodedFrames": 7819636,
+      "sourceFrames": 7819636,
+      "sourceWavSha256": "9b762dc391b48c34a8760fc62d97a8e95089ad52e7c6fb28622ebcc3f1d8b54b"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "version": "0.3.3",
+  "archive": "PRDE1_0.3.3_Linux_x86_64.tar.gz",
+  "sha256": "4d7282adc0422e2ab3984acea6c76106dfc29d0691a3d0ed25fac64f13cc1311",
+  "bytes": 172427197,
+  "uncompressedBytes": 220371348,
+  "sourceTreeBeforeDistribution": "55fb3fe6cb3410b017527ebf6626e0e0da4da366",
+  "packCount": 4,
+  "assetCount": 97,
+  "projectCount": 12,
+  "auditionCount": 12,
+  "fullDemos": [
+    {
+      "project": "reach_out_full.prdeproj",
+      "durationSeconds": 152.92035416666667,
+      "frames": 7340177,
+      "eventCount": 1594,
+      "bars": 72,
+      "wavSha256": "57eef883072e9322431a19c93041cbf738e70df2038cc551751b94d0f9d3920f",
+      "packSha256": "d03c80d14b5337b27a0a4361870a85c6c1fc6b7ad9d19f62fc205ca4b2f2e80b"
+    },
+    {
+      "project": "where_you_are_now_full.prdeproj",
+      "durationSeconds": 153.6,
+      "frames": 7372800,
+      "eventCount": 1427,
+      "bars": 64,
+      "wavSha256": "17932b91a451d80c7a3c8d799a9bc348a858886cf5b134b3c39b20b0b4a7a0f3",
+      "packSha256": "f4892d2aac99613786fb0f8b6f9d479be08ebe7f2d621b7ab9b27d0cd0942f3a"
+    },
+    {
+      "project": "auld_lang_syne_bossa_full.prdeproj",
+      "durationSeconds": 162.46154166666668,
+      "frames": 7798154,
+      "eventCount": 2200,
+      "bars": 88,
+      "wavSha256": "2d60c21ccd4e27876734077e39315eccc328fa29dbde77fe9a54fa4ba84add30",
+      "packSha256": "715c53d363b5dd9cd4ef51d59f18595f9fe3f9010c0cae0a058ab8583d806b31"
+    },
+    {
+      "project": "parachute_full.prdeproj",
+      "durationSeconds": 162.90908333333334,
+      "frames": 7819636,
+      "eventCount": 2806,
+      "bars": 112,
+      "wavSha256": "9b762dc391b48c34a8760fc62d97a8e95089ad52e7c6fb28622ebcc3f1d8b54b",
+      "packSha256": "86cbbb967a7d8c00e004428272a389e3256a45e4010797fbfc7e69aa3cb0621c"
+    }
+  ],
+  "checks": {
+    "pythonInvariantAndIntegrationTests": 68,
+    "nativeInvariants": "passed",
+    "syntheticRegression": "passed",
+    "repeatPackageByteIdentical": true,
+    "allBuildInfoFileHashesAndLengths": 129,
+    "transportAssemblyByteIdentical": true,
+    "extractedBuildNativeQtTests": 7,
+    "extractedFullSongTests": 4,
+    "guiExportsByteIdenticalToSourceAuditions": 12,
+    "stdlibFullRendersByteIdentical": 4,
+    "rendererInstallMatchesCompiledBinary": true,
+    "existingExecutableUpgradedWithoutCompiler": true,
+    "laterLaunchWithoutArchivePartsOrCompiler": true,
+    "allSourcePacksUnchanged": true,
+    "existingNineAuditionHashesUnchanged": true,
+    "noMissingHarmonyOrSamples": true,
+    "noSilentPadding": true
+  },
+  "releaseStatus": "private development checkpoint; pack listening and hardware gates remain open"
+}

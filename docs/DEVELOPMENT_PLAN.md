@@ -15,14 +15,17 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
    packs with two arrangements each. Version 0.2.1 adds Shael Riley's authorized
    Parachute stems as a fourth pack, with separate rights provenance and two
    short arrangements. Version 0.3.1 adds the complete 112-bar, 2:42.91 Parachute
-   demo with a recurring hook and contrasting sections. Keep the source-quality gate open until
+   demo with a recurring hook and contrasting sections. Version 0.3.3 adds
+   complete 2–3 minute Reach Out, Where You Are Now and Auld Lang Syne demos,
+   with distinct grooves, returning hooks and measured section contrasts.
+   Keep the source-quality gate open until
    listening, stem alignment and full tonal-map checks succeed. Missing kit slots
    remain unavailable. This is not a general separator or public builder skill.
 3. **Native desktop slice — 0.3.0 implemented:** Qt workspace, pack load,
    custom/preset Governor, exact-timing step/event editing, independent/linked
    copies, static mixer, undo/redo, recovery, native save/reopen and stereo export.
    Preview uses a background native render followed by Qt PCM media playback,
-   with pause/seek and output selection. All nine GUI exports match the source
+   with pause/seek and output selection. All twelve GUI exports match the source
    auditions. Keyboard and enlarged-layout checks passed offscreen. Real-time
    native device callbacks, physical audio/Steam Deck testing, accessibility
    and first-user pilots remain open; the UI does not duplicate Governor rules.
@@ -32,8 +35,8 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
    exact rational/pulse behavior. The desktop now exposes copy/link/detach,
    Include Harmony warning, undo/recovery and regeneration. Freeze, full section
    plans and complete pattern-library workflows remain to be implemented.
-   The 0.3.1 full demo is a fixed authored native score with companion section
-   documentation; it does not close generic Song Plan generation or section locks.
+   The four full demos are fixed authored native scores with companion section
+   documentation; they do not close generic Song Plan generation or section locks.
 5. **Fixed DSP graph:** role/drum EQ, every channel/group's independent reverb and
    synchronized delay, static settings, master inserts/ambience, common final
    compression, no duplicate drum route, finite export tails and deliberate seek

@@ -15,5 +15,7 @@
   "fullDemoRequirementsRevisionReadBeforeCode": "AHj4eMRUwVgqIsJ674TC4WgL7rU4kCC4aSF_QbzbC0_YClZ18SB8llE-IBEyyQwMArFHXeXPnQWVm9_OhV3YMzVDVkqPJ5gvEgRR92bEyQ",
   "fullDemoScope": "User-requested 2\u20133 minute Parachute demo; fixed editable 112-bar authored score against Sections 23\u201324. Existing selection-only engine and exact source identity retained. Generic Song Plan/section locks remain open; no SDD amendment.",
   "sampleBoundaryRequirementsRevisionReadBeforeCode": "AHj4eMRUwVgqIsJ674TC4WgL7rU4kCC4aSF_QbzbC0_YClZ18SB8llE-IBEyyQwMArFHXeXPnQWVm9_OhV3YMzVDVkqPJ5gvEgRR92bEyQ",
-  "sampleBoundaryScope": "User-requested click fix; sampler-only 1 ms safety onset and smooth 5 ms release against Sections 2, 17, 19, 28.4 and 28.8, immutable source packs and exact cutoffs, verified installed renderer upgrades; no product-policy amendment."
+  "sampleBoundaryScope": "User-requested click fix; sampler-only 1 ms safety onset and smooth 5 ms release against Sections 2, 17, 19, 28.4 and 28.8, immutable source packs and exact cutoffs, verified installed renderer upgrades; no product-policy amendment.",
+  "fullCatalogRequirementsRevisionReadBeforeCode": "AHj4eMRUwVgqIsJ674TC4WgL7rU4kCC4aSF_QbzbC0_YClZ18SB8llE-IBEyyQwMArFHXeXPnQWVm9_OhV3YMzVDVkqPJ5gvEgRR92bEyQ",
+  "fullCatalogScope": "User-requested complete 2\u20133 minute demos for the other three existing packs, fixed authored editable scores against Sections 23\u201324. Immutable packs, existing Parachute Full and eight short scores retained; full-demo UI selection and separate credited MP3 exports. Generic Song Plan/section locks remain open; no SDD amendment."
 }

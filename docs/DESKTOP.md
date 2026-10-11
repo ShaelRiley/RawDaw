@@ -1,4 +1,4 @@
-# Desktop composition — 0.3.2
+# Desktop composition — 0.3.3
 
 Run `./run-prde1.sh` in the checkout or extracted distribution. Parachute opens
 as an editable starter. Click Play; preparation runs in a separate native process,
@@ -7,10 +7,12 @@ Stop, and the playback-position slider use that same realization. The blue line
 is the edit cursor; the green line is playback. Selecting a clip does not change
 the musical random state. Music edits stop an obsolete preview.
 
-Version 0.3.1 adds the **Full Parachute demo · 2:43** button in Browser → Packs.
-It opens the complete editable 112-bar project, with the same save/undo/mixer and
-export controls. Use `./run-prde1.sh --project packs/parachute_full.prdeproj` to
-open it directly. [Section timings and score](PARACHUTE_DEMO.md) describe its form.
+Version 0.3.3 adds the **Full-length demos** selector in Browser → Packs.
+Choose Reach Out, Where You Are Now, Auld Lang Syne (Bossa), or Parachute and
+click **Load full demo**. Each opens a complete editable song with the same
+save/undo/mixer and export controls. The eight short arrangements remain in the
+list below. Use `./run-prde1.sh --project packs/reach_out_full.prdeproj` to
+open one directly. [Section timings and scores](FULL_DEMOS.md) describe the forms.
 
 Version 0.3.2 adds smooth sample start/end envelopes to preview and export.
 The launcher verifies the current renderer and upgrades an older executable
@@ -84,6 +86,6 @@ preserved. Preview preparation adds latency before the first audible result; it
 is not a low-latency monitoring engine.
 
 Cloud checks cover Qt controls, keyboard editing, scaling, recovery, actual PCM
-decoding/pause/seek, all nine source exports, cancellation, exact pack identity
+decoding/pause/seek, all twelve source exports, the four full-demo selections, cancellation, exact pack identity
 and unchanged pack bytes. No human listening, physical audio-interface/Steam Deck
 test, screen-reader pilot or first-user usability study is claimed.

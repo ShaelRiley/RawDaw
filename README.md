@@ -1,13 +1,15 @@
 # PRDE1 — Pop Rock Development Environment 1
 
-Build **0.3.2** includes a **full-length Parachute demo: 2:42.91**, with an intro,
-verses, pre-choruses, recurring chorus hook, bridge, final chorus and outro. The
-native graphical editor now ships four Song Packs and nine editable arrangements.
+Build **0.3.3** includes **four complete song demos**: Reach Out (2:32.92),
+Where You Are Now (2:33.60), Auld Lang Syne (Bossa) (2:42.46), and Parachute
+(2:42.91). Each has an intro, verses, pre-choruses, a recurring chorus hook,
+bridge, final chorus and outro. The native graphical editor ships four Song
+Packs and twelve editable arrangements, including the eight original short demos.
 The Chord Governor selects prepared samples;
 harmonic changes never pitch-shift or stretch audio during playback.
 
-Version 0.3.2 fixes boundary clicks with a 1 ms safety fade at sample starts and
-a smooth 5 ms release. Existing installations automatically receive the new
+The 0.3.2 boundary fix remains active: a 1 ms safety fade at sample starts and
+a smooth 5 ms release. Existing installations automatically receive the current
 renderer after pulling. [Boundary behavior and evidence](docs/SAMPLE_BOUNDARIES.md)
 explain the sampler fix.
 
@@ -36,28 +38,28 @@ from the pulled build parts, replacing an older executable when needed. Python 3
 Lite, a missing virtual-environment or X11 cursor dependency can be installed with
 `sudo apt install python3-venv libxcb-cursor0`.
 
-Press **Play** to hear the full Parachute demo. It is an ordinary editable
-112-bar project at 165 BPM. The Browser → Packs button **Full Parachute demo ·
-2:43** also opens it from an existing session. [The score and section timings](docs/PARACHUTE_DEMO.md)
-describe its form. Select a pattern in the timeline and click its
+Press **Play** to hear the full Parachute demo. In **Browser → Packs**, choose
+any song in **Full-length demos** and click **Load full demo** to hear and edit
+the complete arrangement. [The full demo scores and section timings](docs/FULL_DEMOS.md)
+describe their forms. Select a pattern in the timeline and click its
 steps to edit. **Edit chord** and **Custom progression** change harmony; **Save**
 writes a native project and **Export WAV** creates the stereo mix. The Browser
-loads all nine included arrangements. [Desktop controls](docs/DESKTOP.md)
+loads all twelve included arrangements. [Desktop controls](docs/DESKTOP.md)
 explain the remaining controls and current boundaries.
 
-![PRDE1 full-length desktop demo](docs/validation/PRDE1-0.3.1-parachute-full.png)
+![PRDE1 full-length demo selector](docs/validation/PRDE1-0.3.3-full-demos.png)
 
 ## Compiled distribution and command-line auditions
 
-The distribution in `dist/PRDE1_0.3.2_Linux_x86_64.tar.gz` contains the desktop code, a compiled
-Linux x86_64 renderer, Python control code, four packs, nine projects and nine
+The distribution in `dist/PRDE1_0.3.3_Linux_x86_64.tar.gz` contains the desktop code, a compiled
+Linux x86_64 renderer, Python control code, four packs, twelve projects and twelve
 ready-rendered WAV auditions. Git stores bounded `.partNN` files with hashes;
 restore the single archive from the checkout with:
 
 ```bash
 python3 tools/assemble_build.py
-tar -xzf dist/PRDE1_0.3.2_Linux_x86_64.tar.gz
-cd PRDE1_0.3.2_Linux_x86_64
+tar -xzf dist/PRDE1_0.3.3_Linux_x86_64.tar.gz
+cd PRDE1_0.3.3_Linux_x86_64
 ./run-prde1.sh --project packs/parachute_full.prdeproj
 ```
 
@@ -80,7 +82,7 @@ make source-demo
 ```
 
 Open `out/source-auditions/*.wav`. Each four-bar arrangement has different harmony,
-tempo or variation settings; Parachute Full adds the complete song form. All nine
+tempo or variation settings; each Full arrangement adds a complete song form. All twelve
 exports use actual source assets and need
 no altered-render approval.
 
@@ -116,7 +118,7 @@ performance timing. Missing sounds block ordinary export; `resolve` reports
 conflicts and natural sample-duration limits. Unsupported active effects or
 vocal processing also block export. Explicit `--approve-altered-render` permits
 reported missing material or unsupported VST instrument placeholders to remain
-silent. It is unnecessary for the nine included arrangements.
+silent. It is unnecessary for the twelve included arrangements.
 
 Add `--seek-frame 123457` to `render` to reconstruct state from the beginning.
 For this engine, the rendered result equals the corresponding full-render slice,

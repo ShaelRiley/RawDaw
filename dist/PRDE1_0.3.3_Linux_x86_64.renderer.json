@@ -1,0 +1,10 @@
+{
+  "version": "0.3.3",
+  "target": "Linux x86_64",
+  "files": {
+    "build/prde1-render": {
+      "sha256": "99562d21a0aa875e6580d49813a5637ecad48b1ed306ba0ce4d28f19962a069b",
+      "bytes": 241896
+    }
+  }
+}

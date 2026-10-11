@@ -49,7 +49,12 @@ class NativeDesktop(unittest.TestCase):
         w=self.window
         for path in sorted((ROOT/'packs').glob('*.prdeproj')):
             with self.subTest(project=path.name):
-                self.assertTrue(w.load_full_demo() if path.stem=='parachute_full' else w.load_session(path));digest=hashlib.sha256(w.pack.path.read_bytes()).digest()
+                if path.stem.endswith('_full'):
+                    index=w.full_demos.findData(path.stem.removesuffix('_full'));self.assertGreaterEqual(index,0)
+                    w.full_demos.setCurrentIndex(index);QTest.mouseClick(w.full_demo_button,Qt.MouseButton.LeftButton)
+                    self.assertEqual(w.editor.project['projectId'],path.stem)
+                else:self.assertTrue(w.load_session(path))
+                digest=hashlib.sha256(w.pack.path.read_bytes()).digest()
                 output=Path(self.folder.name)/(path.stem+'.wav');self.assertTrue(w.request_render(destination=output));self.wait_render()
                 self.assertTrue(output.exists(),w.message.text())
                 audition=ROOT/'out/source-auditions'/(path.stem+'.wav')

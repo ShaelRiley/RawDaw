@@ -23,7 +23,7 @@ def recipes():
 
 def projects():
     return [ROOT / "packs" / (recipe["packId"] + "_" + suffix + ".prdeproj")
-            for recipe in recipes() for suffix in ("a", "b")] + [ROOT / "packs/parachute_full.prdeproj"]
+            for recipe in recipes() for suffix in ("a", "b", "full")]
 
 
 def pack_for_project(project):
