@@ -1,0 +1,35 @@
+{
+  "applicationVersion": "0.3.4",
+  "baseCommit": "ea62b9ab62640407cd77f82f1a2de2c0c7ccc993",
+  "reportedDevice": {
+    "python": "3.13.5",
+    "qt": "6.8.3",
+    "traceLocation": "prde1/gui.py:728 QMainWindow.tabifyDockWidget",
+    "startupResult": "segmentation_fault_before_hotfix"
+  },
+  "cloudVerification": {
+    "python": "3.12.14",
+    "qt": "6.8.3",
+    "platform": "Linux x86_64",
+    "display": "offscreen",
+    "pythonQtTestsPassed": 81,
+    "nativeEngineChecksPassed": true,
+    "originalCodeUnderInjectedNativeDockFault": "SIGSEGV at gui.py:728",
+    "patchedCodeUnderSameFault": "full Reach Out editor opened with restored legacy layout and 125 percent scale",
+    "faultFixtureIsPhysicalReproduction": false,
+    "scaleResizeFocusResetChecksPassed": true,
+    "exactShellLauncherReachedEventLoop": true,
+    "layoutVisualReview": "1280x800 at 125 percent; transport and labeled Inspector/Browser tabs accessible"
+  },
+  "sourceArrangements": {
+    "count": 12,
+    "allOriginal034WavHashesMatch": true,
+    "allSourcePackHashesMatch": true,
+    "allRepeatsByteIdentical": true,
+    "allSeeksExactSlices": true
+  },
+  "rendererSha256": "c0576c1ccc9e261c10fd803a30f3948119653e3f38afc64bcebab6632179e79a",
+  "requirementsRevisionReadBeforeCode": "AHj4eMRUwVgqIsJ674TC4WgL7rU4kCC4aSF_QbzbC0_YClZ18SB8llE-IBEyyQwMArFHXeXPnQWVm9_OhV3YMzVDVkqPJ5gvEgRR92bEyQ",
+  "physicalSteamDeckHotfixLaunch": "not_verified",
+  "humanListening": "not_performed"
+}

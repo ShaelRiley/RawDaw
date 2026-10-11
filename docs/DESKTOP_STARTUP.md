@@ -1,4 +1,39 @@
-# Desktop startup hotfix for 0.3.3
+# Desktop startup protection and 0.3.4 layout hotfix
+
+## October 11 Steam Deck layout crash
+
+The Deck's follow-up log confirms commit
+`ea62b9ab62640407cd77f82f1a2de2c0c7ccc993`, Python 3.13.5 and Qt 6.8.3.
+Audio-player creation and output enumeration completed. The fatal traceback
+instead reaches `gui.py:728`, `QMainWindow.tabifyDockWidget`, through saved
+interface-scale restoration. The earlier audio-only protection does not address
+that separate native dock-layout failure.
+
+The source hotfix removes automatic native dock tabification. At widths below
+1280 pixels or 125/150% interface scale, Inspector and Browser use the existing
+labeled central tabs. At wider 100% layouts they return to separate side docks.
+Panel ownership transfers explicitly between these containers; resize events
+cannot reenter a transfer, and responsive changes wait until widget construction
+and saved geometry/layout/scale restoration are complete. Focus view and Reset
+workspace retain accessible panels without exposing empty docks. Existing
+preferences, projects, source packs and renderer version are retained.
+
+Pull and use the normal launcher below; this is a 0.3.4 source hotfix and needs
+no replacement renderer or compiler. Startup logs now also record workspace
+restoration and `Responsive workspace ready` before the desktop event loop.
+
+Regression coverage restores a genuine legacy tabified layout at 125% scale
+while a native fault fixture makes `tabifyDockWidget` raise SIGSEGV. The original
+0.3.4 editor reaches that fault; the protected editor opens the full Reach Out
+project. This fixture models the reported failing API, not the physical Deck's
+underlying Qt defect. Additional real-Qt tests cycle 100/125/150% scale and window
+widths, check single panel ownership, access to transport and panels, Focus view,
+Reset workspace, and unchanged musical state. All 81 tests pass. Evidence is in
+`validation/desktop-layout-hotfix-0.3.4.log` and
+`validation/desktop-layout-hotfix-0.3.4.json`. Physical Deck relaunch and listening
+remain unverified until the creator reports them.
+
+## Preserved audio-only startup protection
 
 Shael's Steam Deck returned exit 139 immediately after Qt's FFmpeg 7.1 startup
 message, with no editor window. That confirms a native startup crash; the single
@@ -59,7 +94,7 @@ pause/seek and all twelve byte-identical GUI WAV exports.
 
 This verifies prevention of the video-driver crash path, not a reproduction on
 Shael's physical Deck. Its exact original failing component and successful
-on-device launch remain to be confirmed. This is a small source/launcher update
+on-device launch remain to be confirmed. The earlier source/launcher update was
 on `main` with application version 0.3.3. The previously hashed 0.3.3 distribution
 archive is unchanged and does not contain this hotfix; pulling the repository
 obtains it while reusing the verified renderer and installed packs.

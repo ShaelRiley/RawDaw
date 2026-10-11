@@ -33,6 +33,11 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
    after Shael's Deck startup crash and adds local native-fault diagnostics.
    An injected video-driver crash is prevented in the real Qt editor; the
    physical Deck's original cause and successful startup remain unconfirmed.
+   An October 11 Deck trace identifies automatic native dock tabification during
+   saved-scale restoration. The subsequent source hotfix uses central tabs for
+   compact/enlarged layouts and protects panel transfers, with saved-preference,
+   injected native dock-fault and scale/size/Focus/Reset checks. On-device relaunch
+   and listening remain open; no approved product scope is removed.
 4. **Variation/arrangement completion:** full independent/Linked Repeat workflow,
    Include Harmony warning, undo/redo and autosave, explicit regeneration, Freeze
    Variation, whole-song plans/locked sections, normalized MIDI adapters and

@@ -101,6 +101,7 @@ class MainWindow(QMainWindow):
         self.resize(1366,800);self.setMinimumSize(900,650);self.setStyleSheet(STYLE)
         self.editor=None;self.pack=None;self.selected_id='';self.role='rhythm';self.cursor=Fraction(0)
         self._refreshing=False;self._closing=False;self._plan=None;self._job=None;self._generation=0;self._compact=None;self._scale_value=1
+        self._layout_ready=False;self._layout_changing=False
         self._preview_key=None;self._pending_seek=0;self._settings=QSettings('ShaelRiley','PRDE1') if remember else None
         self.data_dir=Path(data_dir or QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation))
         self.data_dir.mkdir(parents=True,exist_ok=True)
@@ -121,12 +122,17 @@ class MainWindow(QMainWindow):
         self.recover_button.setVisible(bool(self._recoveries))
         startup_stage('Loading project')
         self._bootstrap(project_path,pack_path)
+        startup_stage('Restoring workspace and interface scale')
         if self._settings:
             geometry=self._settings.value('geometry');state=self._settings.value('layout')
             if geometry:self.restoreGeometry(geometry)
             if state:self.restoreState(state)
             self._apply_scale(float(self._settings.value('scale',1)))
         else:self._apply_scale(1)
+        # Geometry/state/font restoration can emit resize events synchronously.
+        # Move panels only after all widgets and saved preferences are ready.
+        self._layout_ready=True;self._responsive_layout()
+        startup_stage('Responsive workspace ready')
 
     def _make_actions(self):
         file=self.menuBar().addMenu('File');edit=self.menuBar().addMenu('Edit');view=self.menuBar().addMenu('View')
@@ -711,33 +717,43 @@ class MainWindow(QMainWindow):
         if hasattr(self,'browser_dock'):self._responsive_layout()
 
     def _responsive_layout(self):
-        compact='tabs' if self.width()<1100 or self._scale_value>=1.5 else 'side' if self.width()<1280 or self._scale_value>1 else 'wide'
+        if not self._layout_ready or self._layout_changing:return
+        compact='tabs' if self.width()<1280 or self._scale_value>1 else 'wide'
         if self._compact==compact or self.focus_action.isChecked():return
-        self._compact=compact
-        if compact=='tabs':
-            self.removeDockWidget(self.inspector_dock);self.removeDockWidget(self.browser_dock);self.inspector_dock.hide();self.browser_dock.hide()
-            if self.dock_tabs.indexOf(self.inspector_panel)<0:self.dock_tabs.addTab(self.inspector_panel,'Inspector')
-            if self.dock_tabs.indexOf(self.browser_tabs)<0:self.dock_tabs.addTab(self.browser_tabs,'Browser')
-            return
-        for panel,dock in ((self.inspector_panel,self.inspector_dock),(self.browser_tabs,self.browser_dock)):
-            index=self.dock_tabs.indexOf(panel)
-            if index>=0:self.dock_tabs.removeTab(index);dock.setWidget(panel)
-            dock.show()
-        if compact=='side':
-            self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea,self.inspector_dock)
-            self.tabifyDockWidget(self.inspector_dock,self.browser_dock);self.browser_dock.raise_()
-        else:
-            self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea,self.inspector_dock)
-            self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea,self.browser_dock)
+        self._layout_changing=True
+        try:
+            panels=((self.inspector_panel,self.inspector_dock,'Inspector',Qt.DockWidgetArea.LeftDockWidgetArea),
+                    (self.browser_tabs,self.browser_dock,'Browser',Qt.DockWidgetArea.RightDockWidgetArea))
+            for panel,dock,title,area in panels:
+                if compact=='tabs':
+                    self.removeDockWidget(dock);dock.hide()
+                    # Explicitly release the old dock layout before QTabWidget
+                    # takes ownership. Keep one live copy of each panel.
+                    if dock.widget() is panel:dock.setWidget(None)
+                    if self.dock_tabs.indexOf(panel)<0:self.dock_tabs.addTab(panel,title)
+                else:
+                    index=self.dock_tabs.indexOf(panel)
+                    if index>=0:self.dock_tabs.removeTab(index)
+                    if dock.widget() is not panel:dock.setWidget(panel)
+                    self.addDockWidget(area,dock);dock.show();panel.show()
+            # Do not tabify native docks here. Qt 6.8.3 on the Deck crashed in
+            # that call while restoring scale; compact panels use central tabs.
+            self._compact=compact
+        finally:self._layout_changing=False
 
     def focus_view(self):
-        focus=self.focus_action.isChecked();self.inspector_dock.setVisible(not focus);self.browser_dock.setVisible(not focus)
+        focus=self.focus_action.isChecked()
+        if focus:self.inspector_dock.hide();self.browser_dock.hide()
+        else:self._compact=None;self._responsive_layout()
 
     def reset_layout(self):
-        self.inspector_dock.setFloating(False);self.browser_dock.setFloating(False)
-        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea,self.inspector_dock);self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea,self.browser_dock)
-        self.inspector_dock.show();self.browser_dock.show();self.focus_action.setChecked(False);self.resizeDocks([self.inspector_dock,self.browser_dock],[205,245],Qt.Orientation.Horizontal);self.splitter.setSizes([360,260])
+        self._layout_changing=True
+        try:self.inspector_dock.setFloating(False);self.browser_dock.setFloating(False)
+        finally:self._layout_changing=False
+        self.focus_action.setChecked(False)
         self._compact=None;self._responsive_layout()
+        if self._compact=='wide':self.resizeDocks([self.inspector_dock,self.browser_dock],[205,245],Qt.Orientation.Horizontal)
+        self.splitter.setSizes([360,260])
 
     def _devices_changed(self):
         current=self.audio.device().id();devices=self.devices.audioOutputs();self.outputs.blockSignals(True);self.outputs.clear()

@@ -1,5 +1,15 @@
 # Current checkpoint — 0.3.4 drum punch and kick-to-bass sidechain
 
+The October 11 physical Deck trace locates a separate native crash at automatic
+dock tabification during saved-scale restoration. A source hotfix replaces the
+native merge with labeled central tabs for compact/enlarged layouts, guards
+panel ownership transfers during startup/resize, and repairs Focus/Reset panel
+visibility. The existing 0.3.4 renderer and all musical settings remain intact.
+All 81 tests pass, including an injected native dock fault, legacy saved
+preferences and repeated scale/size transitions; the twelve source exports
+retain their original 0.3.4 hashes. See [DESKTOP_STARTUP.md](DESKTOP_STARTUP.md) and
+`validation/desktop-layout-hotfix-0.3.4.*`. Physical relaunch remains open.
+
 This checkpoint adds native per-drum stereo EQ, combined drum bus compression
 with +3 dB makeup, and kick-signal-driven bass ducking capped at 6 dB, followed
 by common master compression. Mixer provides independent EQ dialogs; Dynamics
