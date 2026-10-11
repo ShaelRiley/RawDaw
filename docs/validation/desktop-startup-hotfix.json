@@ -1,0 +1,15 @@
+{
+  "applicationVersion": "0.3.3",
+  "scope": "source/launcher hotfix; unchanged compiled distribution",
+  "launchCommand": "./run-prde1.sh --project packs/reach_out_full.prdeproj",
+  "injectedNativeVideoDriverFault": true,
+  "protectedLauncherEnteredEventLoop": true,
+  "startupLogInitializedOnce": true,
+  "physicalSteamDeckVerified": false,
+  "tests": {
+    "command": "QT_QPA_PLATFORM=offscreen make check PYTHON=.venv/bin/python",
+    "passed": 71,
+    "nativeEngineChecksPassed": true
+  },
+  "distributionRebuilt": false
+}

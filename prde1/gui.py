@@ -10,7 +10,11 @@ import uuid
 from fractions import Fraction
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QProcess, QSettings, QStandardPaths, QTimer, QUrl
+from .desktop_startup import begin_startup_log, configure_audio, startup_stage
+
+configure_audio()  # Also protect direct `python -m prde1.gui` and embedded windows.
+
+from PySide6.QtCore import Qt, QProcess, QSettings, QStandardPaths, QTimer, QUrl, qVersion
 from PySide6.QtGui import QAction, QColor, QFont, QKeySequence
 from PySide6.QtMultimedia import QAudioOutput, QMediaDevices, QMediaPlayer
 from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
@@ -82,15 +86,18 @@ class MainWindow(QMainWindow):
         self.recovery_file=self.recovery_dir/(uuid.uuid4().hex+'.json')
         self.workspace=tempfile.TemporaryDirectory(prefix='prde1-desktop-');self.work=Path(self.workspace.name)
         self.process=QProcess(self);self.process.finished.connect(self._render_finished);self.process.errorOccurred.connect(self._process_error)
+        startup_stage('Creating PCM audio player')
         self.player=QMediaPlayer(self);self.audio=QAudioOutput(self);self.audio.setVolume(1.0);self.player.setAudioOutput(self.audio)
         self.player.setPlaybackRate(1.0)
         self.player.positionChanged.connect(self._play_position);self.player.playbackStateChanged.connect(self._play_state)
         self.player.mediaStatusChanged.connect(self._media_status);self.player.errorOccurred.connect(lambda *_:self.notice('Playback: '+self.player.errorString()))
         self.devices=QMediaDevices(self);self.devices.audioOutputsChanged.connect(self._devices_changed)
         self._make_actions();self._make_center();self._make_inspector();self._make_browser();self._make_mixer()
+        startup_stage('Enumerating audio outputs')
         self._devices_changed();self.autosave_timer=QTimer(self);self.autosave_timer.setInterval(15000);self.autosave_timer.timeout.connect(self.autosave);self.autosave_timer.start()
         self._recoveries=sorted(self.recovery_dir.glob('*.json'),key=lambda p:p.stat().st_mtime,reverse=True)
         self.recover_button.setVisible(bool(self._recoveries))
+        startup_stage('Loading project')
         self._bootstrap(project_path,pack_path)
         if self._settings:
             geometry=self._settings.value('geometry');state=self._settings.value('layout')
@@ -787,8 +794,9 @@ def main(argv=None):
     parser=argparse.ArgumentParser(description='PRDE1 desktop editor')
     parser.add_argument('--project',type=Path);parser.add_argument('--pack',type=Path)
     options=parser.parse_args(argv)
+    begin_startup_log();startup_stage('Creating desktop application with Qt ' + qVersion())
     app=QApplication.instance() or QApplication(sys.argv[:1]);app.setApplicationName('PRDE1');app.setOrganizationName('ShaelRiley')
-    window=MainWindow(options.project,options.pack);window.show();return app.exec()
+    window=MainWindow(options.project,options.pack);window.show();startup_stage('Entering desktop event loop');return app.exec()
 
 
 if __name__=='__main__':raise SystemExit(main())

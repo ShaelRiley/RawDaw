@@ -29,6 +29,10 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
    auditions. Keyboard and enlarged-layout checks passed offscreen. Real-time
    native device callbacks, physical audio/Steam Deck testing, accessibility
    and first-user pilots remain open; the UI does not duplicate Governor rules.
+   A subsequent 0.3.3 source hotfix disables unnecessary Qt video-driver probes
+   after Shael's Deck startup crash and adds local native-fault diagnostics.
+   An injected video-driver crash is prevented in the real Qt editor; the
+   physical Deck's original cause and successful startup remain unconfirmed.
 4. **Variation/arrangement completion:** full independent/Linked Repeat workflow,
    Include Harmony warning, undo/redo and autosave, explicit regeneration, Freeze
    Variation, whole-song plans/locked sections, normalized MIDI adapters and

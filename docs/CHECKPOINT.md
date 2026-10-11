@@ -1,4 +1,4 @@
-# Current checkpoint — 0.3.3 with four full-length demos
+# Current checkpoint — 0.3.3 with four full-length demos and startup hotfix
 
 Completed: a launchable Qt desktop editor, an offline Linux/C++20 renderer,
 shared experimental contracts, four real-source Song Packs, eight editable
@@ -16,6 +16,14 @@ SHA-256 file and archive-internal `BUILD_INFO.json` bind the exact package input
 The archive is transported as hashed 8 MiB parts in git; the standard-library
 `tools/assemble_build.py` restores it atomically and verifies the full hash.
 This is a private development build, not a public product release.
+
+The current source adds a startup hotfix for the reported Steam Deck exit-139
+failure. Qt's unnecessary GPU video-driver probes are disabled before creating
+the PCM player; native fault diagnostics and startup stages are retained locally.
+An injected crashing video-driver test opens the actual Reach Out editor through
+the protected path. The physical Deck's exact cause and successful launch still
+need confirmation. The previously hashed archive is unchanged; pull `main` for
+this source/launcher fix. See `DESKTOP_STARTUP.md` for evidence and log locations.
 
 Run `./run-prde1.sh` after pulling. It installs the optional pinned desktop
 libraries on first setup and restores the verified compiled renderer from the
@@ -63,6 +71,14 @@ with companion section timings; generic Song Plan generation and locks remain op
 
 ## Verification
 
+* The startup hotfix passes **71 Python invariant/integration tests** and the
+  existing native engine checks. Its three added checks verify audio-only
+  initialization, a retained traceback from a real native fault, and the actual
+  Reach Out editor opening with an injected crashing video driver. The exact
+  shell launcher also reaches its event loop with that driver installed and
+  initializes the startup log once. PCM decode/pause/seek and all twelve GUI
+  exports still pass. Evidence: `validation/desktop-startup-hotfix.log` and
+  `validation/desktop-startup-hotfix.json`; physical Deck verification is open.
 * `QT_QPA_PLATFORM=offscreen make check PYTHON=.venv/bin/python`: **68 Python invariant/integration tests
   passed**, including the
   four real packs, no-synthetic lineage, explicit gaps, source-MIDI tempo/semantic

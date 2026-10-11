@@ -17,7 +17,7 @@ desktop = ["PySide6==6.8.3"]
 
 [project.scripts]
 prde1 = "prde1.cli:main"
-prde1-desktop = "prde1.gui:main"
+prde1-desktop = "prde1.desktop_startup:main"
 
 [tool.setuptools]
 packages = ["prde1"]

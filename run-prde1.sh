@@ -38,4 +38,4 @@ else
     make all
 fi
 
-exec "$PRDE_PYTHON" -m prde1.gui "$@"
+exec "$PRDE_PYTHON" -X faulthandler -m prde1.desktop_startup "$@"

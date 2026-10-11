@@ -1,5 +1,10 @@
 # Desktop composition — 0.3.3
 
+The current source includes a [startup hotfix](DESKTOP_STARTUP.md) for the
+Steam Deck crash report. Pull `main` to obtain it: unnecessary GPU video-driver
+initialization is disabled, and startup stages/native faults receive a local log.
+The original hashed 0.3.3 archive does not include this later source update.
+
 Run `./run-prde1.sh` in the checkout or extracted distribution. Parachute opens
 as an editable starter. Click Play; preparation runs in a separate native process,
 then the rendered mix plays through the selected audio output. Pause, Resume,
