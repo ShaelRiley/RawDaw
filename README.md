@@ -1,10 +1,15 @@
 # PRDE1 — Pop Rock Development Environment 1
 
-Build **0.3.1** includes a **full-length Parachute demo: 2:42.91**, with an intro,
+Build **0.3.2** includes a **full-length Parachute demo: 2:42.91**, with an intro,
 verses, pre-choruses, recurring chorus hook, bridge, final chorus and outro. The
 native graphical editor now ships four Song Packs and nine editable arrangements.
 The Chord Governor selects prepared samples;
 harmonic changes never pitch-shift or stretch audio during playback.
+
+Version 0.3.2 fixes boundary clicks with a 1 ms safety fade at sample starts and
+a smooth 5 ms release. Existing installations automatically receive the new
+renderer after pulling. [Boundary behavior and evidence](docs/SAMPLE_BOUNDARIES.md)
+explain the sampler fix.
 
 This is a development build. Recording/comping, full DSP, VST hosting, complete
 catalogs, and a real-time native device engine remain approved work. The desktop
@@ -27,7 +32,7 @@ git pull --ff-only origin main
 First launch installs PySide6 into a local virtual environment if it is absent.
 That setup needs an internet connection; the installed composer then operates
 offline without an API key. The launcher restores the verified compiled renderer
-from the pulled build parts when needed. Python 3.11+ is required. On Ubuntu/Linux
+from the pulled build parts, replacing an older executable when needed. Python 3.11+ is required. On Ubuntu/Linux
 Lite, a missing virtual-environment or X11 cursor dependency can be installed with
 `sudo apt install python3-venv libxcb-cursor0`.
 
@@ -44,15 +49,15 @@ explain the remaining controls and current boundaries.
 
 ## Compiled distribution and command-line auditions
 
-The distribution in `dist/PRDE1_0.3.1_Linux_x86_64.tar.gz` contains the desktop code, a compiled
+The distribution in `dist/PRDE1_0.3.2_Linux_x86_64.tar.gz` contains the desktop code, a compiled
 Linux x86_64 renderer, Python control code, four packs, nine projects and nine
 ready-rendered WAV auditions. Git stores bounded `.partNN` files with hashes;
 restore the single archive from the checkout with:
 
 ```bash
 python3 tools/assemble_build.py
-tar -xzf dist/PRDE1_0.3.1_Linux_x86_64.tar.gz
-cd PRDE1_0.3.1_Linux_x86_64
+tar -xzf dist/PRDE1_0.3.2_Linux_x86_64.tar.gz
+cd PRDE1_0.3.2_Linux_x86_64
 ./run-prde1.sh --project packs/parachute_full.prdeproj
 ```
 

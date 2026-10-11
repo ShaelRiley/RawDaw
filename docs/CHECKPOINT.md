@@ -1,4 +1,4 @@
-# Current checkpoint — 0.3.1 with full-length Parachute demo
+# Current checkpoint — 0.3.2 with smooth sample boundaries
 
 Completed: a launchable Qt desktop editor, an offline Linux/C++20 renderer,
 shared experimental contracts, four real-source Song Packs, eight editable
@@ -9,7 +9,7 @@ stretching or harmonic synthesis is added.
 
 The private repository is [ShaelRiley/prde1](https://github.com/ShaelRiley/prde1).
 Checkpoint 1 was verified at `71d551a27ab2b6b0b8d6e37e56f8d99fc0406328`.
-The 0.3.1 build is in `dist/PRDE1_0.3.1_Linux_x86_64.tar.gz`; the accompanying
+The 0.3.2 build is in `dist/PRDE1_0.3.2_Linux_x86_64.tar.gz`; the accompanying
 SHA-256 file and archive-internal `BUILD_INFO.json` bind the exact package inputs.
 The archive is transported as hashed 8 MiB parts in git; the standard-library
 `tools/assemble_build.py` restores it atomically and verifies the full hash.
@@ -17,7 +17,8 @@ This is a private development build, not a public product release.
 
 Run `./run-prde1.sh` after pulling. It installs the optional pinned desktop
 libraries on first setup and restores the verified compiled renderer from the
-build parts when necessary. Later launches work offline. Parachute A opens ready
+build parts when necessary, including replacing an older executable after pull.
+A matching binary is reused offline without reading archive parts. Parachute A opens ready
 to preview; Browser → Packs → **Full Parachute demo · 2:43** opens the new song.
 Alternatively run `./run-prde1.sh --project packs/parachute_full.prdeproj`.
 The desktop exposes the Governor, track timeline, step/event editors,
@@ -33,6 +34,12 @@ separately from the first three CC BY 3.0 packs. It adds 28 native source sample
 a saved estimated drum measure, and two new covered arrangements. No full stem
 or original ZIP is shipped, and no new CC/MIT grant for Parachute is implied.
 
+Version 0.3.2 addresses Shael's sample-cutoff click report: the native player
+adds a 1 ms start safety fade and a smooth, zero-slope 5 ms release. Natural
+one-shot exhaustion is protected in the player too. Gate, harmony, retrigger
+and choke endpoints stay exact; source files and score stay unchanged. See
+`SAMPLE_BOUNDARIES.md` for diagnosis, behavior and evidence.
+
 ## Canonical authority
 
 The full live SDD, including Section 28 and its initial engineering contract,
@@ -45,12 +52,13 @@ companion section timings; generic Song Plan generation and locks remain open.
 
 ## Verification
 
-* `QT_QPA_PLATFORM=offscreen make check PYTHON=.venv/bin/python`: **64 Python invariant/integration tests
+* `QT_QPA_PLATFORM=offscreen make check PYTHON=.venv/bin/python`: **66 Python invariant/integration tests
   passed**, including the
   four real packs, no-synthetic lineage, explicit gaps, source-MIDI tempo/semantic
   addresses, all nine projects' save/reopen, actual mapping resolution and immutable
   assets. Native checks passed for allocation-free processing, unchanged frame
-  copies, sustain-only looping, release, silence and the 64-voice cap.
+  copies, sustain-only looping, smooth endpoints/natural exhaustion, retrigger/choke,
+  tiny gates, processing-block identity, release, silence and the 64-voice cap.
   Distribution assembly tests cover exact restoration plus missing, altered,
   duplicate and traversing parts and a wrong final hash, preserving prior output.
 * Seven native Qt integration checks cover keyboard editing/undo, local recovery,
@@ -59,7 +67,13 @@ companion section timings; generic Song Plan generation and locks remain open.
   GUI exports are byte-identical to their bundled source auditions and preserve
   pack bytes. Screens were inspected at 1366×800, 1280×800 and 1024×768; transport
   stays visible when enlarged. Renderer-install tests verify hashes, executable
-  permissions and rejection of substituted/symlink payloads.
+  permissions, existing-executable upgrades, offline reuse without archive parts,
+  conflicting identity metadata and rejection of substituted/symlink payloads.
+* The real-source boundary audit checks all **97 assets / 194 probes** at
+  shortened gates and natural ends. Every endpoint is zero within one 24-bit
+  dither LSB. Interior PCM bytes match the 0.3.1 renderer outside the boundary
+  envelopes, and all pack hashes remain unchanged. This is diagnostic evidence,
+  not a human listening certification.
 * `make source-demo`: **nine ordinary source-pack exports**, no harmonic conflicts,
   48 kHz / 24-bit stereo. Repeated renders are byte-identical. The eight short
   demos seek at frame 123457; the full song seeks three quarters into its duration.
@@ -68,7 +82,7 @@ companion section timings; generic Song Plan generation and locks remain open.
 * Parachute Full exports 7,819,636 frames, 2,806 resolved events and 112 occupied
   measures, with no silent padding. Its saved chorus lead remains recognizably
   repeated and variation-locked. Verse/bridge contrasts and measured section
-  levels are documented in `validation/parachute-full-verification-0.3.1.json`.
+  levels are documented in `validation/parachute-full-verification-0.3.2.json`.
   Score rebuilding and native save/reopen retain the exact source identity/plan.
 * Parachute's repeated preparation is byte-identical; a changed vocal hash and
   a false guitar-chord label fail while preserving the previous pack. Its new
@@ -83,7 +97,11 @@ companion section timings; generic Song Plan generation and locks remain open.
   keys/entries, checksums, mappings, unsafe loops, malformed MIDI, resource budgets,
   numeric bounds, unsupported active processing and transactional export/save.
 
-Version 0.3.1 evidence: `validation/desktop-check-0.3.1.log`,
+Version 0.3.2 evidence: `validation/desktop-check-0.3.2.log`,
+`source-render-0.3.2.json`, `source-demo-0.3.2.log`,
+`sample-boundaries-0.3.2.json`, `parachute-full-verification-0.3.2.json` and
+`synthetic-regression-0.3.2.log`. UI layout is unchanged.
+Earlier version 0.3.1 evidence: `validation/desktop-check-0.3.1.log`,
 `source-render-0.3.1.json`, `source-demo-0.3.1.log`,
 `parachute-full-verification-0.3.1.json`, `synthetic-regression-0.3.1.log` and
 `PRDE1-0.3.1-parachute-full.png`. Earlier desktop evidence: `desktop-check-0.3.0.log`,
@@ -111,9 +129,10 @@ drum material. File lengths/rates/origins match; no original master was supplied
 and acoustic alignment is not independently verified. Its source tempo, chord
 labels/inversions and partial drum transcription are numerical estimates.
 
-Shael's informal 0.3.0 audition was positive. Formal pack-wide listening,
+Shael's informal 0.3.0 and 0.3.1 auditions were positive; his 0.3.1 feedback
+identified the cutoff artifact addressed here. Formal pack-wide listening,
 reference laptop/Steam Deck/audio-interface benchmarks, microphone and usability
-testing remain open; the new full demo awaits the creator's audition. The compiled Linux
+testing remain open; the 0.3.2 boundary fix awaits the creator's audition. The compiled Linux
 x86_64 binary is a convenience build on Ubuntu 24.04, with system libstdc++,
 libgcc, libm and glibc; source/Makefiles are included for rebuilding.
 

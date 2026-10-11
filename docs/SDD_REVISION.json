@@ -13,5 +13,7 @@
   "desktopRequirementsRevisionReadBeforeCode": "ANLCKQlWMC4zhxf3oZ-oqUwlgdMXpdYYcguZWxl3RuR50l5qbkZ4NCYtkX0hTyoKWuHqbL3lbLuG5M87N1SOR-cIjIs3pXgzFtsfnTF_AA",
   "desktopScope": "Native graphical composition slice against sections 9, 19\u201322 and 28.8; rendered PCM preview, real project editing/save/export; approved recording, DSP, native real-time device and VST work remains open. No SDD amendment.",
   "fullDemoRequirementsRevisionReadBeforeCode": "AHj4eMRUwVgqIsJ674TC4WgL7rU4kCC4aSF_QbzbC0_YClZ18SB8llE-IBEyyQwMArFHXeXPnQWVm9_OhV3YMzVDVkqPJ5gvEgRR92bEyQ",
-  "fullDemoScope": "User-requested 2\u20133 minute Parachute demo; fixed editable 112-bar authored score against Sections 23\u201324. Existing selection-only engine and exact source identity retained. Generic Song Plan/section locks remain open; no SDD amendment."
+  "fullDemoScope": "User-requested 2\u20133 minute Parachute demo; fixed editable 112-bar authored score against Sections 23\u201324. Existing selection-only engine and exact source identity retained. Generic Song Plan/section locks remain open; no SDD amendment.",
+  "sampleBoundaryRequirementsRevisionReadBeforeCode": "AHj4eMRUwVgqIsJ674TC4WgL7rU4kCC4aSF_QbzbC0_YClZ18SB8llE-IBEyyQwMArFHXeXPnQWVm9_OhV3YMzVDVkqPJ5gvEgRR92bEyQ",
+  "sampleBoundaryScope": "User-requested click fix; sampler-only 1 ms safety onset and smooth 5 ms release against Sections 2, 17, 19, 28.4 and 28.8, immutable source packs and exact cutoffs, verified installed renderer upgrades; no product-policy amendment."
 }

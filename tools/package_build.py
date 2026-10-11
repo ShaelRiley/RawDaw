@@ -80,6 +80,8 @@ def main():
             parts.append({'file':part.name,'bytes':len(chunk),'sha256':hashlib.sha256(chunk).hexdigest()})
     manifest={'version':__version__,'archive':output.name,'bytes':output.stat().st_size,'sha256':digest,'parts':parts}
     (output.parent/(NAME+'.parts.json')).write_text(json.dumps(manifest,indent=2)+'\n')
+    identity={'version':__version__,'target':'Linux x86_64','files':{'build/prde1-render':build_info['files']['build/prde1-render']}}
+    (output.parent/(NAME+'.renderer.json')).write_text(json.dumps(identity,indent=2)+'\n')
     print(output,output.stat().st_size,'bytes',digest)
 
 

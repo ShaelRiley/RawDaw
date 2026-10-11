@@ -1,0 +1,3917 @@
+{
+  "version": "0.3.2",
+  "sampleRate": 48000,
+  "attackSafetyMs": 1,
+  "releaseMs": 5,
+  "curve": "cubic smoothstep with zero slope at both endpoints",
+  "assetCount": 97,
+  "probes": 194,
+  "packs": [
+    {
+      "pack": "reach_out.prdepack",
+      "sha256": "d03c80d14b5337b27a0a4361870a85c6c1fc6b7ad9d19f62fc205ca4b2f2e80b",
+      "unchanged": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "sha256": "f4892d2aac99613786fb0f8b6f9d479be08ebe7f2d621b7ab9b27d0cd0942f3a",
+      "unchanged": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "sha256": "715c53d363b5dd9cd4ef51d59f18595f9fe3f9010c0cae0a058ab8583d806b31",
+      "unchanged": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "sha256": "86cbbb967a7d8c00e004428272a389e3256a45e4010797fbfc7e69aa3cb0621c",
+      "unchanged": true
+    }
+  ],
+  "maxEndpointLsb": 1,
+  "previousMaxOpeningStepDbFS": -14.363610003110027,
+  "interiorComparisonPerformed": true,
+  "humanListening": "not_performed; automated boundaries do not certify source quality",
+  "probesByAsset": [
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_59",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -1255909,
+        -1235128
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_59",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -1255909,
+        -1235128
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_62",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        111092,
+        128729
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_62",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        111092,
+        128729
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_64",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -1093117,
+        -1079014
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_64",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -1093117,
+        -1079014
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_66",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -506180,
+        -500578
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_66",
+      "boundary": "natural_end",
+      "durationFrames": 20688,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -506180,
+        -500578
+      ],
+      "interiorComparedFrames": 20400,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_67",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        1605127,
+        1594350
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_67",
+      "boundary": "natural_end",
+      "durationFrames": 8400,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        1605127,
+        1594350
+      ],
+      "interiorComparedFrames": 8112,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_69",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        1392809,
+        1380745
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_69",
+      "boundary": "natural_end",
+      "durationFrames": 21456,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        1392809,
+        1380745
+      ],
+      "interiorComparedFrames": 21168,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_35",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        606098,
+        601593
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_35",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        606098,
+        601593
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_28",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -493797,
+        -487984
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_28",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -493797,
+        -487984
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_31",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        123043,
+        130456
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_31",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        123043,
+        130456
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_33",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -546300,
+        -543434
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_33",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -546300,
+        -543434
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "chord_11_minor",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        86222,
+        12077
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "chord_11_minor",
+      "boundary": "natural_end",
+      "durationFrames": 13440,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        86222,
+        12077
+      ],
+      "interiorComparedFrames": 13152,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "chord_7_major",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        64117,
+        64227
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "chord_7_major",
+      "boundary": "natural_end",
+      "durationFrames": 12480,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        64117,
+        64227
+      ],
+      "interiorComparedFrames": 12192,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "chord_9_major",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        373874,
+        369924
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "chord_9_major",
+      "boundary": "natural_end",
+      "durationFrames": 12480,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        373874,
+        369924
+      ],
+      "interiorComparedFrames": 12192,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "drum_source_kick",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -28916,
+        -32317
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "drum_source_kick",
+      "boundary": "natural_end",
+      "durationFrames": 6000,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -28916,
+        -32317
+      ],
+      "interiorComparedFrames": 5712,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "drum_source_snare",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -26952,
+        -36259
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "drum_source_snare",
+      "boundary": "natural_end",
+      "durationFrames": 12000,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -26952,
+        -36259
+      ],
+      "interiorComparedFrames": 11712,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "drum_source_closed_hat",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        464,
+        1427
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "drum_source_closed_hat",
+      "boundary": "natural_end",
+      "durationFrames": 8640,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        1
+      ],
+      "previousFirstFrameLsb": [
+        464,
+        1427
+      ],
+      "interiorComparedFrames": 8352,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "drum_source_crash",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -1041279,
+        1555308
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "drum_source_crash",
+      "boundary": "natural_end",
+      "durationFrames": 280800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        1
+      ],
+      "previousFirstFrameLsb": [
+        -1041279,
+        1555308
+      ],
+      "interiorComparedFrames": 280512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_61",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -3112,
+        1950
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "lead_61",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -3112,
+        1950
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_37",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        917081,
+        908354
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_37",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        917081,
+        908354
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_38",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        551621,
+        543339
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_38",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        551621,
+        543339
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_30",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        93500,
+        93469
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "reach_out.prdepack",
+      "asset": "bass_30",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        93500,
+        93469
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_60",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -74339,
+        -74339
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_60",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -74339,
+        -74339
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_62",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -139391,
+        -139391
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_62",
+      "boundary": "natural_end",
+      "durationFrames": 7632,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -139391,
+        -139391
+      ],
+      "interiorComparedFrames": 7344,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_63",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -533913,
+        -533913
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_63",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -533913,
+        -533913
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_65",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -251872,
+        -251872
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_65",
+      "boundary": "natural_end",
+      "durationFrames": 21456,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -251872,
+        -251872
+      ],
+      "interiorComparedFrames": 21168,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_55",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -363796,
+        -363796
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_55",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -363796,
+        -363796
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_58",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -127702,
+        -127702
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_58",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -127702,
+        -127702
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_36",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        258253,
+        266096
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_36",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        258253,
+        266096
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_29",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -59818,
+        -60479
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_29",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -59818,
+        -60479
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_31",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        792317,
+        803823
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_31",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        792317,
+        803823
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_32",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        65,
+        1844
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_32",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        65,
+        1844
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_34",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        239623,
+        242148
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_34",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        239623,
+        242148
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "chord_0_minor",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -415119,
+        -335369
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "chord_0_minor",
+      "boundary": "natural_end",
+      "durationFrames": 28560,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -415119,
+        -335369
+      ],
+      "interiorComparedFrames": 28272,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "chord_5_major",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -313443,
+        -292269
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "chord_5_major",
+      "boundary": "natural_end",
+      "durationFrames": 28560,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -313443,
+        -292269
+      ],
+      "interiorComparedFrames": 28272,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "chord_8_major",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        42112,
+        -400148
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "chord_8_major",
+      "boundary": "natural_end",
+      "durationFrames": 28560,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        42112,
+        -400148
+      ],
+      "interiorComparedFrames": 28272,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "chord_10_major",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        416983,
+        -478892
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "chord_10_major",
+      "boundary": "natural_end",
+      "durationFrames": 28560,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        416983,
+        -478892
+      ],
+      "interiorComparedFrames": 28272,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_kick",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -22493,
+        -14944
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_kick",
+      "boundary": "natural_end",
+      "durationFrames": 7680,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -22493,
+        -14944
+      ],
+      "interiorComparedFrames": 7392,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_snare",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        26906,
+        -17056
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_snare",
+      "boundary": "natural_end",
+      "durationFrames": 13440,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        26906,
+        -17056
+      ],
+      "interiorComparedFrames": 13152,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_closed_hat",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -61,
+        3465
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_closed_hat",
+      "boundary": "natural_end",
+      "durationFrames": 9600,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -61,
+        3465
+      ],
+      "interiorComparedFrames": 9312,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_bright_backbeat",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -14922,
+        -17158
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_bright_backbeat",
+      "boundary": "natural_end",
+      "durationFrames": 13440,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -14922,
+        -17158
+      ],
+      "interiorComparedFrames": 13152,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_cymbal",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -214587,
+        -372698
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "drum_source_cymbal",
+      "boundary": "natural_end",
+      "durationFrames": 33360,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -214587,
+        -372698
+      ],
+      "interiorComparedFrames": 33072,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_68",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        23626,
+        23626
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_68",
+      "boundary": "natural_end",
+      "durationFrames": 21456,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        23626,
+        23626
+      ],
+      "interiorComparedFrames": 21168,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_38",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        280334,
+        284883
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_38",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        280334,
+        284883
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_39",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        158175,
+        159658
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_39",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        158175,
+        159658
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_33",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -1931,
+        -1801
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "bass_33",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -1931,
+        -1801
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_57",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -460968,
+        -460968
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "where_you_are_now.prdepack",
+      "asset": "lead_57",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -460968,
+        -460968
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_60",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -29439,
+        -105576
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_60",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -29439,
+        -105576
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_62",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        44491,
+        44909
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_62",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        44491,
+        44909
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_64",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        121494,
+        -53737
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_64",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        121494,
+        -53737
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_53",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        67496,
+        4646
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_53",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        67496,
+        4646
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_67",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -136447,
+        73164
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_67",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -136447,
+        73164
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_69",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        3369,
+        59624
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_69",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        3369,
+        59624
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_36",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -671921,
+        -650280
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_36",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -671921,
+        -650280
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_38",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -107684,
+        -55028
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_38",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -107684,
+        -55028
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_40",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        282212,
+        438526
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_40",
+      "boundary": "natural_end",
+      "durationFrames": 15312,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        282212,
+        438526
+      ],
+      "interiorComparedFrames": 15024,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_41",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        735,
+        947
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_41",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        735,
+        947
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_43",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        111598,
+        111450
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_43",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        111598,
+        111450
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_45",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -74200,
+        -133679
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_45",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -74200,
+        -133679
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_34",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -808422,
+        -803050
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "bass_34",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -808422,
+        -803050
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "chord_5_major",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        486349,
+        -327633
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "chord_5_major",
+      "boundary": "natural_end",
+      "durationFrames": 28560,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        486349,
+        -327633
+      ],
+      "interiorComparedFrames": 28272,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "chord_0_dominant7",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -11489,
+        -20258
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "chord_0_dominant7",
+      "boundary": "natural_end",
+      "durationFrames": 9600,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -11489,
+        -20258
+      ],
+      "interiorComparedFrames": 9312,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "chord_2_minor",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -777979,
+        -854042
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "chord_2_minor",
+      "boundary": "natural_end",
+      "durationFrames": 13920,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -777979,
+        -854042
+      ],
+      "interiorComparedFrames": 13632,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "chord_10_major7",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        60321,
+        -43989
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "chord_10_major7",
+      "boundary": "natural_end",
+      "durationFrames": 28560,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        60321,
+        -43989
+      ],
+      "interiorComparedFrames": 28272,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_kick",
+      "boundary": "shortened_gate",
+      "durationFrames": 4416,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -50566,
+        -49950
+      ],
+      "interiorComparedFrames": 4128,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_kick",
+      "boundary": "natural_end",
+      "durationFrames": 4416,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -50566,
+        -49950
+      ],
+      "interiorComparedFrames": 4128,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_snare",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -97767,
+        -97779
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_snare",
+      "boundary": "natural_end",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -97767,
+        -97779
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_closed_hat",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        12411,
+        12225
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_closed_hat",
+      "boundary": "natural_end",
+      "durationFrames": 11040,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        12411,
+        12225
+      ],
+      "interiorComparedFrames": 10752,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_hand_perc_low",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        1305037,
+        -196920
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_hand_perc_low",
+      "boundary": "natural_end",
+      "durationFrames": 6240,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        1305037,
+        -196920
+      ],
+      "interiorComparedFrames": 5952,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_hand_perc_high",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        22278,
+        2533
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "drum_source_hand_perc_high",
+      "boundary": "natural_end",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        22278,
+        2533
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_70",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -23594,
+        -8009
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "auld_lang_syne_bossa.prdepack",
+      "asset": "lead_70",
+      "boundary": "natural_end",
+      "durationFrames": 29664,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -23594,
+        -8009
+      ],
+      "interiorComparedFrames": 29376,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_58",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        346512,
+        345621
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_58",
+      "boundary": "natural_end",
+      "durationFrames": 39840,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        346512,
+        345621
+      ],
+      "interiorComparedFrames": 39552,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_60",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        269001,
+        482265
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_60",
+      "boundary": "natural_end",
+      "durationFrames": 16032,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        269001,
+        482265
+      ],
+      "interiorComparedFrames": 15744,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_61",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -114281,
+        -105898
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_61",
+      "boundary": "natural_end",
+      "durationFrames": 17568,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -114281,
+        -105898
+      ],
+      "interiorComparedFrames": 17280,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_63",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        484150,
+        481612
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_63",
+      "boundary": "natural_end",
+      "durationFrames": 40704,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        484150,
+        481612
+      ],
+      "interiorComparedFrames": 40416,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_65",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -288840,
+        -281255
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_65",
+      "boundary": "natural_end",
+      "durationFrames": 36768,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -288840,
+        -281255
+      ],
+      "interiorComparedFrames": 36480,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_66",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -54961,
+        206209
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_66",
+      "boundary": "natural_end",
+      "durationFrames": 16800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -54961,
+        206209
+      ],
+      "interiorComparedFrames": 16512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_68",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -446703,
+        -448365
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_68",
+      "boundary": "natural_end",
+      "durationFrames": 10656,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -446703,
+        -448365
+      ],
+      "interiorComparedFrames": 10368,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_69",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        622953,
+        601986
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_69",
+      "boundary": "natural_end",
+      "durationFrames": 25248,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        622953,
+        601986
+      ],
+      "interiorComparedFrames": 24960,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_70",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -91290,
+        -91310
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_70",
+      "boundary": "natural_end",
+      "durationFrames": 29088,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -91290,
+        -91310
+      ],
+      "interiorComparedFrames": 28800,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_72",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -270532,
+        -264045
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_72",
+      "boundary": "natural_end",
+      "durationFrames": 20640,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -270532,
+        -264045
+      ],
+      "interiorComparedFrames": 20352,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_73",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -406228,
+        -309744
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_73",
+      "boundary": "natural_end",
+      "durationFrames": 40704,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -406228,
+        -309744
+      ],
+      "interiorComparedFrames": 40416,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_75",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        485701,
+        494261
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "lead_75",
+      "boundary": "natural_end",
+      "durationFrames": 40704,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        485701,
+        494261
+      ],
+      "interiorComparedFrames": 40416,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_29",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        5122,
+        5044
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_29",
+      "boundary": "natural_end",
+      "durationFrames": 40704,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        5122,
+        5044
+      ],
+      "interiorComparedFrames": 40416,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_34",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -852685,
+        -925685
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_34",
+      "boundary": "natural_end",
+      "durationFrames": 40704,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -852685,
+        -925685
+      ],
+      "interiorComparedFrames": 40416,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_37",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -62803,
+        -5787
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_37",
+      "boundary": "natural_end",
+      "durationFrames": 29088,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -62803,
+        -5787
+      ],
+      "interiorComparedFrames": 28800,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_39",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -335547,
+        -424323
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_39",
+      "boundary": "natural_end",
+      "durationFrames": 40704,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -335547,
+        -424323
+      ],
+      "interiorComparedFrames": 40416,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_41",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -105682,
+        -132818
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_41",
+      "boundary": "natural_end",
+      "durationFrames": 40704,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -105682,
+        -132818
+      ],
+      "interiorComparedFrames": 40416,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_42",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        683480,
+        691226
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_42",
+      "boundary": "natural_end",
+      "durationFrames": 19104,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        -1
+      ],
+      "previousFirstFrameLsb": [
+        683480,
+        691226
+      ],
+      "interiorComparedFrames": 18816,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_46",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -68171,
+        83563
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_46",
+      "boundary": "natural_end",
+      "durationFrames": 40704,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -68171,
+        83563
+      ],
+      "interiorComparedFrames": 40416,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_51",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -54374,
+        -93836
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "bass_51",
+      "boundary": "natural_end",
+      "durationFrames": 40704,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -54374,
+        -93836
+      ],
+      "interiorComparedFrames": 40416,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_10_minor",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        156236,
+        32820
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_10_minor",
+      "boundary": "natural_end",
+      "durationFrames": 31776,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        156236,
+        32820
+      ],
+      "interiorComparedFrames": 31488,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_1_major7",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -46839,
+        -77466
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_1_major7",
+      "boundary": "natural_end",
+      "durationFrames": 16416,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -46839,
+        -77466
+      ],
+      "interiorComparedFrames": 16128,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_3_minor",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        1061350,
+        962199
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_3_minor",
+      "boundary": "natural_end",
+      "durationFrames": 27456,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        1,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        1061350,
+        962199
+      ],
+      "interiorComparedFrames": 27168,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_6_major",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        34203,
+        33821
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_6_major",
+      "boundary": "natural_end",
+      "durationFrames": 16896,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        34203,
+        33821
+      ],
+      "interiorComparedFrames": 16608,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_5_major",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        385158,
+        32070
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "guitar_5_major",
+      "boundary": "natural_end",
+      "durationFrames": 33696,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        1
+      ],
+      "previousFirstFrameLsb": [
+        385158,
+        32070
+      ],
+      "interiorComparedFrames": 33408,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "drum_kick",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -27920,
+        -70257
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "drum_kick",
+      "boundary": "natural_end",
+      "durationFrames": 7920,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        -1
+      ],
+      "previousFirstFrameLsb": [
+        -27920,
+        -70257
+      ],
+      "interiorComparedFrames": 7632,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "drum_snare",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -25405,
+        -23031
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "drum_snare",
+      "boundary": "natural_end",
+      "durationFrames": 8880,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        -25405,
+        -23031
+      ],
+      "interiorComparedFrames": 8592,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "drum_hatClosed",
+      "boundary": "shortened_gate",
+      "durationFrames": 4800,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        0,
+        0
+      ],
+      "previousFirstFrameLsb": [
+        2403,
+        962
+      ],
+      "interiorComparedFrames": 4512,
+      "interiorByteIdenticalToPrevious": true
+    },
+    {
+      "pack": "parachute.prdepack",
+      "asset": "drum_hatClosed",
+      "boundary": "natural_end",
+      "durationFrames": 7920,
+      "firstFrameLsb": [
+        0,
+        0
+      ],
+      "lastFrameLsb": [
+        -1,
+        -1
+      ],
+      "previousFirstFrameLsb": [
+        2403,
+        962
+      ],
+      "interiorComparedFrames": 7632,
+      "interiorByteIdenticalToPrevious": true
+    }
+  ]
+}

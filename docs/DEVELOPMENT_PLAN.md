@@ -7,6 +7,8 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
    contracts, safe loader, strict selection-only Governor, rational timing,
    deterministic probabilities/variation, native sample renderer, save/reopen,
    synthetic MIDI/audio fixtures, invariant tests and reproducible source builds.
+   Version 0.3.2 fixes sampler boundary clicks with smooth playback envelopes and
+   verified renderer upgrades; Governor selection and pack bytes stay unchanged.
 2. **Authorized source proof — prototype assembled:** user-authorized selection
    of three CC BY songs; verified artist stems, source hashes, saved crops,
    preparation-only note variants, source drum MIDI and three coverage-limited

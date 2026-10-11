@@ -1,0 +1,53 @@
+{
+  "version": "0.3.2",
+  "archive": "PRDE1_0.3.2_Linux_x86_64.tar.gz",
+  "bytes": 70351281,
+  "sha256": "82ec2a7f17e0b3d10cefe94e7968230ea744e6bcb74e76b5c0b815aa60fdec86",
+  "parts": [
+    {
+      "file": "PRDE1_0.3.2_Linux_x86_64.tar.gz.part01",
+      "bytes": 8388608,
+      "sha256": "e2390b28eadc202454e2f951705af8f6016df8a6592a71e1f43eeafb9687e76d"
+    },
+    {
+      "file": "PRDE1_0.3.2_Linux_x86_64.tar.gz.part02",
+      "bytes": 8388608,
+      "sha256": "2218e43927f4a96b3e845baea029b1add78258b90ddde5c8d3d1255bb8538442"
+    },
+    {
+      "file": "PRDE1_0.3.2_Linux_x86_64.tar.gz.part03",
+      "bytes": 8388608,
+      "sha256": "629b7335a71847b62a3a807f3cd8f4a47543e9f4dc5f0f2b0cbfe19029b5266d"
+    },
+    {
+      "file": "PRDE1_0.3.2_Linux_x86_64.tar.gz.part04",
+      "bytes": 8388608,
+      "sha256": "5bb42351b8fa03e3d38b589bdd08bf8f6aaf0779f34795bb155faad4d71897a3"
+    },
+    {
+      "file": "PRDE1_0.3.2_Linux_x86_64.tar.gz.part05",
+      "bytes": 8388608,
+      "sha256": "c4acd44ac948ad8d6c3a716090c2bf8de0ff94687574dc658d9c0b457215a4f6"
+    },
+    {
+      "file": "PRDE1_0.3.2_Linux_x86_64.tar.gz.part06",
+      "bytes": 8388608,
+      "sha256": "ddccfcc0b3b49fd2ecaa4e3040ded35fc3afeedb0e6f7298963dd303f9abaca8"
+    },
+    {
+      "file": "PRDE1_0.3.2_Linux_x86_64.tar.gz.part07",
+      "bytes": 8388608,
+      "sha256": "79d0a94ac880fc91a1e38909caec8a640c580fa47e6980cf3a666e90b6f16788"
+    },
+    {
+      "file": "PRDE1_0.3.2_Linux_x86_64.tar.gz.part08",
+      "bytes": 8388608,
+      "sha256": "3307a04d4a377ae51356538919b008153db2b99340d33d81191f3b46daa8e349"
+    },
+    {
+      "file": "PRDE1_0.3.2_Linux_x86_64.tar.gz.part09",
+      "bytes": 3242417,
+      "sha256": "fed32122d359c1b1aa1e431d675ae9e8b50d1247008863ef92fea26179e7b3b5"
+    }
+  ]
+}

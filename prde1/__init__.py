@@ -1,3 +1,3 @@
 """PRDE1 control plane. No audio transformations live in this package."""
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"

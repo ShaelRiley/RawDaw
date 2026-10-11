@@ -81,6 +81,13 @@ meter/grid maps. Harmonic boundaries inspect actual held sample pitches. A
 created. Compatible notes continue only within their prepared duration/validated
 sustain. Chord samples require their complete pitch set to remain legal.
 
+Version 0.3.2 implements the sampler's release as a cubic smoothstep with zero
+endpoint/slope and adds an independent 1 ms start envelope, because onset offsets
+can skip baked source fades. The player caps natural one-shot exhaustion before
+applying release. Gates/boundaries remain half-open and add no pitched tail.
+These amplitude envelopes belong to playback, not selection-only governance;
+source PCM and its 1x frame clock remain unchanged. See `SAMPLE_BOUNDARIES.md`.
+
 One held voice per lead/bass/rhythm lane. Open and closed hats form one mutual
 choke/retrigger group. Tom 1/2 fixture identities are lower/higher; real pack
 ordering must reflect source identities, not transposed drum addresses. Definitely
@@ -143,3 +150,8 @@ infrastructure, not harmonic transposition. This buffered preview has preparatio
 latency and does not implement the future native real-time device/recording path.
 Cloud PCM decode/state tests do not establish physical-device fidelity, monitoring
 latency, subjective quality or Steam Deck performance.
+
+Launchers verify the current distribution's renderer hash/length/version even
+when an executable already exists. Verified archive installation replaces an old
+binary atomically; matching binaries need no archive reads. Extracted builds use
+their bound `BUILD_INFO.json`. This ensures a pulled engine fix reaches playback.

@@ -1,4 +1,4 @@
-# Parachute — full-length demonstration, 0.3.1
+# Parachute — full-length demonstration, 0.3.2
 
 The full demo lasts **2:42.91**: 112 bars of 4/4 at 165 quarter-note BPM. It uses
 only the existing 28-asset Parachute Song Pack and is saved as the ordinary
@@ -36,8 +36,13 @@ small probability/gate/neighbor changes use the saved deterministic seed.
 These are new authored performance patterns, not a transcription of the original
 Suno song or newly recorded complete lyrics. Drum fills use the actual kick,
 snare and closed hat; no unavailable drum sound is invented. Event gates and
-velocities supply the phrasing and dynamics. No waveform, playback rate, sample
+velocities supply the phrasing and dynamics. No source waveform, playback rate, sample
 pitch or Song Pack is altered.
+
+Version 0.3.2 keeps this score and applies the sampler boundary fix: a 1 ms
+start safety fade and smooth 5 ms release at each voice cutoff, including
+retriggers. The ready-rendered full demo includes the fix; Song Pack bytes stay
+identical. See [sample boundaries](SAMPLE_BOUNDARIES.md).
 
 Rebuild the score with `python3 tools/build_parachute_demo.py`, then use
 `make source-demo` to render/verify all nine included arrangements. The full demo

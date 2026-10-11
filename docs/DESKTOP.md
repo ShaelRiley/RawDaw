@@ -1,4 +1,4 @@
-# Desktop composition — 0.3.1
+# Desktop composition — 0.3.2
 
 Run `./run-prde1.sh` in the checkout or extracted distribution. Parachute opens
 as an editable starter. Click Play; preparation runs in a separate native process,
@@ -11,6 +11,11 @@ Version 0.3.1 adds the **Full Parachute demo · 2:43** button in Browser → Pac
 It opens the complete editable 112-bar project, with the same save/undo/mixer and
 export controls. Use `./run-prde1.sh --project packs/parachute_full.prdeproj` to
 open it directly. [Section timings and score](PARACHUTE_DEMO.md) describe its form.
+
+Version 0.3.2 adds smooth sample start/end envelopes to preview and export.
+The launcher verifies the current renderer and upgrades an older executable
+from the pulled build parts automatically. [Boundary details](SAMPLE_BOUNDARIES.md)
+describe the click fix.
 
 ## Write and edit
 

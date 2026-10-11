@@ -1,0 +1,74 @@
+{
+  "project": "parachute_full.prdeproj",
+  "version": "0.3.2",
+  "durationSeconds": 162.90908333333334,
+  "bars": 112,
+  "events": 2806,
+  "peakDbFS": -9.25788588106774,
+  "silentPadding": false,
+  "quietestBarRmsDbFS": -39.18,
+  "sections": [
+    {
+      "name": "Intro",
+      "startSeconds": 0.0,
+      "rmsDbFS": -31.05,
+      "peakDbFS": -13.11
+    },
+    {
+      "name": "Verse 1",
+      "startSeconds": 5.818187,
+      "rmsDbFS": -27.42,
+      "peakDbFS": -11.93
+    },
+    {
+      "name": "Pre-chorus 1",
+      "startSeconds": 29.090917,
+      "rmsDbFS": -25.55,
+      "peakDbFS": -11.44
+    },
+    {
+      "name": "Chorus 1",
+      "startSeconds": 40.727271,
+      "rmsDbFS": -24.03,
+      "peakDbFS": -9.26
+    },
+    {
+      "name": "Verse 2",
+      "startSeconds": 64.0,
+      "rmsDbFS": -26.61,
+      "peakDbFS": -11.93
+    },
+    {
+      "name": "Pre-chorus 2",
+      "startSeconds": 87.272729,
+      "rmsDbFS": -25.55,
+      "peakDbFS": -11.44
+    },
+    {
+      "name": "Chorus 2",
+      "startSeconds": 98.909083,
+      "rmsDbFS": -24.03,
+      "peakDbFS": -9.26
+    },
+    {
+      "name": "Bridge",
+      "startSeconds": 122.181813,
+      "rmsDbFS": -26.06,
+      "peakDbFS": -11.41
+    },
+    {
+      "name": "Final chorus",
+      "startSeconds": 133.818187,
+      "rmsDbFS": -24.02,
+      "peakDbFS": -9.26
+    },
+    {
+      "name": "Outro",
+      "startSeconds": 157.090917,
+      "rmsDbFS": -30.58,
+      "peakDbFS": -14.65
+    }
+  ],
+  "wavSha256": "9b762dc391b48c34a8760fc62d97a8e95089ad52e7c6fb28622ebcc3f1d8b54b",
+  "subjectiveListening": "Shael liked 0.3.1 and reported boundary clicks; 0.3.2 boundary fix awaits creator audition"
+}
