@@ -190,6 +190,12 @@ class Pack:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(archive.read(name))
             target.chmod(0o400)
+        from .coverage import Coverage
+        self.coverage = Coverage(self)
+        self.instruments = self.coverage.instruments
+
+    def sample_for(self, key):
+        return self.coverage.sample(key)
 
     @staticmethod
     def _wav(raw, path):
@@ -258,3 +264,4 @@ class Pack:
 
     def __exit__(self, *_):
         self.close()
+

@@ -1,7 +1,16 @@
 # Development plan
 
-Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
+Authority: the live PRDE1 SDD, sections 1–30 and the engineering selections in
 28.8. Repository notes implement it; they do not supersede it.
+
+**October 11 override — complete harmonic playback:** Section 30 supersedes the
+old missing-coverage gate. Hybrid preparation supplies every registered note,
+chord and inversion, sustained pitched holds and missing offered kit slots.
+Native source banks remain immutable; modeled assets are labeled honestly.
+Modes guide recommendations without withholding borrowed chords. Functional
+coverage is tested separately from source-fidelity/listening quality. See
+`HARMONIC_COVERAGE.md`; source separation, recording, VST3 and the wider approved
+v1 scope remain in this plan.
 
 1. **Core checkpoint — implemented and tested:** experimental pack/project/event
    contracts, safe loader, strict selection-only Governor, rational timing,
@@ -87,3 +96,4 @@ Authority: the live PRDE1 SDD, sections 1–29 and the engineering selections in
 Current communication boundary: real hardware, singing, subjective listening and
 source rights require the creator when they become relevant. Compilation,
 fixture renders and invariant testing are performed directly.
+

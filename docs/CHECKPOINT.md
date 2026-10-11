@@ -1,4 +1,33 @@
-# Current checkpoint — 0.3.4 drum punch and kick-to-bass sidechain
+# Current checkpoint — full harmonic coverage on the 0.3.4 engine
+
+Shael's October 11 request and SDD Section 30 supersede the earlier silent-gap
+policy. Every pack now supports all 528 registered chord voicings, all 70 lead/
+bass notes, and every tonic/mode combination. Native samples win; an offline
+hybrid preparation layer supplies missing targets and sustained holds, and
+explicitly modeled percussion fills missing offered slots. Borrowed chords play
+as authored. Relative tone choices adapt to changing chord size. Exact pitch
+conflicts, empty optional extras and intentional rests/mutes remain deliberate.
+
+Original packs and saved pack references are unchanged, and the existing native
+renderer, per-drum EQ, drum/master compression and bass sidechain are reused.
+No new runtime dependencies or network access are introduced. Source fidelity
+of reconstructed sounds is approximate and is labeled in the interface and
+export notices. Read `HARMONIC_COVERAGE.md` for the method and measured limits.
+The source-quality and physical-device gates below remain open.
+
+Validation: `make check` passed 89 Python/Qt tests plus native engine checks;
+`make demo` passed both synthetic render arrangements. The exhaustive real-pack
+audit exported 2,112 chord voicings (528 per pack) with correct pitch-class and
+inversion metadata and non-silent PCM in every event. All 70 role notes prepare
+per pack. All twelve existing scores export without conflicts, repeat byte for
+byte, and seek to exact full-render slices; GUI exports match the same auditions.
+Source SHA-256 values remain unchanged. Evidence is in
+`validation/full-chord-coverage.json`, `validation/full-harmonic-check.log`,
+`validation/full-harmonic-demo.log`, and `validation/full-harmonic-source-demos.json`.
+The sustain preparation also covers odd-length mono PCM and checks exact loop
+seam continuity. No subjective listening or physical Deck success is claimed.
+
+## Previous startup and drum-mix checkpoint
 
 The physical Deck then pulled `058d2f2` and still crashed after `Responsive
 workspace ready`, before the event loop, at the combined construction/show line.
@@ -228,3 +257,4 @@ The preparation tool is a bounded curated-stem prototype, not the public pack
 builder skill or a general arbitrary-song separator. See `SONG_PACKS.md` for
 sources, licenses, ingredients, coverage and reproducibility, and
 `DEVELOPMENT_PLAN.md` for the remaining production work.
+

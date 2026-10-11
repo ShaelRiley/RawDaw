@@ -47,7 +47,7 @@ def main(argv=None):
             if options.command=="validate-pack":
                 print(json.dumps({"packId":pack.manifest["packId"],"manifestSha256":pack.manifest_hash,
                                   "sourceKind":pack.manifest["source"]["kind"],"sampleCount":len(pack.samples),
-                                  "schemaValid":True,"coverageStatus":pack.manifest["validation"]["status"],"warnings":pack.warnings},indent=2)); return 0
+                                  "schemaValid":True,"coverageStatus":"complete-hybrid","sourceCoverageStatus":pack.manifest["validation"]["status"],"warnings":pack.warnings},indent=2)); return 0
             if options.command=="rank":
                 print(json.dumps(rank_progressions(pack,options.tonic,options.mode),indent=2,ensure_ascii=False)); return 0
             project=load_project(options.project)
@@ -81,3 +81,4 @@ def main(argv=None):
 
 if __name__=="__main__":
     raise SystemExit(main())
+

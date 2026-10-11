@@ -117,9 +117,9 @@ class CoreTests(unittest.TestCase):
         with Pack(self.rewrite(edit)) as pack:
             self.assertTrue(pack.warnings)
             plan=resolve(self.bind(self.project,pack),pack)
-            self.assertFalse(any(item["role"]=="bass" for item in plan["events"]))
-            self.assertTrue(any(item["code"]=="missing_role" for item in plan["conflicts"]))
-            self.assertFalse(any(item["playable"] for item in rank_progressions(pack,0,"major")))
+            self.assertTrue(any(item["role"]=="bass" for item in plan["events"]))
+            self.assertFalse(any(item["code"]=="missing_role" for item in plan["conflicts"]))
+            self.assertTrue(all(item["playable"] for item in rank_progressions(pack,0,"major")))
         def fictitious(manifest,_):manifest["instruments"]["bass"]["sampleId"]="does_not_exist"
         with self.assertRaises(ContractError):Pack(self.rewrite(fictitious))
 
@@ -196,7 +196,9 @@ class CoreTests(unittest.TestCase):
         self.project["harmony"][0]["chord"]={"degree":1,"alteration":0,"quality":"minor","inversion":0}
         before=copy.deepcopy(self.project)
         with Pack(self.base) as pack:plan=resolve(self.project,pack)
-        self.assertTrue(any(item["code"]=="missing_chord" for item in plan["conflicts"]))
+        self.assertEqual(plan['conflicts'],[])
+        rhythm=next(item for item in plan['events'] if item['role']=='rhythm')
+        self.assertEqual({n%12 for n in rhythm['notePitches']},{0,3,7})
         self.assertEqual(self.project,before)
 
     def test_governor_003_incompatible_held_note_fades_without_retrigger(self):
@@ -253,12 +255,12 @@ class CoreTests(unittest.TestCase):
         self.assertTrue(any(item["code"]=="missing_drum" for item in plan["conflicts"]))
         self.assertFalse(any(item["role"]=="drums.extra2" for item in plan["events"]))
 
-    def test_governor_009_one_shot_stops_at_actual_limit(self):
+    def test_governor_009_pitched_one_shot_extends_to_authored_gate(self):
         self.single(exact=64,duration="16")
         self.project["harmony"]=[{"beat":"0","chord":diatonic(0,"major",1)}]
         with Pack(self.base) as pack:plan=resolve(self.project,pack)
-        self.assertEqual(plan["events"][0]["endReason"],"natural_limit")
-        self.assertEqual(plan["events"][0]["endFrame"],round(0.65*48000)-48)
+        self.assertEqual(plan["events"][0]["endReason"],"gate")
+        self.assertEqual(plan["events"][0]["endFrame"],8*48000)
 
     def test_governor_010_probability_variation_and_audition_are_repeatable(self):
         for pattern in self.project["patterns"]:
@@ -296,7 +298,7 @@ class CoreTests(unittest.TestCase):
             self.assertTrue(any(item["playable"] for item in ranking))
             self.assertTrue(all(not item["missing"] for item in ranking if item["playable"]))
             unsupported=rank_progressions(pack,1,"major")
-            self.assertFalse(any(item["playable"] for item in unsupported))
+            self.assertTrue(all(item["playable"] for item in unsupported))
 
     # STATE: independent copies, native session fidelity, explicit capability limits.
     def test_state_001_copy_independence_and_harmony_preservation(self):
@@ -401,3 +403,4 @@ class CoreTests(unittest.TestCase):
 
 
 if __name__=="__main__":unittest.main()
+

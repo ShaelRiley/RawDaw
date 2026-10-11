@@ -46,7 +46,7 @@ class SourcePackTests(unittest.TestCase):
                 self.assertEqual(qa['releaseQualityGate'],'open')
                 self.assertEqual(qa['syntheticAssets'],0)
                 self.assertEqual(provenance['ingredients'],recipe['inputs'])
-                for sample in pack.samples.values():
+                for sample in pack.coverage.original_samples.values():
                     self.assertIn(sample['lineage']['kind'],('native','pre-rendered'))
                     self.assertIsNone(sample['loop'])
                     self.assertTrue(sample['quality']['accepted'])
@@ -87,7 +87,7 @@ class SourcePackTests(unittest.TestCase):
                         saved=Path(folder)/(path.stem+suffix+'.prdeproj')
                         save_project(saved,project)
                         self.assertEqual(load_project(saved),project)
-                    after={key:hashlib.sha256((pack.root/sample['path']).read_bytes()).hexdigest() for key,sample in pack.samples.items()}
+                    after={key:hashlib.sha256((pack.root/pack.samples[key]['path']).read_bytes()).hexdigest() for key in before}
                     self.assertEqual(before,after)
 
     def test_parachute_preserves_user_rights_and_only_native_supplied_ingredients(self):
@@ -104,8 +104,8 @@ class SourcePackTests(unittest.TestCase):
             selected={'lead','rhythm','bass','drums'}
             allowed={key+':'+recipe['inputs'][key]['sha256'] for key in selected}
             self.assertTrue(all(s['lineage']['kind']=='native' and s['lineage']['sourceAsset'] in allowed
-                                for s in pack.samples.values()))
-            self.assertTrue(all(s['lineage']['transformationCost']==0 for s in pack.samples.values()))
+                                for s in pack.coverage.original_samples.values()))
+            self.assertTrue(all(s['lineage']['transformationCost']==0 for s in pack.coverage.original_samples.values()))
             self.assertTrue(all(len(s['pitches'])>1 for s in pack.samples.values() if s['role']=='rhythm'))
             self.assertEqual(pack.manifest['instruments']['lead']['displayName'],recipe['roleLabels']['lead'])
             self.assertTrue(all(pack.manifest['instruments']['drums'][slot]['status']=='empty'
@@ -122,3 +122,4 @@ class SourcePackTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+

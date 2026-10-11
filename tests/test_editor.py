@@ -23,7 +23,7 @@ class DesktopEditing(unittest.TestCase):
         chords=parse_progression('i III VI iv',10,'natural_minor')
         self.editor.fill_progression(chords,[Fraction(4)]*4)
         self.assertEqual(self.editor.project['harmony'][1]['chord']['quality'],'major')
-        self.assertTrue(any(v['code']=='missing_chord' for v in self.editor.plan()['conflicts']))
+        self.assertEqual(self.editor.plan()['conflicts'],[])
         self.editor.undo();self.assertEqual(self.editor.plan(),before)
         self.assertEqual(hashlib.sha256(self.path.read_bytes()).digest(),digest)
         self.assertEqual(parse_progression('IIImaj7',10,'natural_minor')[0]['quality'],'major7')
@@ -75,3 +75,4 @@ class DesktopEditing(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+

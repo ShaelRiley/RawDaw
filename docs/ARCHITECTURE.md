@@ -1,5 +1,17 @@
 # Architecture decisions — first core checkpoint
 
+## Current override: full harmonic coverage (SDD Section 30)
+
+Shael's October 11 amendment supersedes the coverage-gating and strict mode
+withholding rules below. The current hybrid bank prefers native targets, prepares
+unrecorded notes/chords and sustain continuations through `coverage.py`, and feeds
+ordinary immutable PCM assets to the unchanged native player. Every registered
+chord is playable in every pack; mode guides degree interpretation and ranking.
+Only referenced assets enter a resolved plan, preserving stable indices regardless
+of audition history. See `HARMONIC_COVERAGE.md` for the method, fidelity limits,
+complete inventory and verification. Original archives and saved pack references
+remain immutable. The earlier ADRs below retain the original design history.
+
 These are replaceable engineering selections within the live SDD's approved
 scope, not claims of separate voice-session approval.
 
@@ -163,3 +175,4 @@ Launchers verify the current distribution's renderer hash/length/version even
 when an executable already exists. Verified archive installation replaces an old
 binary atomically; matching binaries need no archive reads. Extracted builds use
 their bound `BUILD_INFO.json`. This ensures a pulled engine fix reaches playback.
+

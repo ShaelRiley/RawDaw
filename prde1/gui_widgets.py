@@ -175,7 +175,7 @@ class ChordDialog(QDialog):
         self.inversion=QComboBox();self.inversion.addItems(['Root position','1st inversion','2nd inversion','3rd inversion']);self.inversion.setCurrentIndex(current['inversion'])
         form.addRow('Degree',self.degree);form.addRow('Quality',self.quality);form.addRow('Root alteration',self.alteration);form.addRow('Inversion',self.inversion)
         self.explanation=QLabel();self.explanation.setWordWrap(True);layout.addWidget(self.explanation)
-        layout.addWidget(QLabel('Custom chords remain authored even when a prepared sound is unavailable.'))
+        layout.addWidget(QLabel('Every chord is playable. Native sounds are preferred; unrecorded chords are reconstructed.'))
         buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Ok|QDialogButtonBox.StandardButton.Cancel);buttons.accepted.connect(self.accept);buttons.rejected.connect(self.reject);layout.addWidget(buttons)
         self.buttons=buttons
         for box in (self.degree,self.quality,self.alteration,self.inversion):box.currentIndexChanged.connect(self.explain)
@@ -189,8 +189,8 @@ class ChordDialog(QDialog):
         sample=self.editor.pack.mappings.get(('rhythm',root,chord['quality'],chord['inversion']))
         valid_inversion=chord['inversion']<len(QUALITIES[chord['quality']])
         self.buttons.button(QDialogButtonBox.StandardButton.Ok).setEnabled(valid_inversion)
-        status='Whole chord prepared' if sample else 'No prepared whole chord in this pack'
-        if not legal:status='Outside this key/mode — pitched events will be withheld'
+        status='Native whole chord' if sample else 'Playable · reconstructed whole chord'
+        if not legal:status+=' · borrowed chord outside the selected mode'
         if not valid_inversion:status='This chord has no such inversion'
         self.explanation.setText(chord_label(self.editor.project,self.position,chord)+'\n'+status)
 
@@ -216,7 +216,7 @@ class EventDialog(QDialog):
         self.sound=QComboBox()
         if self.role=='drums':
             for slot in SLOTS:
-                value=editor.pack.manifest['instruments']['drums'][slot]
+                value=editor.pack.instruments['drums'][slot]
                 self.sound.addItem(SLOT_NAMES[slot]+' · '+value['displayName']+(' · unavailable' if value['status']!='available' else ''),value['soundIdentity'])
                 if value['status']!='available':self.sound.model().item(self.sound.count()-1).setEnabled(False)
             index=self.sound.findData(choice['soundIdentity'])
@@ -232,8 +232,8 @@ class EventDialog(QDialog):
         self.exact.currentIndexChanged.connect(lambda:self.lock_exact.setChecked(self.exact.currentData() is not None))
         for label,widget in [('Velocity',self.velocity),('Attack',self.attack),('Play probability',self.play),('Change probability',self.change),('Variation',self.variation),('',self.locked),('',self.lock_exact)]:form.addRow(label,widget)
         limits=[(s['frames']-s['onsetFrame'])/48000 for s in editor.pack.samples.values() if s['role']==self.role]
-        info='Whole chord trigger; prepared audio stays intact.' if self.role=='rhythm' else 'One prepared note at a time.' if self.role in ('lead','bass') else 'Drum addresses are fixed sound identities.'
-        if limits:info+=f' Prepared natural durations: {min(limits):.2f}–{max(limits):.2f} seconds; longer gates cannot stretch one-shots.'
+        info='Whole chord trigger; sustains for its authored gate.' if self.role=='rhythm' else 'One chord tone at a time; sustains for its authored gate.' if self.role in ('lead','bass') else 'Drum addresses are fixed sound identities.'
+        if self.role=='drums' and limits:info+=f' Natural hit durations: {min(limits):.2f}–{max(limits):.2f} seconds.'
         help_text=QLabel(info);help_text.setWordWrap(True);layout.addWidget(help_text)
         self.error=QLabel();self.error.setWordWrap(True);self.error.setObjectName('warning');layout.addWidget(self.error)
         buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Ok|QDialogButtonBox.StandardButton.Cancel);buttons.accepted.connect(self.accept);buttons.rejected.connect(self.reject);layout.addWidget(buttons)
@@ -252,3 +252,4 @@ class EventDialog(QDialog):
             self.editor.edit_event(self.instance_id,self.event['id'],self.value())
         except (ValueError,KeyError) as error:self.error.setText(str(error));return
         super().accept()
+

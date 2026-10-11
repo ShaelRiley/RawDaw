@@ -82,11 +82,11 @@ class NativeDesktop(unittest.TestCase):
         w.player.setPosition(1000);w.player.play();QTest.qWait(80)
         self.assertGreaterEqual(w.player.position(),1000);self.assertEqual(w.editor.plan(),plan);self.assertEqual(w.editor.fingerprint,fingerprint)
 
-    def test_unavailable_chord_is_visible_and_blocks_unapproved_export(self):
+    def test_unrecorded_chord_is_reconstructed_and_keeps_playback_and_export_enabled(self):
         w=self.window
         w.change(lambda:w.editor.set_chord(Fraction(4),dict(degree=3,quality='major',inversion=0,alteration=0)))
-        self.assertIn('No prepared whole chord',w.issues.toPlainText());self.assertFalse(w.play_button.isEnabled());self.assertFalse(w.export_button.isEnabled())
-        target=Path(self.folder.name)/'blocked.wav';self.assertFalse(w.request_render(destination=target));self.assertFalse(target.exists())
+        self.assertIn('reconstructed',w.issues.toPlainText());self.assertTrue(w.play_button.isEnabled());self.assertTrue(w.export_button.isEnabled())
+        target=Path(self.folder.name)/'reconstructed.wav';self.assertTrue(w.request_render(destination=target));self.wait_render();self.assertTrue(target.exists())
         w.undo();self.assertTrue(w.play_button.isEnabled())
 
     def test_recovery_restores_mix_timing_selection_and_variation(self):
@@ -126,3 +126,4 @@ class NativeDesktop(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+

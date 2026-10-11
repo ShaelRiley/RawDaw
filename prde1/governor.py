@@ -38,22 +38,18 @@ def _choose(pack,role,choice,chord_pitches,exact=False,variation=False):
         note=choice["exactMidi"]
         if note%12 not in chord_pitches:
             return None,"exact_pitch_conflict","Locked exact pitch is incompatible with the governing chord"
-        sample=pack.mappings.get((role,note))
-        if not sample:
-            return None,"missing_sample",f"No prepared {role} note {note}"
+        low,high=REGISTERS[role]
+        if not low<=note<=high:
+            return None,"register_conflict","Locked pitch is outside the instrument register"
+        sample=pack.sample_for((role,note))
         return sample,None,None
     tone=choice["tone"]
-    if tone>=len(chord_pitches):
-        return None,"tone_unavailable","Requested chord tone does not exist in this chord"
+    tone%=len(chord_pitches)
     permitted=set(chord_pitches) if variation else {chord_pitches[tone]}
     low,high=REGISTERS[role]
-    candidates=[sample for key,sample in pack.mappings.items()
-                if key[0]==role and low<=key[1]<=high and key[1]%12 in permitted]
-    if not candidates:
-        return None,"missing_sample",f"No prepared {role} asset for requested chord tone"
-    candidates.sort(key=lambda sample:(abs(sample["pitches"][0]-choice["registerMidi"]),
-                                     sample["lineage"]["transformationCost"],sample["pitches"][0],sample["id"]))
-    return candidates[0],None,None
+    candidates=[note for note in range(low,high+1) if note%12 in permitted]
+    candidates.sort(key=lambda note:(abs(note-choice["registerMidi"]),pack.coverage.cost((role,note)),note))
+    return pack.sample_for((role,candidates[0])),None,None
 
 
 def vst_chord_notes(root, quality, inversion=0, base=60):
@@ -93,11 +89,10 @@ def resolve(project, pack, *, approve_altered=False):
     end_frame=frame(end)
     if not 1<=end_frame<=86400000:
         raise ContractError("Render duration exceeds 30-minute profile")
-    assets=sorted(pack.samples.values(),key=lambda sample:sample["id"])
-    indices={sample["id"]:index for index,sample in enumerate(assets)}
     resolved=[]
     conflicts=[]
-    warnings=list(pack.warnings)
+    warnings=[]
+    reconstructed=set()
     if project["pluginTracks"]:
         warnings.append("Explicitly approved altered render: additional VST instruments are silent in this core checkpoint")
     boundary_beats=sorted({beat(item["beat"]) for name in ("harmony","tonalityMap") for item in project[name]})
@@ -131,7 +126,7 @@ def resolve(project, pack, *, approve_altered=False):
                 slot=None
                 if role=="drums":
                     sound=authored["choice"]["soundIdentity"]
-                    candidates=[(key,item) for key,item in pack.manifest["instruments"]["drums"].items()
+                    candidates=[(key,item) for key,item in pack.instruments["drums"].items()
                                 if item["status"]=="available" and item["soundIdentity"]==sound]
                     if not candidates:
                         issue,message="missing_drum",f"No prepared drum with sound identity {sound!r}; no slot-based substitution"
@@ -139,27 +134,20 @@ def resolve(project, pack, *, approve_altered=False):
                         slot,record=candidates[0]
                         if record["pitchClass"]=="uncertain":
                             issue,message="uncertain_pitch","Pitched-extra classification requires review"
-                        elif record["pitchClass"]=="pitched" and (not legal or not {note%12 for note in record["pitches"]}.issubset(pitches)):
+                        elif record["pitchClass"]=="pitched" and not {note%12 for note in record["pitches"]}.issubset(pitches):
                             issue,message="pitched_extra_conflict","Placed pitched hit conflicts with harmony; retained and withheld"
                         else:
                             sample=pack.samples[record["sampleId"]]
-                elif pack.manifest["instruments"][role]["status"]!="available":
-                    issue,message="missing_role",f"{role} unavailable: {pack.manifest['instruments'][role]['reason']}"
-                elif not legal:
-                    issue,message="harmony_conflict",f"Exact authored {roman(chord)} is outside the declared mode; preserved without reinterpretation"
                 elif role=="rhythm":
-                    sample=pack.mappings.get((role,root,chord["quality"],chord["inversion"]))
-                    if not sample:
-                        issue,message="missing_chord",f"No prepared whole chord for {roman(chord)} (root {root}, {chord['quality']})"
+                    sample=pack.sample_for((role,root,chord["quality"],chord["inversion"]))
                 else:
                     sample,issue,message=_choose(pack,role,authored["choice"],pitches,expression["lockExactPitch"])
                     if sample and changed and expression["variation"]=="nearby_note" and not expression["lockExactPitch"]:
-                        # Try a covered neighbor; unavailable substitutions retain the legal authored choice.
-                        alternatives=[asset for key,asset in pack.mappings.items() if key[0]==role
-                                      and key[1]%12 in pitches and asset["id"]!=sample["id"]]
-                        alternatives.sort(key=lambda asset:(abs(asset["pitches"][0]-sample["pitches"][0]),asset["id"]))
+                        low,high=REGISTERS[role]
+                        alternatives=[note for note in range(low,high+1) if note%12 in pitches and note!=sample['pitches'][0]]
+                        alternatives.sort(key=lambda note:(abs(note-sample['pitches'][0]),note))
                         if alternatives:
-                            sample=alternatives[0]
+                            sample=pack.sample_for((role,alternatives[0]))
                 if issue:
                     conflicts.append({"eventId":event_id,"code":issue,"message":message})
                     continue
@@ -170,11 +158,13 @@ def resolve(project, pack, *, approve_altered=False):
                     for boundary in boundary_beats:
                         if trigger<boundary<stop:
                             _,_,following,following_legal=context(project,boundary)
-                            if not following_legal or not {note%12 for note in actual_pitches}.issubset(following):
+                            if not {note%12 for note in actual_pitches}.issubset(following):
                                 stop=boundary
                                 reason="harmonic_boundary"
                                 break
                 first,last=frame(trigger),frame(stop)
+                if role!='drums' and not sample['loop'] and last>first+sample['frames']-sample['onsetFrame']:
+                    sample=pack.coverage.sustain(sample)
                 if not sample["loop"] and last>first+sample["frames"]-sample["onsetFrame"]:
                     last=first+sample["frames"]-sample["onsetFrame"]
                     reason="natural_limit"
@@ -189,7 +179,8 @@ def resolve(project, pack, *, approve_altered=False):
                 pan=max(-1,min(1,channel["pan"]+(group["pan"] if group and processing is None else 0)))
                 if gain>8:
                     raise ContractError("Combined channel/sample gain exceeds core headroom profile")
-                resolved.append({"id":event_id,"assetIndex":indices[sample["id"]],"startFrame":first,"endFrame":last,
+                if sample['id'].startswith('hybrid_'):reconstructed.add(sample['id'])
+                resolved.append({"id":event_id,"sampleId":sample['id'],"startFrame":first,"endFrame":last,
                                  "releaseFrames":min(DECLICK_FRAMES,last-first),"attackFrames":round(expression["attackMs"]*RATE/1000),
                                  "gain":gain,"pan":pan,"notePitches":actual_pitches,"role":role if role!="drums" else "drums."+slot,
                                  "endReason":reason})
@@ -210,6 +201,11 @@ def resolve(project, pack, *, approve_altered=False):
                     break
     # Same-position duplicates are preserved in authorship but only the deterministic last voice is active.
     resolved=[event for event in resolved if event["endFrame"]>event["startFrame"]]
+    used={event['sampleId'] for event in resolved}
+    assets=sorted((pack.samples[identity] for identity in used),key=lambda sample:sample['id'])
+    indices={sample['id']:index for index,sample in enumerate(assets)}
+    for event in resolved:event['assetIndex']=indices[event.pop('sampleId')]
+    if reconstructed:warnings.append(f"Hybrid instruments: {len(reconstructed)} reconstructed assets used; these are modeled sounds, not native source recordings")
     endpoints=sorted([(event["startFrame"],1) for event in resolved]+[(event["endFrame"],-1) for event in resolved])
     voices=peak=0
     for _,delta in endpoints:
@@ -232,25 +228,19 @@ def rank_progressions(pack,tonic,mode):
     """Initial coverage ranking; no claim that these six fixtures form a large catalog."""
     result=[]
     for name,degrees in PRESETS:
-        missing=[role+":unavailable" for role in ("lead","rhythm","bass") if pack.manifest["instruments"][role]["status"]!="available"]
+        missing=[]
         costs=[]
         for degree in degrees:
             chord=diatonic(tonic,mode,degree)
             root,pitches,legal=chord_identity(tonic,mode,chord)
-            sample=pack.mappings.get(("rhythm",root,chord["quality"],0))
-            if not sample or not legal:
-                missing.append("rhythm:"+roman(chord))
-            else:
-                costs.append(sample["lineage"]["transformationCost"])
+            costs.append(pack.coverage.cost(('rhythm',root,chord['quality'],0)))
             for role in ("lead","bass"):
                 for pitch in pitches:
-                    candidates=[sample for key,sample in pack.mappings.items() if key[0]==role and key[1]%12==pitch]
-                    if not candidates:
-                        missing.append(role+":"+str(pitch))
-                    else:
-                        costs.append(min(sample["lineage"]["transformationCost"] for sample in candidates))
+                    low,high=REGISTERS[role]
+                    costs.append(min(pack.coverage.cost((role,note)) for note in range(low,high+1) if note%12==pitch))
         result.append({"id":name,"degrees":list(degrees),"display":[roman(diatonic(tonic,mode,degree)) for degree in degrees],
                        "playable":not missing,"missing":missing,"worstPreparationCost":max(costs,default=0),
                        "averagePreparationCost":sum(costs)/max(1,len(costs)),
-                       "explanation":"All required prepared targets covered" if not missing else "Explicit prepared-sample gaps"})
+                       "explanation":"Full chord coverage; native samples preferred, reconstruction supplies unrecorded targets"})
     return sorted(result,key=lambda item:(len(item["missing"]),item["worstPreparationCost"],item["averagePreparationCost"],item["id"]))
+

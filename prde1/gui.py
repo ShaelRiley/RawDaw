@@ -265,7 +265,7 @@ class MainWindow(QMainWindow):
             except (ValueError,OSError):continue
             row=QListWidgetItem(path.stem.replace('_',' ').title());row.setData(Qt.ItemDataRole.UserRole,str(path));row.setToolTip(project['title']);self.arrangements.addItem(row)
         layout.addWidget(button('Load arrangement',self.load_arrangement));tabs.addTab(pack_panel,'Packs')
-        preset_panel=QWidget();layout=QVBoxLayout(preset_panel);help_text=QLabel('Six development templates, ranked by actual prepared coverage. Custom harmony is always available.');help_text.setWordWrap(True);layout.addWidget(help_text)
+        preset_panel=QWidget();layout=QVBoxLayout(preset_panel);help_text=QLabel('Six development templates, ranked by source fidelity. Every chord and custom progression is playable.');help_text.setWordWrap(True);layout.addWidget(help_text)
         self.presets=QListWidget();self.presets.setAccessibleName('Progression templates and coverage');layout.addWidget(self.presets,1);layout.addWidget(button('Apply selected progression',self.apply_preset));layout.addWidget(button('Custom progression…',self.custom_dialog));tabs.addTab(preset_panel,'Progressions')
         pattern_panel=QWidget();layout=QVBoxLayout(pattern_panel);self.source_clips=QListWidget();layout.addWidget(QLabel('Patterns recovered from active source'));layout.addWidget(self.source_clips,1);layout.addWidget(button('Place source pattern here',self.place_source));tabs.addTab(pattern_panel,'Patterns')
         if not self._safe_workspace:self.resizeDocks([self.inspector_dock,self.browser_dock],[205,245],Qt.Orientation.Horizontal)
@@ -557,7 +557,7 @@ class MainWindow(QMainWindow):
         if not self.editor or not self.selected_id or self._refreshing:return
         pattern=self.editor.pattern(self.selected_id);step=beat(pattern['length'])/self.step_resolution.currentData();sound=''
         if pattern['role']=='drums':
-            record=self.pack.manifest['instruments']['drums'][SLOTS[row]]
+            record=self.pack.instruments['drums'][SLOTS[row]]
             if record['status']!='available':self.notice(SLOT_NAMES[SLOTS[row]]+': '+record['reason']);return
             sound=record['soundIdentity']
         self.change(lambda:self.editor.toggle_step(self.selected_id,column*step,step,sound))
@@ -609,7 +609,7 @@ class MainWindow(QMainWindow):
         self.gain.setValue(channel['gainDb']);self.pan.setValue(channel['pan']*100);self.muted.setChecked(channel['muted'])
         self.selection_label.setText(('Editing '+self.role.title()+' pattern' if self.selected_id else self.role.title()+' track')+'\n'+self.edit_position(beat(self.editor.instance(self.selected_id)['beat']) if self.selected_id else self.cursor))
         self.inspector_info.setText(('Whole chord events' if self.role=='rhythm' else 'Single prepared notes' if self.role in ('lead','bass') else 'Fixed kit sounds')+'\nOne active Song Pack\nVariation revision '+str(project['variation']['revision']))
-        self.pack_label.setText(self.pack.manifest['source']['title']+'\n'+str(len(self.pack.samples))+' prepared assets · coverage limited')
+        self.pack_label.setText(self.pack.manifest['source']['title']+'\nFull chord coverage · native + reconstructed instruments')
         self.undo_action.setEnabled(bool(self.editor.undo_stack));self.redo_action.setEnabled(bool(self.editor.redo_stack))
         self.undo_action.setText('Undo '+self.editor.undo_stack[-1][0] if self.editor.undo_stack else 'Undo');self.redo_action.setText('Redo '+self.editor.redo_stack[-1][0] if self.editor.redo_stack else 'Redo')
         self.save_status.setText('Unsaved changes' if self.editor.dirty else ('Saved' if self.editor.path else 'Editable starter · '+__version__))
@@ -617,7 +617,7 @@ class MainWindow(QMainWindow):
         self.timeline.refresh(self.editor,self.selected_id,self.cursor);self.refresh_steps();self.refresh_mixer();self.refresh_browser()
         try:
             self._plan=self.editor.plan();conflicts=self._plan['conflicts'];warnings=self._plan['warnings']
-            self.issues.setPlainText(('Conflicts — authored events are retained\n'+'\n'.join(v['eventId']+': '+v['message'] for v in conflicts) if conflicts else 'All active requests resolve to prepared source assets.')+
+            self.issues.setPlainText(('Conflicts — authored events are retained\n'+'\n'.join(v['eventId']+': '+v['message'] for v in conflicts) if conflicts else 'All active requests resolve. Native and reconstructed sounds use the same mixer.')+
                 '\n\nNatural limits and source notices\n'+'\n'.join(dict.fromkeys(warnings))+'\n\nSource credits\n'+'\n'.join(v['attribution']+'\n'+v['license'] for v in project['credits']))
             missing=any(v['code'].startswith('missing_') for v in conflicts)
             self.guidance.setText('Choose a covered chord or edit the flagged step — see Coverage & warnings.' if missing else f'{len(conflicts)} incompatible events are preserved and withheld. Review Coverage & warnings.' if conflicts else 'Ready to play. Select a pattern to edit its steps, or edit harmony above the tracks.')
@@ -638,7 +638,7 @@ class MainWindow(QMainWindow):
         offgrid=sum(1 for e in pattern['events'] if beat(e['beat'])/step%1)
         self.step_help.setText(f'Click or Space toggles exact-grid steps. {offgrid} off-grid events are retained in the Event list. Disabled events stay silent.')
         for row,name in enumerate(rows):
-            record=self.pack.manifest['instruments']['drums'][name] if pattern['role']=='drums' else None
+            record=self.pack.instruments['drums'][name] if pattern['role']=='drums' else None
             for column in range(n):
                 matches=[e for e in pattern['events'] if beat(e['beat'])==column*step and (not record or e['choice']['soundIdentity']==record['soundIdentity'])]
                 active=any(e['enabled'] for e in matches);unavailable=record is not None and record['status']!='available'
@@ -908,3 +908,4 @@ def main(argv=None):
 
 
 if __name__=='__main__':raise SystemExit(main())
+

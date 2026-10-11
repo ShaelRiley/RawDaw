@@ -1,5 +1,12 @@
 # PRDE1 — Pop Rock Development Environment 1
 
+**Full harmonic coverage:** every Song Pack now plays all 528 registered chord
+voicings (12 roots, 13 qualities, every valid inversion), plus the complete lead
+and bass registers. Native recordings are preferred; a deterministic hybrid
+instrument layer reconstructs unrecorded sounds and supplies sustained holds.
+Borrowed chords play even outside the selected mode. Missing offered kit slots
+have explicitly modeled sounds. See [the methodology](docs/HARMONIC_COVERAGE.md).
+
 Build **0.3.4** includes **four complete song demos**: Reach Out (2:32.92),
 Where You Are Now (2:33.60), Auld Lang Syne (Bossa) (2:42.46), and Parachute
 (2:42.91). Each has an intro, verses, pre-choruses, a recurring chorus hook,
@@ -137,3 +144,4 @@ core behavior and are separate from the four actual-source packs.
 
 Application code: MIT. Dependencies/content retain their terms;
 see [components](docs/COMPONENTS.md) and [remaining scope](docs/DEVELOPMENT_PLAN.md).
+

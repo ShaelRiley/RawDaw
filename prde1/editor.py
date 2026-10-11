@@ -232,7 +232,7 @@ class Editor:
                 for e in target['events']:
                     if e['id'] in {v['id'] for v in matches}:e['enabled']=enabled
         else:
-            if role=='drums' and not any(v['status']=='available' and v['soundIdentity']==sound for v in self.pack.manifest['instruments']['drums'].values()):
+            if role=='drums' and not any(v['status']=='available' and v['soundIdentity']==sound for v in self.pack.instruments['drums'].values()):
                 raise ContractError('This drum slot has no prepared sound')
             tone=0
             if role in REGISTERS:
@@ -279,7 +279,7 @@ class Editor:
     def covered_notes(self,role,position):
         _,_,pitches,legal=context(self.project,position)
         low,high=REGISTERS[role]
-        return sorted(k[1] for k in self.pack.mappings if k[0]==role and low<=k[1]<=high and legal and k[1]%12 in pitches)
+        return [note for note in range(low,high+1) if note%12 in pitches]
 
     def source_patterns(self):
         rows=read_json((self.pack.root/self.pack.manifest['clips']['index']).read_bytes())
@@ -288,3 +288,4 @@ class Editor:
             pattern=read_json((self.pack.root/row['normalizedPath']).read_bytes())
             result.append((row,pattern))
         return result
+

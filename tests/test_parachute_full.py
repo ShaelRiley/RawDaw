@@ -29,7 +29,7 @@ class FullParachuteDemo(unittest.TestCase):
             plan = resolve(project, pack)
             self.assertEqual(plan['conflicts'], [])
             self.assertEqual(plan['endFrame'], round(duration * RATE))
-            self.assertTrue(all(sample['lineage']['kind'] == 'native' for sample in pack.samples.values()))
+            self.assertTrue(all(sample['lineage']['kind'] == 'native' for sample in pack.coverage.original_samples.values()))
             self.assertEqual(project['packReference']['manifestSha256'], pack.manifest_hash)
             with tempfile.TemporaryDirectory() as folder:
                 saved = Path(folder) / 'song.prdeproj'
@@ -68,3 +68,4 @@ class FullParachuteDemo(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
