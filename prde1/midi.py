@@ -81,3 +81,39 @@ def inspect_midi(raw:bytes):
         if not finished or held:raise ContractError("Missing end-of-track or dangling MIDI notes")
     if cursor!=len(raw):raise ContractError("Extra MIDI chunks/trailing data")
     return {"format":format_,"tracks":tracks,"ticksPerQuarter":division,"notes":sorted(notes,key=lambda n:(n["tick"],n["channel"],n["note"])),"controls":sorted(controls)}
+
+
+def encode_notes(notes, quarter_bpm=120, ppq=960, tempo_map=None):
+    """Standard note-level SMF interchange, with explicit PPQ quantization."""
+    def vlq(number):
+        result=[number&127];number>>=7
+        while number:result.insert(0,(number&127)|128);number>>=7
+        if len(result)>4:raise ContractError('MIDI time exceeds interchange bounds')
+        return bytes(result)
+    if not 20<=quarter_bpm<=300:raise ContractError('Unsupported MIDI tempo')
+    grouped={}
+    for item in notes:
+        start=round(item['beat']*ppq);end=max(start+1,round((item['beat']+item['duration'])*ppq))
+        if not 0<=item['note']<=127 or not 0<=item['channel']<=15:raise ContractError('Invalid MIDI address')
+        grouped.setdefault((item['channel'],item['note']),[]).append((start,end,max(1,min(127,round(item['velocity']*127)))))
+    events=[]
+    for (channel,note),items in grouped.items():
+        # MIDI address reuse has a defined note-off before the next note-on.
+        by_start={start:(end,velocity) for start,end,velocity in items}
+        starts=sorted(by_start)
+        for index,start in enumerate(starts):
+            end,velocity=by_start[start]
+            if index+1<len(starts):end=min(end,starts[index+1])
+            events.extend([(start,1,bytes((144|channel,note,velocity))),(end,0,bytes((128|channel,note,0)))])
+    from fractions import Fraction
+    for tempo in tempo_map or [{'beat':'0','quarterBpm':quarter_bpm}]:
+        if not 20<=tempo['quarterBpm']<=300:raise ContractError('Unsupported MIDI tempo')
+        events.append((round(Fraction(tempo['beat'])*ppq),-1,b'\xff\x51\x03'+round(60000000/tempo['quarterBpm']).to_bytes(3,'big')))
+    track=bytearray();previous=0
+    for tick,_,payload in sorted(events,key=lambda e:(e[0],e[1],e[2])):
+        track.extend(vlq(tick-previous));track.extend(payload);previous=tick
+    track.extend(b'\x00\xff\x2f\x00')
+    raw=b'MThd'+struct.pack('>IHHH',6,0,1,ppq)+b'MTrk'+struct.pack('>I',len(track))+track
+    inspect_midi(raw)
+    return raw
+

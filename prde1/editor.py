@@ -17,6 +17,7 @@ from .contracts import ContractError, SLOTS, VERSION, canonical_bytes, read_json
 from .governor import context, resolve
 from .music import MODES, NAMES, QUALITIES, REGISTERS, at, beat, chord_identity, diatonic, quarter_seconds, roman
 from .project import duplicate, load_project, make_independent, save_project, validate_project
+from .sequencer import SequencerEditing
 
 
 def identity(prefix):
@@ -121,7 +122,7 @@ def atomic_copy(source, destination):
         if os.path.exists(name):os.unlink(name)
 
 
-class Editor:
+class Editor(SequencerEditing):
     def __init__(self, project, pack, path=None):
         validate_project(project)
         if project['packReference']!={'packId':pack.manifest['packId'],'manifestSha256':pack.manifest_hash}:

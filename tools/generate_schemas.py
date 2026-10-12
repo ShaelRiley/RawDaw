@@ -88,6 +88,14 @@ event = obj({"id": ID, "beat": BEAT, "duration": BEAT, "kind": {"type":"string",
                                                "soundIdentity": TEXT}), "expression": expression})
 pattern = obj({"id": ID, "role": {"type":"string","enum":ROLES}, "length":BEAT, "events":array(ref("event"),4096),
                "provenance":obj({"sourceClip":TEXT,"license":TEXT,"changes":TEXT})})
+event['properties']['flam']=BOOLEAN
+event['properties']['offsetBeat']={"type":"string","pattern":"^-?[0-9]+(?:/[1-9][0-9]*)?$","maxLength":30}
+step_row=obj({'id':ID,'note':{'type':['integer','null'],'minimum':0,'maximum':127},'sound':TEXT,'label':TEXT,
+              'muted':BOOLEAN,'solo':BOOLEAN,'velocityScale':number(0,2),'velocityOffset':number(-1,1),
+              'gatePercent':number(1,200),'swingPercent':number(1,99),'offsetPercent':number(-50,50),'flamPercent':number(-50,50)})
+pattern['properties']['sequencer']=obj({'version':{'const':'step-v1'},'stepBeat':BEAT,'defaultVelocity':number(0,1),
+    'pitchMode':{'type':'string','enum':['follow','exact']},
+    'entryMode':{'type':'string','enum':['mono','poly']},'rows':array(step_row,128,1)})
 
 insert = obj({"pluginId": TEXT, "version":TEXT, "statePath":{ "type":["string","null"]},
               "bypassed":BOOLEAN, "missing":BOOLEAN})
@@ -148,3 +156,4 @@ if __name__ == "__main__":
         schema.update({"$schema":"https://json-schema.org/draft/2020-12/schema", "$id":f"urn:prde1:{name}:{VERSION}",
                        "title":f"PRDE1 experimental v1 {name} contract"})
         (ROOT/"schemas"/f"prde1-{name}-v1.schema.json").write_text(json.dumps(schema,indent=2)+"\n")
+

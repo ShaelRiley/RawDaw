@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import sys
 import tempfile
@@ -31,6 +32,7 @@ from .gui_widgets import COLORS, ROLES, SLOT_NAMES, ChordDialog, EventDialog, Fl
 from .music import MODES, NAMES, at, beat, diatonic, quarter_seconds, roman
 from .pack import Pack
 from .project import load_project, save_project
+from .step_widgets import StepSequencer
 from .mixing import DRUM_PRESETS, DRUM_COMPRESSOR, BASS_SIDECHAIN, apply_punch_mix, drum_eq
 
 STYLE='''
@@ -104,6 +106,7 @@ class MainWindow(QMainWindow):
         self._refreshing=False;self._closing=False;self._plan=None;self._job=None;self._generation=0;self._compact=None;self._scale_value=1
         self._layout_ready=False;self._layout_changing=False
         self._preview_key=None;self._pending_seek=0;self._settings=QSettings('ShaelRiley','PRDE1') if remember else None
+        self._playback_scope=None
         self.data_dir=Path(data_dir or QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation))
         self.data_dir.mkdir(parents=True,exist_ok=True)
         self.recovery_dir=self.data_dir/'recovery';self.recovery_dir.mkdir(exist_ok=True)
@@ -195,18 +198,10 @@ class MainWindow(QMainWindow):
         self.timeline_scroll=QScrollArea();self.timeline_scroll.setWidget(self.timeline);self.timeline_scroll.setWidgetResizable(True);self.timeline_scroll.horizontalScrollBar().valueChanged.connect(self._scroll_changed)
         self.splitter.addWidget(self.timeline_scroll)
         self.dock_tabs=QTabWidget();self.splitter.addWidget(self.dock_tabs);self.splitter.setSizes([360,260])
-        step_panel=QWidget();steps_layout=QVBoxLayout(step_panel);steps_layout.setContentsMargins(6,6,6,6)
-        step_tools=FlowLayout();self.pattern_heading=QLabel('Select a pattern');step_tools.addWidget(self.pattern_heading)
-        self.step_resolution=QComboBox()
-        for n in (4,8,16,32):self.step_resolution.addItem(str(n)+' steps/pattern',n)
-        self.step_resolution.setCurrentIndex(2);self.step_resolution.currentIndexChanged.connect(self.refresh_steps);step_tools.addWidget(self.step_resolution)
-        step_tools.addWidget(button('Duplicate',self.copy_dialog));step_tools.addWidget(button('Make independent',self.detach_selected));step_tools.addWidget(button('Remove pattern',self.remove_selected))
-        steps_layout.addLayout(step_tools)
-        self.steps=StepTable();self.steps.setObjectName('stepGrid');self.steps.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        self.steps.cellClicked.connect(self.toggle_step);self.steps.activated.connect(self.toggle_step)
-        self.steps.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch);steps_layout.addWidget(self.steps,1)
-        self.step_help=QLabel('Click a step or use arrows and Space. The event list retains every off-grid event.');self.step_help.setWordWrap(True);self.step_help.setObjectName('muted');steps_layout.addWidget(self.step_help)
-        self.dock_tabs.addTab(step_panel,'Steps')
+        self.sequencer=StepSequencer(self.change,self.audition_steps,self.copy_dialog,self.detach_selected,self.remove_selected,self)
+        self.steps=self.sequencer.grid;self.step_resolution=self.sequencer.resolution
+        self.pattern_heading=self.sequencer.heading;self.step_help=self.sequencer.help
+        self.dock_tabs.addTab(self.sequencer,'Step sequencer')
         event_panel=QWidget();events_layout=QVBoxLayout(event_panel);tools=QHBoxLayout();tools.addWidget(QLabel('Exact event timing · no automatic quantization'),1)
         tools.addWidget(button('Edit selected step',self.edit_selected_event));tools.addWidget(button('Delete step',self.delete_selected_event));events_layout.addLayout(tools)
         self.events=QTableWidget(0,9);self.events.setObjectName('eventList');self.events.setHorizontalHeaderLabels(['State','Beat','Gate','Choice','Velocity','Play %','Change %','Variation','Lock'])
@@ -446,9 +441,13 @@ class MainWindow(QMainWindow):
         if instance_id:self.role=self.editor.pattern(instance_id)['role']
         self.editor.project['editorContext']['selection']=instance_id
         self.refresh()
+        if instance_id:self.dock_tabs.setCurrentWidget(self.sequencer)
 
     def select_role(self):
-        if not self._refreshing and self.editor:self.role=self.track.currentData();self.selected_id='';self.refresh()
+        if not self._refreshing and self.editor:
+            role=self.track.currentData()
+            match=next((i for i in self.editor.project['instances'] if self.editor.pattern(i['id'])['role']==role and beat(i['beat'])<=self.cursor<beat(i['beat'])+beat(self.editor.pattern(i['id'])['length'])),None)
+            self.select(role,self.cursor,match['id'] if match else '')
 
     def set_tonality(self):
         if self.editor:self.change(lambda:self.editor.set_map('tonalityMap',self.cursor,dict(tonic=self.tonic.currentIndex(),mode=self.mode.currentData()),'Set key and mode'))
@@ -554,14 +553,7 @@ class MainWindow(QMainWindow):
             self.change(op)
 
     def toggle_step(self,row,column):
-        if not self.editor or not self.selected_id or self._refreshing:return
-        pattern=self.editor.pattern(self.selected_id);step=beat(pattern['length'])/self.step_resolution.currentData();sound=''
-        if pattern['role']=='drums':
-            record=self.pack.instruments['drums'][SLOTS[row]]
-            if record['status']!='available':self.notice(SLOT_NAMES[SLOTS[row]]+': '+record['reason']);return
-            sound=record['soundIdentity']
-        self.change(lambda:self.editor.toggle_step(self.selected_id,column*step,step,sound))
-        self.steps.setCurrentCell(row,column)
+        self.sequencer.toggle(row,column)
 
     def edit_selected_event(self):
         if not self.editor or not self.selected_id or self.events.currentRow()<0:return
@@ -629,28 +621,9 @@ class MainWindow(QMainWindow):
 
     def refresh_steps(self,*_):
         if not self.editor:return
-        previous=(self.steps.currentRow(),self.steps.currentColumn());self.steps.clear();self.events.setRowCount(0)
-        if not self.selected_id:self.steps.setRowCount(0);self.steps.setColumnCount(0);self.pattern_heading.setText('Select a pattern on the timeline, or Add pattern here.');return
-        pattern=self.editor.pattern(self.selected_id);n=self.step_resolution.currentData();step=beat(pattern['length'])/n
-        self.pattern_heading.setText(pattern['role'].title()+' · '+str(beat(pattern['length']))+' beats'+(' · Linked Repeat' if self.editor.instance(self.selected_id)['linked'] else ' · Independent'))
-        self.steps.setColumnCount(n);self.steps.setHorizontalHeaderLabels([str(i+1) for i in range(n)]);rows=list(SLOTS) if pattern['role']=='drums' else [pattern['role']]
-        self.steps.setRowCount(len(rows));self.steps.setVerticalHeaderLabels([SLOT_NAMES.get(v,v.title()) for v in rows]);self.steps.verticalHeader().setDefaultSectionSize(30)
-        offgrid=sum(1 for e in pattern['events'] if beat(e['beat'])/step%1)
-        self.step_help.setText(f'Click or Space toggles exact-grid steps. {offgrid} off-grid events are retained in the Event list. Disabled events stay silent.')
-        for row,name in enumerate(rows):
-            record=self.pack.instruments['drums'][name] if pattern['role']=='drums' else None
-            for column in range(n):
-                matches=[e for e in pattern['events'] if beat(e['beat'])==column*step and (not record or e['choice']['soundIdentity']==record['soundIdentity'])]
-                active=any(e['enabled'] for e in matches);unavailable=record is not None and record['status']!='available'
-                cell=item('×' if unavailable else 'ON' if active else 'off' if matches else '·')
-                cell.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                cell.setBackground(QColor('#36404c' if unavailable else COLORS[pattern['role']]).darker(170 if active else 340))
-                cell.setForeground(QColor('#fafcff' if active else '#c2cfde'))
-                label=f'{name}, pattern beat {column*step}, '+('unavailable' if unavailable else 'enabled' if active else 'disabled')
-                if active:label+=', '+str(matches[0]['expression']['playPercent'])+'% play'
-                cell.setData(Qt.ItemDataRole.AccessibleTextRole,label)
-                cell.setToolTip(label+('\n'+record['reason'] if unavailable else ''));self.steps.setItem(row,column,cell)
-        if previous[0]>=0 and previous[0]<len(rows) and previous[1]<n:self.steps.setCurrentCell(*previous)
+        self.events.setRowCount(0);self.sequencer.refresh(self.editor,self.selected_id)
+        if not self.selected_id:return
+        pattern=self.editor.pattern(self.selected_id)
         events=sorted(pattern['events'],key=lambda e:(beat(e['beat']),e['id']));self.events.setRowCount(len(events))
         for row,event in enumerate(events):
             e=event['expression'];choice=event['choice'];label='Whole chord' if pattern['role']=='rhythm' else choice['soundIdentity'] if pattern['role']=='drums' else ('MIDI '+str(choice['exactMidi']) if e['lockExactPitch'] else 'Tone '+str(choice['tone']+1)+' · MIDI ~'+str(choice['registerMidi']))
@@ -801,25 +774,43 @@ class MainWindow(QMainWindow):
         if self.process.state()!=QProcess.ProcessState.NotRunning:self.process.kill();self.process.waitForFinished(2000)
         self.player.stop();self.timeline.play_beat=None;self.timeline.update();self.seek.setValue(0)
         self.play_button.setText('Play');self.stop_button.setText('Stop')
+        self._playback_scope=None;self.sequencer.playhead(None)
 
-    def request_render(self,*,autoplay=False,destination=None):
+    def audition_steps(self,instance_id,row,column,loop):
+        from .sequencer import audition_project
+        def render():
+            project,start=audition_project(self.editor,instance_id,row,column)
+            self.stop()
+            self.request_render(autoplay=True,preview_project=project,scope=dict(instance=instance_id,start=str(start),loop=loop,kind='note' if row else 'pattern'))
+        try:render()
+        except (ValueError,OSError) as error:self.notice(str(error))
+
+    def request_render(self,*,autoplay=False,destination=None,preview_project=None,scope=None):
         """Preview and export share one resolved native plan; every job owns its output."""
         if not self.editor:return False
         if self._job:self.notice('An audio render is already running. Stop it before starting another.');return False
         try:
-            plan=self.editor.plan()
+            if preview_project is None:plan=self.editor.plan()
+            else:
+                from .governor import resolve
+                plan=resolve(preview_project,self.pack)
             if any(v['code'].startswith('missing_') for v in plan['conflicts']):raise ContractError('Prepared sound requests are missing. Resolve Coverage & warnings before export/playback')
             executable=ROOT/'build/prde1-render'
             if not executable.is_file():raise ContractError('Native renderer is missing. Relaunch with run-prde1.sh to build it')
         except (ValueError,OSError) as error:self.notice(str(error));return False
         key=self.editor.fingerprint
+        source_key=key
+        if preview_project is not None:key+=':'+hashlib.sha256(canonical_bytes(preview_project)).hexdigest()
+        if destination is None:
+            self._playback_scope=scope
+            if scope is not None:scope['tempoMap']=preview_project['tempoMap']
         if destination is None and self._preview_key==key and (self.work/'preview.wav').is_file():
             if autoplay:self._start_player(self.work/'preview.wav')
             return True
         self._generation+=1;generation=self._generation;folder=self.work/str(generation);folder.mkdir()
         path=folder/'plan.json';path.write_bytes(canonical_bytes(plan));output=folder/'render.wav'
         self._job=dict(generation=generation,key=key,output=output,autoplay=autoplay,destination=Path(destination) if destination else None,
-                       project=copy.deepcopy(self.editor.project),plan=plan)
+                       project=copy.deepcopy(self.editor.project),plan=plan,sourceKey=source_key,previewProject=preview_project,scope=scope)
         self.process.setProgram(str(executable));self.process.setArguments([str(path),str(self.pack.root),str(output),'0'])
         self.process.start();self.play_button.setText('Preparing…');self.stop_button.setText('Cancel render');self.notice('Preparing the current arrangement; editing or Stop cancels this render.')
         return True
@@ -833,7 +824,7 @@ class MainWindow(QMainWindow):
         if job is None or job['generation']!=self._generation or self._closing:return
         self.play_button.setText('Play');self.stop_button.setText('Stop')
         if exit_code!=0 or exit_status!=QProcess.ExitStatus.NormalExit:self.notice('Render failed; any existing export is intact: '+error.strip());return
-        if job['key']!=self.editor.fingerprint:self.notice('The arrangement changed; render again to hear the current edit.');return
+        if job['sourceKey']!=self.editor.fingerprint:self.notice('The arrangement changed; render again to hear the current edit.');return
         try:
             report=json.loads(output)
             if job['destination']:
@@ -842,18 +833,21 @@ class MainWindow(QMainWindow):
                 atomic_json(job['destination'].with_suffix('.report.json'),report);self.notice('Exported '+str(job['destination']))
             else:
                 atomic_copy(job['output'],self.work/'preview.wav');self._preview_key=job['key'];self.notice('Preview ready · '+str(len(job['plan']['events']))+' source events')
+                self._playback_scope=job['scope']
+                if self._playback_scope:self._playback_scope['tempoMap']=job['previewProject']['tempoMap']
                 if job['autoplay']:self._start_player(self.work/'preview.wav')
         except (ValueError,OSError) as error:self.notice('Could not finish the render: '+str(error))
 
     def _start_player(self,path):
         if self.outputs.currentData() is None:self.notice('Preview rendered, but no audio output is available. Connect/select an output and press Play.');return
-        self._pending_seek=round(quarter_seconds(self.cursor,self.editor.project['tempoMap'])*1000)
+        self._pending_seek=0 if self._playback_scope else round(quarter_seconds(self.cursor,self.editor.project['tempoMap'])*1000)
+        self.player.setLoops(QMediaPlayer.Loops.Infinite if self._playback_scope and self._playback_scope['loop'] else QMediaPlayer.Loops.Once)
         self.player.setSource(QUrl.fromLocalFile(str(path)));self.player.play()
 
     def _media_status(self,status):
         if status in (QMediaPlayer.MediaStatus.LoadedMedia,QMediaPlayer.MediaStatus.BufferedMedia) and self._pending_seek:
             position=self._pending_seek;self._pending_seek=0;self.player.setPosition(position)
-        if status==QMediaPlayer.MediaStatus.EndOfMedia:self.timeline.play_beat=None;self.timeline.update()
+        if status==QMediaPlayer.MediaStatus.EndOfMedia:self.timeline.play_beat=None;self.timeline.update();self.sequencer.playhead(None)
 
     def _play_state(self,state):
         if self._job:return
@@ -862,7 +856,11 @@ class MainWindow(QMainWindow):
     def _play_position(self,milliseconds):
         if not self.editor:return
         if self.player.playbackState()!=QMediaPlayer.PlaybackState.StoppedState:
-            self.timeline.play_beat=seconds_to_beat(milliseconds/1000,self.editor.project['tempoMap']);self.timeline.update()
+            if self._playback_scope:
+                absolute=beat(self._playback_scope['start'])+seconds_to_beat(milliseconds/1000,self._playback_scope.get('tempoMap',self.editor.project['tempoMap']))
+            else:absolute=seconds_to_beat(milliseconds/1000,self.editor.project['tempoMap'])
+            self.timeline.play_beat=absolute;self.timeline.update()
+            if self.selected_id:self.sequencer.playhead(absolute-beat(self.editor.instance(self.selected_id)['beat']))
         state='Preparing' if self._job else self.player.playbackState().name.replace('State','')
         self.position.setText('Edit: '+self.edit_position()+f' · {state} {milliseconds//60000}:{milliseconds//1000%60:02d}')
         if self.player.duration()>0 and not self.seek.isSliderDown():self.seek.setValue(round(milliseconds/self.player.duration()*1000))

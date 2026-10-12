@@ -1,5 +1,19 @@
 # Architecture decisions — first core checkpoint
 
+## Current step editor (SDD Section 31)
+
+`sequencer.py` supplies validated pattern/row settings and pure musical edits;
+`step_widgets.py` provides the default pitch/kit step grid and expression bars.
+Optional project fields preserve legacy saves and source-pattern timing. Row
+controls expand into ordinary events before the Governor validates each actual
+trigger. Flam grace/primary events share probability addressing and distinct
+resolved IDs. Melodic mono remains default; explicitly selected poly patterns
+retain concurrent voices within the existing 64-voice budget. The native renderer
+and DSP graph are unchanged. Scope-specific auditions get independent native
+plans/cached previews while preserving authorship, saved variation and stale-job
+guards. Native pattern files retain attribution; SMF is note-level interchange.
+See `STEP_SEQUENCER.md` for controls, edge policies and validation.
+
 ## Current override: full harmonic coverage (SDD Section 30)
 
 Shael's October 11 amendment supersedes the coverage-gating and strict mode

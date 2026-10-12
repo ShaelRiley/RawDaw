@@ -31,6 +31,8 @@ def validate_project(project: dict) -> None:
             raise ContractError("Meter changes must align to a preceding bar boundary")
     patterns={}
     for pattern in project["patterns"]:
+        from .sequencer import validate_pattern
+        validate_pattern(pattern)
         if pattern["id"] in patterns or not beat(pattern["length"]):
             raise ContractError("Duplicate or empty pattern")
         patterns[pattern["id"]]=pattern
@@ -53,7 +55,7 @@ def validate_project(project: dict) -> None:
             raise ContractError("Pattern occurrence exceeds song boundary")
         instances[instance["id"]]=instance
         uses.setdefault(instance["patternId"],[]).append(instance)
-        total_events+=len(pattern["events"])*2
+        total_events+=sum(4 if event.get('flam') else 2 for event in pattern['events'])
     if total_events>100000:
         raise ContractError("Expanded event budget exceeded")
     for occurrences in uses.values():
@@ -135,3 +137,4 @@ def make_independent(project: dict, instance_id: str) -> dict:
     instance.update(patternId=pattern["id"],linked=False)
     validate_project(result)
     return result
+

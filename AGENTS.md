@@ -13,6 +13,12 @@ product specification. Record the live revision used for each checkpoint.
   events; `coverage.py` prepares native/reconstructed assets outside the audio loop.
 * Keep sample preparation, event resolution, native playback, downstream DSP,
   vocal processing, and future plug-in hosting separate.
+* Follow SDD Section 31 for the default step sequencer. Pitch/kit rows, saved
+  expression, swing/offsets/flams, mono/poly entry, reuse, audition and MIDI
+  interchange use the same validated musical resolver. Grid changes preserve
+  off-grid notes. Revalidate every expanded trigger at its actual harmony position.
+  Do not introduce general mixer/effect automation or confuse MIDI interchange
+  with a full-fidelity save or external MIDI-device capture.
 * Native samples win; source-informed reconstruction supplies unrecorded targets,
   sustained pitched gates and missing offered kit slots. Identify modeled sounds
   honestly, preserve source hashes, and never relabel them as extracted recordings.

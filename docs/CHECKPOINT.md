@@ -1,4 +1,30 @@
-# Current checkpoint — full harmonic coverage on the 0.3.4 engine
+# Current checkpoint — default step sequencer on the 0.3.4 engine
+
+Shael's October 11 request and clarification add the Cakewalk-style step
+sequencer as the default bass/lead/kit pattern view. Pitch rows dispatch the
+chosen notes; kit rows retain instrument identities. The interface supports
+draw/erase, velocity expression, ties/flams, row mute/solo, swing/offset/gates,
+mono/poly entry, row fill/copy/shift/reverse/editing, pattern files, keyboard step
+entry, independent loop/row audition, note MIDI import/export and default track
+selection. Grid changes preserve exact off-grid timing. Fit spacing is displayed
+precisely, and pattern growth protects neighboring material. All musical controls
+share the canonical save/undo/recovery and native resolver. See `STEP_SEQUENCER.md`.
+
+Validation: full `make check` passed 107 tests plus native engine checks; the
+final focused musical/UI reruns passed 22 tests including four new edge cases
+(111 distinct tests verified overall). `make demo` passed both reference renders.
+New tests exercise actual mouse/keyboard gestures, pitch and kit dispatch,
+mono/poly voice lengths, swing/flam probability, ties, shifted harmonic boundaries,
+save/reopen/reuse, loop/row preview independence, MIDI interoperability, native
+audio/seek, timing wrap, truncation/overlap protection and custom Fit spacing.
+All twelve legacy desktop exports still match their native auditions; complete
+harmonic coverage, source integrity and responsive/startup tests remain green.
+Evidence is in `validation/step-sequencer-*.log`. Qt inspection at 1280×800 and
+enlarged layouts keeps the grid/actions accessible. Physical Deck startup and
+subjective listening remain unverified. The existing compiled 0.3.4 renderer is
+unchanged and reused by the source update.
+
+## Previous full harmonic coverage checkpoint
 
 Shael's October 11 request and SDD Section 30 supersede the earlier silent-gap
 policy. Every pack now supports all 528 registered chord voicings, all 70 lead/

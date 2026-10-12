@@ -97,17 +97,19 @@ def resolve(project, pack, *, approve_altered=False):
         warnings.append("Explicitly approved altered render: additional VST instruments are silent in this core checkpoint")
     boundary_beats=sorted({beat(item["beat"]) for name in ("harmony","tonalityMap") for item in project[name]})
     patterns={pattern["id"]:pattern for pattern in project["patterns"]}
+    from .sequencer import effective_events
     for instance in project["instances"]:
         pattern=patterns[instance["patternId"]]
         role=pattern["role"]
-        for authored in pattern["events"]:
+        for authored in (trigger for source in pattern['events'] for trigger in effective_events(project,pack,instance,pattern,source)):
             if not authored["enabled"]:
                 continue
             expression=authored["expression"]
-            address=instance["id"]+":"+authored["id"]
-            if _random(project,instance["id"],authored["id"],"play")*100>=expression["playPercent"]:
+            address=instance["id"]+":"+authored["id"]+(':flam' if authored.get('_subtrigger') else '')
+            chance_id=authored.get('_chanceId',authored['id'])
+            if _random(project,instance["id"],chance_id,"play")*100>=expression["playPercent"]:
                 continue
-            changed=(not expression["locked"] and _random(project,instance["id"],authored["id"],"change")*100<expression["changePercent"])
+            changed=(not expression["locked"] and _random(project,instance["id"],chance_id,"change")*100<expression["changePercent"])
             position=beat(instance["beat"])+beat(authored["beat"])
             duration=beat(authored["duration"])
             repeats=2 if changed and expression["variation"]=="double" else 1
@@ -181,6 +183,7 @@ def resolve(project, pack, *, approve_altered=False):
                     raise ContractError("Combined channel/sample gain exceeds core headroom profile")
                 if sample['id'].startswith('hybrid_'):reconstructed.add(sample['id'])
                 resolved.append({"id":event_id,"sampleId":sample['id'],"startFrame":first,"endFrame":last,
+                                 "polyphonic":pattern.get('sequencer',{}).get('entryMode')=='poly' and role in REGISTERS,
                                  "releaseFrames":min(DECLICK_FRAMES,last-first),"attackFrames":round(expression["attackMs"]*RATE/1000),
                                  "gain":gain,"pan":pan,"notePitches":actual_pitches,"role":role if role!="drums" else "drums."+slot,
                                  "endReason":reason})
@@ -188,12 +191,12 @@ def resolve(project, pack, *, approve_altered=False):
     # Fixed monophonic lanes and explicit open/closed-hat choke group. No invented attacks.
     for index,event in enumerate(resolved):
         role=event["role"]
-        group=role if role in ("lead","bass","rhythm") else ("hats" if role in ("drums.hatClosed","drums.hatOpen") else None)
+        group=role if role in ("lead","bass","rhythm") and not event['polyphonic'] else ("hats" if role in ("drums.hatClosed","drums.hatOpen") else None)
         if group:
             for following in resolved[index+1:]:
                 if following["startFrame"]>=event["endFrame"]:
                     break
-                next_group=following["role"] if following["role"] in ("lead","bass","rhythm") else ("hats" if following["role"] in ("drums.hatClosed","drums.hatOpen") else None)
+                next_group=following["role"] if following["role"] in ("lead","bass","rhythm") and not following['polyphonic'] else ("hats" if following["role"] in ("drums.hatClosed","drums.hatOpen") else None)
                 if next_group==group:
                     event["endFrame"]=following["startFrame"]
                     event["releaseFrames"]=min(DECLICK_FRAMES,event["endFrame"]-event["startFrame"])
@@ -204,7 +207,7 @@ def resolve(project, pack, *, approve_altered=False):
     used={event['sampleId'] for event in resolved}
     assets=sorted((pack.samples[identity] for identity in used),key=lambda sample:sample['id'])
     indices={sample['id']:index for index,sample in enumerate(assets)}
-    for event in resolved:event['assetIndex']=indices[event.pop('sampleId')]
+    for event in resolved:event['assetIndex']=indices[event.pop('sampleId')];event.pop('polyphonic')
     if reconstructed:warnings.append(f"Hybrid instruments: {len(reconstructed)} reconstructed assets used; these are modeled sounds, not native source recordings")
     endpoints=sorted([(event["startFrame"],1) for event in resolved]+[(event["endFrame"],-1) for event in resolved])
     voices=peak=0

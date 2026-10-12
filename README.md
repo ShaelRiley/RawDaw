@@ -1,5 +1,11 @@
 # PRDE1 — Pop Rock Development Environment 1
 
+**Default step sequencer:** bass/lead use labeled pitch rows; drums use named kit
+rows. Draw/erase steps, edit velocity and gates, tie notes, add flams, apply swing,
+mute/solo rows, fill/copy/shift/reverse patterns, and audition a loop independently.
+Keyboard step entry, full `.prdepattern` saves and note MIDI interchange are included.
+See [step-sequencer controls](docs/STEP_SEQUENCER.md).
+
 **Full harmonic coverage:** every Song Pack now plays all 528 registered chord
 voicings (12 roots, 13 qualities, every valid inversion), plus the complete lead
 and bass registers. Native recordings are preferred; a deterministic hybrid

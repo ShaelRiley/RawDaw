@@ -1,7 +1,14 @@
 # Development plan
 
-Authority: the live PRDE1 SDD, sections 1–30 and the engineering selections in
+Authority: the live PRDE1 SDD, sections 1–31 and the engineering selections in
 28.8. Repository notes implement it; they do not supersede it.
+
+**Default step sequencer — implemented:** Section 31 provides melodic pitch rows
+and named kit rows, gesture/keyboard entry, mono/poly scheduling, saved row and
+step expression, ties/flams, swing/offsets, row/pattern reuse, independent loop
+audition, native pattern files and note-level MIDI interchange. All editing uses
+the shared project/Governor/native path. Wider MIDI-device integration and the
+recording/VST/clip-library milestones below remain separately scoped.
 
 **October 11 override — complete harmonic playback:** Section 30 supersedes the
 old missing-coverage gate. Hybrid preparation supplies every registered note,

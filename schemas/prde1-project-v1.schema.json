@@ -809,6 +809,14 @@
             "lockExactPitch"
           ],
           "additionalProperties": false
+        },
+        "flam": {
+          "type": "boolean"
+        },
+        "offsetBeat": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(?:/[1-9][0-9]*)?$",
+          "maxLength": 30
         }
       },
       "required": [
@@ -871,6 +879,128 @@
             "sourceClip",
             "license",
             "changes"
+          ],
+          "additionalProperties": false
+        },
+        "sequencer": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "step-v1"
+            },
+            "stepBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            },
+            "defaultVelocity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "pitchMode": {
+              "type": "string",
+              "enum": [
+                "follow",
+                "exact"
+              ]
+            },
+            "entryMode": {
+              "type": "string",
+              "enum": [
+                "mono",
+                "poly"
+              ]
+            },
+            "rows": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+                  },
+                  "note": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 127
+                  },
+                  "sound": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "muted": {
+                    "type": "boolean"
+                  },
+                  "solo": {
+                    "type": "boolean"
+                  },
+                  "velocityScale": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "velocityOffset": {
+                    "type": "number",
+                    "minimum": -1,
+                    "maximum": 1
+                  },
+                  "gatePercent": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 200
+                  },
+                  "swingPercent": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 99
+                  },
+                  "offsetPercent": {
+                    "type": "number",
+                    "minimum": -50,
+                    "maximum": 50
+                  },
+                  "flamPercent": {
+                    "type": "number",
+                    "minimum": -50,
+                    "maximum": 50
+                  }
+                },
+                "required": [
+                  "id",
+                  "note",
+                  "sound",
+                  "label",
+                  "muted",
+                  "solo",
+                  "velocityScale",
+                  "velocityOffset",
+                  "gatePercent",
+                  "swingPercent",
+                  "offsetPercent",
+                  "flamPercent"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 128,
+              "minItems": 1
+            }
+          },
+          "required": [
+            "version",
+            "stepBeat",
+            "defaultVelocity",
+            "pitchMode",
+            "entryMode",
+            "rows"
           ],
           "additionalProperties": false
         }
