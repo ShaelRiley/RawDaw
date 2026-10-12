@@ -24,6 +24,24 @@ enlarged layouts keeps the grid/actions accessible. Physical Deck startup and
 subjective listening remain unverified. The existing compiled 0.3.4 renderer is
 unchanged and reused by the source update.
 
+## October 12 recovery verification
+
+GitHub `main` at `b263d34a2a4b61f8348ef578287ef3b8be9d36a8` already
+contained the complete step-sequencer implementation and final edge checks. All
+102 recovered source files were verified against their remote Git blob hashes.
+The live SDD revision matches the Section 31 amendment recorded above. No musical
+or interface behavior changed during recovery.
+
+Fresh `make check` passed all 111 Python/Qt tests in one run, with no skips, plus
+native engine checks. `make demo` passed both synthetic reference arrangements.
+`make source-demo` passed all twelve source arrangements with zero conflicts,
+byte-identical repeats, exact seek slices and unchanged Song Packs; the desktop
+exports matched these newly rendered auditions. Python 3.12.14 and Qt/PySide6
+6.8.3 were used in the offscreen Linux environment. Physical Deck startup and
+human listening remain unverified. Evidence, source hashes, environment and the
+canonical SDD revision are in
+`validation/step-sequencer-recovery-20261012.json` and its referenced logs.
+
 ## Previous full harmonic coverage checkpoint
 
 Shael's October 11 request and SDD Section 30 supersede the earlier silent-gap
