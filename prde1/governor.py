@@ -177,7 +177,9 @@ def resolve(project, pack, *, approve_altered=False):
                 group=project["mix"]["channels"]["drums"] if role=="drums" else None
                 if channel["muted"] or (group and group["muted"]) or project["mix"]["master"]["muted"]:
                     continue
-                gain=expression["velocity"]*10**((channel["gainDb"]+sample["gainDb"]+(group["gainDb"] if group and processing is None else 0))/20)
+                from .pulse import playback_velocity
+                velocity=playback_velocity(project,trigger,expression["velocity"],grace=bool(authored.get('_subtrigger')))
+                gain=velocity*10**((channel["gainDb"]+sample["gainDb"]+(group["gainDb"] if group and processing is None else 0))/20)
                 pan=max(-1,min(1,channel["pan"]+(group["pan"] if group and processing is None else 0)))
                 if gain>8:
                     raise ContractError("Combined channel/sample gain exceeds core headroom profile")
@@ -186,6 +188,7 @@ def resolve(project, pack, *, approve_altered=False):
                                  "polyphonic":pattern.get('sequencer',{}).get('entryMode')=='poly' and role in REGISTERS,
                                  "releaseFrames":min(DECLICK_FRAMES,last-first),"attackFrames":round(expression["attackMs"]*RATE/1000),
                                  "gain":gain,"pan":pan,"notePitches":actual_pitches,"role":role if role!="drums" else "drums."+slot,
+                                 "noteVelocity":velocity,
                                  "endReason":reason})
     resolved.sort(key=lambda event:(event["startFrame"],event["id"]))
     # Fixed monophonic lanes and explicit open/closed-hat choke group. No invented attacks.

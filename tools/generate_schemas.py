@@ -135,6 +135,9 @@ project = obj({"formatVersion":{"const":VERSION}, "projectId":ID, "title":TEXT,
                "credits":array(obj({"source":TEXT,"license":TEXT,"attribution":TEXT,"changes":TEXT}),4096)})
 project["$defs"]={"chord":chord,"event":event,"pattern":pattern,"insert":insert,"channel":channel}
 project['properties']['mix']['properties'].update(drumBusCompressor=drum_compressor,bassSidechain=sidechain)
+project['properties']['rhythmicPulse']=obj({'version':{'const':'pulse-v1'},
+    'mode':{'type':'string','enum':['off','guide','on']},'preset':TEXT,
+    'levels':array(number(0,1),64,2),'phaseBeat':BEAT})
 
 resolved = obj({"formatVersion":{"const":VERSION},"sampleRate":{"const":48000},"endFrame":integer(1,86400000),
                 "assets":array(obj({"id":ID,"path":PATH,"channels":integer(1,2),"frames":integer(1,1440000),
@@ -149,6 +152,7 @@ resolved = obj({"formatVersion":{"const":VERSION},"sampleRate":{"const":48000},"
 resolved['properties']['processing']=obj({"version":{"const":"drum-mix-v1"},
     "drumEq":obj({slot:eq for slot in SLOTS}),"drumBusCompressor":drum_compressor,"bassSidechain":sidechain,
     "drumBusGain":number(0,4),"drumBusPan":number(-1,1)})
+resolved['properties']['events']['items']['properties']['noteVelocity']=number(0,1)
 
 if __name__ == "__main__":
     (ROOT / "schemas").mkdir(exist_ok=True)

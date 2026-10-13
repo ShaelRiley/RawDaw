@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "prde1-core"
 version = "0.3.4"
-description = "PRDE1 native desktop composition and prepared-sample renderer"
+description = "Raw Daw native desktop composition and prepared-sample renderer"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{name = "Shael Riley"}]
@@ -18,6 +18,10 @@ desktop = ["PySide6==6.8.3"]
 [project.scripts]
 prde1 = "prde1.cli:main"
 prde1-desktop = "prde1.desktop_startup:main"
+raw-daw = "prde1.desktop_startup:main"
 
 [tool.setuptools]
 packages = ["prde1"]
+
+[tool.setuptools.package-data]
+prde1 = ["data/*.svg", "data/*.png", "data/clips/*.json.gz", "data/clips/*.zip", "data/clips/sources/*", "data/clips/licenses/*"]

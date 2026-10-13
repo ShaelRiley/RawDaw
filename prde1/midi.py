@@ -83,7 +83,7 @@ def inspect_midi(raw:bytes):
     return {"format":format_,"tracks":tracks,"ticksPerQuarter":division,"notes":sorted(notes,key=lambda n:(n["tick"],n["channel"],n["note"])),"controls":sorted(controls)}
 
 
-def encode_notes(notes, quarter_bpm=120, ppq=960, tempo_map=None):
+def encode_notes(notes, quarter_bpm=120, ppq=960, tempo_map=None, *, meter=None, length=None):
     """Standard note-level SMF interchange, with explicit PPQ quantization."""
     def vlq(number):
         result=[number&127];number>>=7
@@ -112,10 +112,16 @@ def encode_notes(notes, quarter_bpm=120, ppq=960, tempo_map=None):
     for tempo in tempo_map or [{'beat':'0','quarterBpm':quarter_bpm}]:
         if not 20<=tempo['quarterBpm']<=300:raise ContractError('Unsupported MIDI tempo')
         events.append((round(Fraction(tempo['beat'])*ppq),-1,b'\xff\x51\x03'+round(60000000/tempo['quarterBpm']).to_bytes(3,'big')))
+    if meter is not None:
+        numerator,denominator=meter
+        if not 1<=numerator<=32 or denominator not in (1,2,4,8,16,32):raise ContractError('Invalid MIDI meter')
+        events.append((0,-2,b'\xff\x58\x04'+bytes((numerator,denominator.bit_length()-1,24,8))))
     track=bytearray();previous=0
     for tick,_,payload in sorted(events,key=lambda e:(e[0],e[1],e[2])):
         track.extend(vlq(tick-previous));track.extend(payload);previous=tick
-    track.extend(b'\x00\xff\x2f\x00')
+    stop=previous if length is None else round(length*ppq)
+    if stop<previous:raise ContractError('MIDI notes exceed the declared loop boundary')
+    track.extend(vlq(stop-previous)+b'\xff\x2f\x00')
     raw=b'MThd'+struct.pack('>IHHH',6,0,1,ppq)+b'MTrk'+struct.pack('>I',len(track))+track
     inspect_midi(raw)
     return raw

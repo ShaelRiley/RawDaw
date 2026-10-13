@@ -1,4 +1,4 @@
-# PRDE1 development
+# Raw Daw development (legacy PRDE1 formats)
 
 Read the live canonical SDD before selecting or changing product behavior:
 https://docs.google.com/document/d/1qb6LWTgkk3vVJB3aFnwkXvtZ1-IxRIY0VezW0P9e_HE/edit
@@ -30,7 +30,9 @@ product specification. Record the live revision used for each checkpoint.
 * Run `make check` and `make demo` for engine/contract changes. Test cases must
   exercise musical, security, or persistence invariants, not mirror code.
 * Keep coherent commits small; push and verify remote HEAD when available.
-* The repository remains private until Shael authorizes public distribution.
+* Shael authorized publishing this tested update to the existing public RawDaw
+  repository on October 13, 2026. Preserve repository visibility; do not change it
+  without authorization.
 * Do not build/publish an installable AI skill without reading the skill-creator
   instructions. Shared contracts alone do not constitute a working builder skill.
 

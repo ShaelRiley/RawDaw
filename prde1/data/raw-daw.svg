@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Raw Daw: a cute half-black, half-white dog with a spiked collar">
+  <path d="M64 66C44 39 13 40 22 94l12 47c4 16 20 16 31 0l14-45Z" fill="#191e2b" stroke="#101521" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M192 66c20-27 51-26 42 28l-12 47c-4 16-20 16-31 0l-14-45Z" fill="#fff6e8" stroke="#101521" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M55 87C57 52 87 36 128 36s71 16 73 51l-3 63c-4 39-33 66-70 66s-66-27-70-66Z" fill="#fff6e8"/>
+  <path d="M128 36C87 36 57 52 55 87l3 63c3 29 20 52 46 62v-27c0-22 10-44 24-55Z" fill="#222734"/>
+  <path d="M55 87C57 52 87 36 128 36s71 16 73 51l-3 63c-4 39-33 66-70 66s-66-27-70-66Z" fill="none" stroke="#101521" stroke-width="7"/>
+  <ellipse cx="90" cy="115" rx="12" ry="15" fill="#fff6e8"/><ellipse cx="94" cy="117" rx="6" ry="9" fill="#171c29"/>
+  <ellipse cx="166" cy="115" rx="12" ry="15" fill="#171c29"/><circle cx="169" cy="110" r="4" fill="#fff"/>
+  <path d="M72 91q17-11 32-1M152 90q16-10 32 1" fill="none" stroke="#b9aea2" stroke-width="6" stroke-linecap="round"/>
+  <ellipse cx="128" cy="164" rx="44" ry="34" fill="#fff6e8"/>
+  <path d="M117 174v18c0 17 22 17 22 0v-18Z" fill="#ef8e9d" stroke="#171c29" stroke-width="4"/>
+  <path d="M111 148q17-11 34 0l-8 12q-9 7-18 0Z" fill="#171c29"/>
+  <path d="M128 160v9m0 0q-17 16-29 0m29 0q17 16 29 0" fill="none" stroke="#171c29" stroke-width="5" stroke-linecap="round"/>
+  <path d="M78 204l-5-17 20 11m21 13 14-20 12 20m23-13 20-11-5 17" fill="#dce5e8" stroke="#171c29" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M66 206q62 25 124 0l-6 22q-56 22-112 0Z" fill="#3f947d" stroke="#171c29" stroke-width="6"/>
+  <circle cx="128" cy="231" r="17" fill="#ffc66d" stroke="#171c29" stroke-width="5"/>
+  <path d="M126 238v-17l9-3v14m-9 3q-8-3-8 3 0 6 8 0m9-6q-8-3-8 3 0 6 8 0" fill="none" stroke="#171c29" stroke-width="3" stroke-linecap="round"/>
+</svg>

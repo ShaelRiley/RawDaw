@@ -1,4 +1,20 @@
-# PRDE1 — Pop Rock Development Environment 1
+# Raw Daw
+
+**Really Awesome Workflow Digital Audio Workstation**
+
+Formerly PRDE1. **703 distinct one-bar MIDI clips** cover Bass (175), Drums (247),
+Lead (169) and Chords (112). Browser → MIDI clips provides search, style/role/meter
+filters, favorites, looping preview, drag/drop and a Place button. Pitched clips
+follow your loaded bank and chord progression; placement never changes harmony.
+Use **New song**, choose a progression, and begin placing bars on empty tracks.
+The half-black, half-white dog with a spiked collar is the new app mascot.
+
+**Rhythmic Pulse Governor**, below the Chord Governor, offers **Off** (authored
+volumes), **Guide** (editable defaults for new notes) and **On** (accents govern
+each sounding hit). Presets and custom accent levels repeat within each measure.
+Switching Off restores stored note volumes. Existing projects default to Off.
+See [the clip library and pulse controls](docs/CLIP_LIBRARY.md) for sources,
+kit/meter behavior and credits. Existing saves, settings and launch commands work.
 
 **Default step sequencer:** bass/lead use labeled pitch rows; drums use named kit
 rows. **Preview notes** is on by default: hear notes as you click, drag or enter
@@ -49,8 +65,11 @@ From your existing repository folder:
 
 ```bash
 git pull --ff-only origin main
-./run-prde1.sh --project packs/parachute_full.prdeproj
+./run-raw-daw.sh --project packs/parachute_full.prdeproj
 ```
+
+For a **Raw Daw** application-menu entry with the dog icon, run
+`./install-raw-daw.sh` once. The existing `run-prde1.sh` command remains compatible.
 
 First launch installs PySide6 into a local virtual environment if it is absent.
 That setup needs an internet connection; the installed composer then operates

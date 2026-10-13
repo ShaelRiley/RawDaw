@@ -68,11 +68,34 @@ class StepTable(QTableWidget):
 class Timeline(QWidget):
     selected=Signal(str,object,str)  # role, exact edit position, occurrence ID
     chord_requested=Signal(object)
+    clip_dropped=Signal(str,str,object)
     def __init__(self,parent=None):
         super().__init__(parent);self.editor=None;self.cursor=Fraction(0);self.play_beat=None;self.selected_id=''
         self.pixels_per_beat=44;self.header=108;self.row_height=50;self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setAccessibleName('Song timeline. Arrow keys move the edit cursor; Enter edits a chord. Use the event list to edit steps.')
         self.setMinimumHeight(334);self.setObjectName('songTimeline')
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self,event):
+        from .library_widgets import MIME
+        if event.mimeData().hasFormat(MIME):event.acceptProposedAction()
+
+    def dragMoveEvent(self,event):
+        from .library_widgets import MIME
+        if event.mimeData().hasFormat(MIME):event.acceptProposedAction()
+
+    def dropEvent(self,event):
+        from .library_widgets import MIME
+        if not self.editor or not event.mimeData().hasFormat(MIME):return
+        raw=bytes(event.mimeData().data(MIME))
+        if len(raw)>100:return
+        try:clip_id=raw.decode('ascii')
+        except UnicodeError:return
+        row=int((event.position().y()-30)//self.row_height)
+        if 1<=row<=4 and event.position().x()>=self.header:
+            position=self.position(event.position().x())
+            start=next(start for start,length,_ in measures(self.editor.project) if start<=position<start+length)
+            self.clip_dropped.emit(clip_id,ROLES[row-1],start);event.acceptProposedAction()
 
     def refresh(self,editor,selection,cursor):
         self.editor=editor;self.selected_id=selection;self.cursor=cursor

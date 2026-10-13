@@ -3,10 +3,10 @@ set -eu
 cd "$(dirname "$0")"
 
 if ! command -v python3 >/dev/null 2>&1; then
-    printf '%s\n' 'PRDE1 needs Python 3.11 or newer. Install Python, then run this launcher again.' >&2
+    printf '%s\n' 'Raw Daw needs Python 3.11 or newer. Install Python, then run this launcher again.' >&2
     exit 1
 fi
-python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else "PRDE1 needs Python 3.11 or newer")'
+python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else "Raw Daw needs Python 3.11 or newer")'
 
 PRDE_PYTHON=python3
 if [ -x .venv/bin/python ] && .venv/bin/python -c 'from PySide6.QtWidgets import QApplication; from PySide6.QtMultimedia import QMediaPlayer' >/dev/null 2>&1; then

@@ -629,6 +629,49 @@
       },
       "maxItems": 4096,
       "minItems": 0
+    },
+    "rhythmicPulse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "pulse-v1"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "off",
+            "guide",
+            "on"
+          ]
+        },
+        "preset": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "maxItems": 64,
+          "minItems": 2
+        },
+        "phaseBeat": {
+          "type": "string",
+          "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+          "maxLength": 30
+        }
+      },
+      "required": [
+        "version",
+        "mode",
+        "preset",
+        "levels",
+        "phaseBeat"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

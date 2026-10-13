@@ -1,5 +1,26 @@
 # Architecture decisions — first core checkpoint
 
+## Current shared clip library and rhythmic pulse (SDD Sections 32–33)
+
+`clip_library.py` reads a bounded offline compressed catalog and adapts whole-bar
+performances into the existing native pattern contract. Placement is transactional,
+protects occupied material and attaches source/license/conversion credits. The
+preparation tool preserves verified source MIDI, rejects duplicates, explicitly
+selects melodic source voices and emits bounded canonical SMF bars. Kit conversion
+uses semantic identities or declared MIDI addresses, with visible omission reports.
+
+`pulse.py` supplies repeating measure accents. Guide seeds only new entries;
+On applies velocity at actual expanded trigger positions while retaining authored
+volumes. The resolver records that effective `noteVelocity` so MIDI export uses
+the same value as audio, including microtiming and flam grace levels. Scoped
+auditions retain their initial partial-measure phase and reset at later meter
+downbeats. Optional project fields keep old saves at Off. Sample preparation,
+native rendering and downstream DSP remain separate and unchanged.
+
+Raw Daw is the visible application identity. The scalable dog icon avoids clipping
+paths so Qt's SVG renderer displays it correctly. Legacy module/format identifiers,
+settings, project references and launch commands are retained for compatibility.
+
 ## Current step editor (SDD Section 31)
 
 `sequencer.py` supplies validated pattern/row settings and pure musical edits;

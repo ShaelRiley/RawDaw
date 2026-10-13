@@ -12,6 +12,11 @@ from .music import MODES, QUALITIES, beat
 def validate_project(project: dict) -> None:
     validate(project, "prde1-project-v1.schema.json")
     end = beat(project["length"])
+    from fractions import Fraction
+    initial_phase=beat(project.get('rhythmicPulse',{}).get('phaseBeat','0'))
+    first_meter=project['meterMap'][0]
+    if initial_phase>=Fraction(4*first_meter['numerator'],first_meter['denominator']):
+        raise ContractError('Pulse audition phase must fit the first measure')
     if not end:
         raise ContractError("Empty song length")
     for name in ("tempoMap", "meterMap", "tonalityMap", "harmony"):
@@ -27,7 +32,8 @@ def validate_project(project: dict) -> None:
             raise ContractError("Impossible chord inversion")
     for previous, current in zip(project["meterMap"],project["meterMap"][1:]):
         from fractions import Fraction
-        if (beat(current["beat"])-beat(previous["beat"]))/Fraction(4*previous["numerator"],previous["denominator"]) % 1:
+        offset=initial_phase if beat(previous['beat'])==0 else Fraction(0)
+        if (beat(current["beat"])-beat(previous["beat"])+offset)/Fraction(4*previous["numerator"],previous["denominator"]) % 1:
             raise ContractError("Meter changes must align to a preceding bar boundary")
     patterns={}
     for pattern in project["patterns"]:

@@ -1,0 +1,39 @@
+Raw Daw MIDI clip collection, version 2026.10.13
+
+231 selected drum measures are adapted from the Groove MIDI Dataset v1.0.0,
+made available by Google LLC under Creative Commons Attribution 4.0 International.
+Source: https://magenta.tensorflow.org/datasets/groove
+License: https://creativecommons.org/licenses/by/4.0/
+Legal code: https://creativecommons.org/licenses/by/4.0/legalcode.txt
+Attribution: Google LLC; Jon Gillick, Adam Roberts, Jesse Engel, Douglas Eck
+and David Bamman. Learning to Groove with Inverse Sequence Transformations,
+International Conference on Machine Learning (ICML), 2019.
+Changes: one-bar selection, TD-11 drum-address normalization into semantic kit
+roles, bounded one-shot gates and explicit same-address retrigger interpretation.
+Original timing and velocities are retained. Destination kit conversion reports
+omissions and simultaneous articulation merging. See the per-clip catalog for
+original file, measure, tempo, hash and change history. No endorsement is implied.
+
+91 lead/bass/chord measures are adapted from Tozan's Piano 3 Bass With Drums,
+2022, released under CC0 1.0 Universal.
+Source: https://opengameart.org/content/piano-3-bass-with-drums
+License: https://creativecommons.org/publicdomain/zero/1.0/
+Legal code: https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt
+Changes: explicitly selected MIDI channels, bar slices, highest/lowest attack
+voice for lead/bass, simultaneous chord attacks collapsed, bounded register and
+gate, inferred source-chord relationships adapted to destination harmony.
+
+381 patterns are newly authored for the Raw Daw original pattern collection.
+They are not extracted performances or third-party recordings.
+To the extent permitted by law, the contributors waive copyright and related
+rights in these original pattern scores under CC0 1.0 Universal:
+https://creativecommons.org/publicdomain/zero/1.0/
+This dedication covers these original MIDI/pattern scores, not the application
+code or mascot art, which retain the repository's MIT license.
+
+Original source MIDI and per-clip hashes are retained under sources/ and in the
+catalog. The canonical single-bar MIDI exports are stored in midi-clips.zip.
+License and adaptation credits are attached to each inserted project pattern.
+Songs using CC BY material may require attribution when shared. This notice
+does not relicense the loaded Song Pack or the resulting song as one universal
+license, and does not erase separate audio-source rights.

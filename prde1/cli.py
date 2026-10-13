@@ -14,7 +14,7 @@ from .project import load_project, save_project
 
 
 def main(argv=None):
-    parser=argparse.ArgumentParser(prog="prde1",description="PRDE1 offline prepared-sample core (development checkpoint)")
+    parser=argparse.ArgumentParser(prog="prde1",description="Raw Daw offline prepared-sample core (development checkpoint)")
     commands=parser.add_subparsers(dest="command",required=True)
     desktop=commands.add_parser("gui",help="Open the native desktop editor (requires the desktop extra)")
     desktop.add_argument('--project',type=Path);desktop.add_argument('--pack',type=Path)
@@ -75,7 +75,7 @@ def main(argv=None):
                 print(json.dumps(report,indent=2))
             return 0
     except (ContractError,OSError,ValueError,KeyError) as error:
-        print(f"PRDE1: {error}",file=__import__("sys").stderr)
+        print(f"Raw Daw: {error}",file=__import__("sys").stderr)
         return 1
 
 

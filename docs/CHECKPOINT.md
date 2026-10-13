@@ -1,4 +1,37 @@
-# Current checkpoint — live note preview on the 0.3.4 engine
+# Current checkpoint — Raw Daw clips, pulse and identity on the 0.3.4 engine
+
+October 13: implemented the 703-bar offline MIDI library: 175 bass, 247 drums,
+169 lead and 112 chord performances. The browser supports search, role/style/meter
+filters, persistent favorites, independent loop audition, protected placement and
+timeline drag/drop. Every placed bar remains editable; harmony is retained.
+CC BY/CC0 sources, original authored CC0 scores, exact source files/hashes and
+conversion notices remain distinct and follow project/export credits.
+
+The Rhythmic Pulse Governor beneath harmony offers Off, Guide and On, named
+presets and editable measure accents. Guide seeds new hits, On governs actual
+trigger volumes, and Off restores authored dynamics. Row timing/repeats, flam
+levels, audition phase, saved expression and native/MIDI export share the resolver.
+Existing saves default to Off. Raw Daw's visible name, compatible launcher,
+per-user desktop entry and half-black/half-white dog with a spiked collar are
+implemented; project/pack identities and application preferences are retained.
+
+Validation: final `make check` passed 136 Python/Qt tests with no skips plus the
+native engine checks. `make demo` passed both reference renders. All 703 clips
+resolve in each of four real banks (2,812 placements) across changing major,
+minor-seventh and power harmony, with zero conflicts and unchanged pack hashes.
+Every bundled SMF is bounded/hash-verified, and the catalog/MIDI bank rebuild
+identically from preserved sources. Native pulse amplitude, reopen/seek, MIDI
+dynamics, placement/preview/drop/undo and 1280×800/150% layouts pass.
+
+Physical Steam Deck launch, device latency and human listening remain unverified.
+The existing hybrid-fidelity and broader approved recording/VST/effects gates
+remain open. See `CLIP_LIBRARY.md` and `validation/raw-daw-library-verification.json`.
+Shael authorized publication of this tested update to public GitHub main on
+October 13, 2026. The source checkpoint includes the clip bank, native interface,
+branding, compatible launcher and verification evidence. The existing 0.3.4
+native renderer remains compatible.
+
+## Previous live note preview checkpoint
 
 Shael's October 12 request enables live per-note preview by default. The visible
 Preview notes switch remembers quiet-editing preferences. Mouse press and visited

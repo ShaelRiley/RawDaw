@@ -40,5 +40,11 @@
   "noteVolumeScope": "SDD Sections 9, 13 and 31: visible focused-note slider/percentage, default dynamics bars, tied-note editing, saved velocity, zero-volume MIDI silence and small/enlarged workspace sizing. Existing sample, musical and mixer contracts remain in force.",
   "liveNotePreviewRequirementsRevisionReadBeforeCode": "AHj4eMTL6h_BBmsoK6P9tUVtGfMzWuAXXtIc_7hsb_OtSULNix-T-spmLTET5uNdk2oGJ2hBgwo9EPfxLa3dHUrSw8MfQ1_E54_QS6kerg",
   "liveNotePreviewUserClarification": "Shael Riley, October 12, 2026: live per-note preview so a note sounds as it is placed.",
-  "liveNotePreviewScope": "SDD Sections 9 and 31: default-on optional mouse/drag/keyboard entry preview; immutable prospective note resolution, actual pitch/kit/volume, independent cached native clips, stale-work cancellation and saved application preference. No recording or external MIDI-device capture is implied."
+  "liveNotePreviewScope": "SDD Sections 9 and 31: default-on optional mouse/drag/keyboard entry preview; immutable prospective note resolution, actual pitch/kit/volume, independent cached native clips, stale-work cancellation and saved application preference. No recording or external MIDI-device capture is implied.",
+  "clipLibraryRequirementsRevisionReadBeforeCode": "AHj4eMTL6h_BBmsoK6P9tUVtGfMzWuAXXtIc_7hsb_OtSULNix-T-spmLTET5uNdk2oGJ2hBgwo9EPfxLa3dHUrSw8MfQ1_E54_QS6kerg",
+  "clipLibraryAmendmentRevisionVerified": "AHj4eMROiJtU7wk3roF0QA7VDlMsEo1qil9uiWeX3ssnTX_4Ea0fXa40Bt0JgO-H8jRkk0flaJYIR3imr8io88eu-KBzW3evpafLkG44WQ",
+  "clipLibraryUserAmendment": "Shael Riley, October 13, 2026: substantial role-specific Creative Commons one-measure MIDI library and rhythmic pulse governor with Off, Guide and On modes.",
+  "clipLibraryScope": "SDD Section 32: 703 genuinely distinct bars, source hashes/licenses, native harmonic/kit adaptation, searchable audition/place/drop/favorites, saved dynamics and shared audio/MIDI resolution. Original scores are identified as authored CC0.",
+  "brandingUserAmendment": "Shael Riley, October 13, 2026: user-facing Raw Daw name and cute half-black/half-white dog with a spiked collar.",
+  "brandingScope": "SDD Section 33: native application/header/window icon, compatible Raw Daw launch and per-user desktop menu command; legacy modules/formats/settings/provenance retained."
 }

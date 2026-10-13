@@ -246,6 +246,9 @@ class StepSequencer(QWidget):
         value=event['expression']['velocity'] if event else 0
         self.note_volume.setValue(value*100);self.note_volume_slider.setValue(round(value*100))
         self.note_volume.setToolTip('Volume of the focused note, saved as velocity '+str(round(value*127))+'/127. Row dynamics and mixer levels apply afterwards.')
+        from .pulse import settings as pulse_settings
+        if self.editor and pulse_settings(self.editor.project)['mode']=='on':
+            for widget in (self.note_volume,self.note_volume_slider):widget.setToolTip('Stored note volume. Rhythmic Pulse is On and controls playback volume; switching it Off restores this value.')
         row=self.current_row()
         self.note_volume_context.setText((row['label'] or (note_name(row['note']) if row['note'] is not None else SLOT_NAMES.get(row['sound'],'Whole chord')))+' · beat '+event['beat'] if event else 'Select a note')
         self.note_volume_midi.setText('Velocity '+str(round(value*127))+'/127' if event else '')

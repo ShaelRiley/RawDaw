@@ -139,6 +139,12 @@ def audition_project(editor, instance_id, row=None, column=0):
             event['choice'].update(exactMidi=row['note'],registerMidi=row['note']);event['expression']['lockExactPitch']=True;root=row['note']%12
         else:root=None
         pattern['events']=[event];pattern.pop('sequencer',None);pattern['length']=str(length)
+    from .pulse import settings as pulse_settings
+    config=pulse_settings(project);meter=at(project['meterMap'],start)
+    bar=Fraction(4*meter['numerator'],meter['denominator'])
+    initial_phase=beat(config['phaseBeat']) if beat(meter['beat'])==0 else Fraction(0)
+    config['phaseBeat']=str((initial_phase+start-beat(meter['beat']))%bar)
+    project['rhythmicPulse']=config
     for name in ('harmony','tonalityMap','tempoMap','meterMap'):
         first=copy.deepcopy(at(project[name],start));first['beat']='0'
         project[name]=[first]+[dict(copy.deepcopy(e),beat=str(beat(e['beat'])-start)) for e in project[name] if start<beat(e['beat'])<start+length]
@@ -246,7 +252,8 @@ class SequencerEditing:
                     for e in matches:e['enabled'] = True
                 else:
                     e = new_event(role, position, min(step, beat(pattern['length']) - position), sound, tone, row['note'])
-                    e['expression']['velocity'] = config['defaultVelocity']
+                    from .pulse import entry_velocity
+                    e['expression']['velocity'] = entry_velocity(project,beat(instance['beat'])+position,config['defaultVelocity'])
                     if role in REGISTERS:e['choice']['exactMidi'] = row['note']; e['expression']['lockExactPitch'] = exact
                     pattern['events'].append(e)
         self._step_edit(instance_id, 'Draw steps' if enabled else 'Erase steps', edit)
@@ -387,7 +394,9 @@ class SequencerEditing:
                     sound=self.pack.instruments['drums'][slot]['soundIdentity']
                 elif role in REGISTERS and not REGISTERS[role][0]<=note['note']<=REGISTERS[role][1]:
                     raise ContractError('Imported MIDI includes notes outside this instrument register')
-                e=new_event(role,position,duration,sound,register=note['note']);e['expression']['velocity']=note['velocity']/127
+                e=new_event(role,position,duration,sound,register=note['note'])
+                from .pulse import entry_velocity
+                e['expression']['velocity']=entry_velocity(project,beat(instance['beat'])+position,note['velocity']/127)
                 if role in REGISTERS:e['choice']['exactMidi']=note['note'];e['expression']['lockExactPitch']=True
                 imported.append(e)
             length=max(beat(pattern['length']),max(beat(e['beat'])+beat(e['duration']) for e in imported))
@@ -418,6 +427,9 @@ class SequencerEditing:
             controls,_=controls_for(project,self.pack,project['instances'][0],project['patterns'][0],source)
             velocity=max(0,min(1,source['expression']['velocity']*(controls['velocityScale'] if controls else 1)+(controls['velocityOffset'] if controls else 0)))
             if ':flam:' in voice['id']:velocity*=.45
+            from .pulse import playback_velocity
+            velocity=playback_velocity(project,start,velocity,grace=':flam:' in voice['id'])
+            velocity=voice.get('noteVelocity',velocity)
             for note in pitches:notes.append(dict(beat=start,duration=stop-start,note=note,channel=channel,velocity=velocity))
         raw=encode_notes(notes,project['tempoMap'][0]['quarterBpm'],tempo_map=project['tempoMap']);path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
         fd,name=tempfile.mkstemp(dir=path.parent,suffix='.partial')

@@ -21,8 +21,8 @@ def configure_audio():
 
 def startup_stage(message):
     if _log is not None:
-        print('PRDE1: ' + message, file=_log, flush=True)
-        print('PRDE1: ' + message, file=sys.stderr, flush=True)
+        print('Raw Daw: ' + message, file=_log, flush=True)
+        print('Raw Daw: ' + message, file=sys.stderr, flush=True)
 
 
 def begin_startup_log():
@@ -40,7 +40,7 @@ def begin_startup_log():
             path.replace(path.with_name('startup.previous.log'))
         _log = path.open('w', encoding='utf-8', buffering=1)
     except OSError as error:
-        print('PRDE1: Startup log unavailable: ' + str(error), file=sys.stderr, flush=True)
+        print('Raw Daw: Startup log unavailable: ' + str(error), file=sys.stderr, flush=True)
         faulthandler.enable(all_threads=True)
         return
     faulthandler.enable(file=_log, all_threads=True)
@@ -51,7 +51,7 @@ def begin_startup_log():
         sys.__excepthook__(kind, value, trace)
 
     sys.excepthook = report_exception
-    print('PRDE1: Startup diagnostics: ' + str(path), file=sys.stderr, flush=True)
+    print('Raw Daw: Startup diagnostics: ' + str(path), file=sys.stderr, flush=True)
     startup_stage('Python ' + platform.python_version() + ' on ' + platform.system())
 
 

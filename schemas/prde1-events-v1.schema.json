@@ -127,6 +127,11 @@
           "endReason": {
             "type": "string",
             "maxLength": 4096
+          },
+          "noteVelocity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
           }
         },
         "required": [

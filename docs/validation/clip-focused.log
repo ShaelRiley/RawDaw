@@ -1,0 +1,15 @@
+test_entry_preview_keeps_pulse_at_original_song_position (test_clip_library.ClipComposition.test_entry_preview_keeps_pulse_at_original_song_position) ... ok
+test_every_bundled_midi_is_valid_one_bar_and_hash_matches (test_clip_library.ClipComposition.test_every_bundled_midi_is_valid_one_bar_and_hash_matches) ... ok
+test_guide_only_seeds_new_entries_and_leaves_existing_edits_free (test_clip_library.ClipComposition.test_guide_only_seeds_new_entries_and_leaves_existing_edits_free) ... ok
+test_kit_extra_omissions_are_explicit_not_silent_extra_reassignment (test_clip_library.ClipComposition.test_kit_extra_omissions_are_explicit_not_silent_extra_reassignment) ... ok
+test_meter_and_downbeat_mismatches_fail_without_mutation (test_clip_library.ClipComposition.test_meter_and_downbeat_mismatches_fail_without_mutation) ... ok
+test_native_pcm_pulse_level_and_reopen_seek_are_exact (test_clip_library.ClipComposition.test_native_pcm_pulse_level_and_reopen_seek_are_exact) ... ok
+test_on_uses_actual_shifted_repeat_positions_and_off_restores_authorship (test_clip_library.ClipComposition.test_on_uses_actual_shifted_repeat_positions_and_off_restores_authorship) ... ok
+test_placement_adapts_all_roles_without_overwriting_harmony_and_is_undoable (test_clip_library.ClipComposition.test_placement_adapts_all_roles_without_overwriting_harmony_and_is_undoable) ... ok
+test_pulse_audition_phase_save_reopen_and_midi_match_native_events (test_clip_library.ClipComposition.test_pulse_audition_phase_save_reopen_and_midi_match_native_events) ... ok
+test_scoped_audition_preserves_first_phase_and_resets_at_later_meter_change (test_clip_library.ClipComposition.test_scoped_audition_preserves_first_phase_and_resets_at_later_meter_change) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 19.233s
+
+OK

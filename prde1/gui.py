@@ -16,7 +16,7 @@ from .desktop_startup import begin_startup_log, configure_audio, startup_stage
 configure_audio()  # Also protect direct `python -m prde1.gui` and embedded windows.
 
 from PySide6.QtCore import Qt, QProcess, QSettings, QStandardPaths, QTimer, QUrl, qVersion
-from PySide6.QtGui import QAction, QColor, QFont, QKeySequence
+from PySide6.QtGui import QAction, QColor, QFont, QKeySequence, QIcon
 from PySide6.QtMultimedia import QAudioOutput, QMediaDevices, QMediaPlayer
 from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QFormLayout, QLabel, QPushButton, QComboBox, QSpinBox, QSlider, QCheckBox, QLineEdit,
@@ -34,6 +34,8 @@ from .pack import Pack
 from .project import load_project, save_project
 from .step_widgets import StepSequencer
 from .mixing import DRUM_PRESETS, DRUM_COMPRESSOR, BASS_SIDECHAIN, apply_punch_mix, drum_eq
+from .library_widgets import PulseControls, ClipBrowser
+from . import clip_library
 
 STYLE='''
 QMainWindow, QDialog, QWidget { background: #171e27; color: #e3ebf4; }
@@ -99,7 +101,8 @@ class DrumEqDialog(QDialog):
 
 class MainWindow(QMainWindow):
     def __init__(self,project_path=None,pack_path=None,*,data_dir=None,remember=True,safe_workspace=False):
-        super().__init__();self.setObjectName('prde1Window');self.setWindowTitle('PRDE1 — Pop Rock Development Environment')
+        super().__init__();self.setObjectName('prde1Window');self.setWindowTitle('Raw Daw')
+        self.setWindowIcon(QIcon(str(ROOT/'prde1/data/raw-daw.svg')))
         self._safe_workspace=safe_workspace
         self.resize(1366,800);self.setMinimumSize(900,650);self.setStyleSheet(STYLE)
         self.editor=None;self.pack=None;self.selected_id='';self.role='rhythm';self.cursor=Fraction(0)
@@ -162,7 +165,8 @@ class MainWindow(QMainWindow):
 
     def _make_center(self):
         central=QWidget();layout=QVBoxLayout(central);layout.setContentsMargins(12,10,12,8);layout.setSpacing(8);self.setCentralWidget(central)
-        top=FlowLayout();brand=QLabel('PRDE1');brand.setObjectName('brand');top.addWidget(brand)
+        top=FlowLayout();mascot=QLabel();mascot.setPixmap(self.windowIcon().pixmap(40,40));mascot.setAccessibleName('Raw Daw dog mascot: half black, half white face and spiked collar');top.addWidget(mascot)
+        brand=QLabel('Raw Daw');brand.setObjectName('brand');top.addWidget(brand)
         self.save_status=QLabel('');self.save_status.setObjectName('muted');top.addWidget(self.save_status);top.addStretch()
         top.addWidget(button('Open project',self.open_project_dialog));top.addWidget(button('Save',self.save))
         self.play_button=button('Play',self.play,True);self.play_button.setAccessibleName('Play or pause current arrangement');top.addWidget(self.play_button)
@@ -181,6 +185,7 @@ class MainWindow(QMainWindow):
         self.mode.setAccessibleName('Mode at edit cursor');govern.addWidget(self.mode)
         govern.addWidget(button('Set key here',self.set_tonality));govern.addWidget(button('Edit chord',lambda:self.edit_chord(self.cursor)))
         govern.addWidget(button('Custom progression',self.custom_dialog));govern.addStretch();layout.addLayout(govern)
+        self.pulse_controls=PulseControls(self);layout.addWidget(self.pulse_controls)
         timing=FlowLayout();timing.addWidget(QLabel('Tempo'))
         self.tempo=spin(20,300,120,1,' qBPM');self.tempo.setAccessibleName('Quarter-note tempo at edit cursor');self.tempo.editingFinished.connect(self.set_tempo);timing.addWidget(self.tempo)
         self.meter=QComboBox()
@@ -269,6 +274,8 @@ class MainWindow(QMainWindow):
         preset_panel=QWidget();layout=QVBoxLayout(preset_panel);help_text=QLabel('Six development templates, ranked by source fidelity. Every chord and custom progression is playable.');help_text.setWordWrap(True);layout.addWidget(help_text)
         self.presets=QListWidget();self.presets.setAccessibleName('Progression templates and coverage');layout.addWidget(self.presets,1);layout.addWidget(button('Apply selected progression',self.apply_preset));layout.addWidget(button('Custom progression…',self.custom_dialog));tabs.addTab(preset_panel,'Progressions')
         pattern_panel=QWidget();layout=QVBoxLayout(pattern_panel);self.source_clips=QListWidget();layout.addWidget(QLabel('Patterns recovered from active source'));layout.addWidget(self.source_clips,1);layout.addWidget(button('Place source pattern here',self.place_source));tabs.addTab(pattern_panel,'Patterns')
+        self.clip_browser=ClipBrowser(self);tabs.insertTab(0,self.clip_browser,'MIDI clips');tabs.setCurrentWidget(self.clip_browser)
+        self.timeline.clip_dropped.connect(self.drop_clip)
         if not self._safe_workspace:self.resizeDocks([self.inspector_dock,self.browser_dock],[205,245],Qt.Orientation.Horizontal)
 
     def _make_mixer(self):
@@ -536,6 +543,55 @@ class MainWindow(QMainWindow):
             self.selected_id=self.editor.add_pattern(pattern['role'],self.cursor,beat(pattern['length']),pattern);self.role=pattern['role']
         self.change(op)
 
+    def place_clip(self,clip=None,position=None):
+        clip=clip or self.clip_browser.selected()
+        if not self.editor or not clip:return
+        position=self.cursor if position is None else position
+        bar=clip_library.bar_at(self.editor.project,position)
+        if bar is None:return
+        position=bar[0];reports=[]
+        def op():
+            self.selected_id,report=clip_library.place(self.editor,clip,position)
+            reports.extend(report);self.role=clip['role'];self.cursor=position
+        serial=self.editor.serial;self.change(op)
+        if self.editor.serial!=serial:
+            self.dock_tabs.setCurrentWidget(self.sequencer)
+            self.notice('Placed '+clip['name']+('. '+ '; '.join(reports) if reports else ''))
+
+    def drop_clip(self,clip_id,role,position):
+        try:
+            clip=clip_library.find(clip_id)
+            if clip['role']!=role:raise ContractError('Drop this clip on its '+('Chords' if clip['role']=='rhythm' else clip['role'].title())+' track.')
+            self.place_clip(clip,position)
+        except (ValueError,KeyError,StopIteration) as error:self.notice(str(error))
+
+    def preview_clip(self):
+        clip=self.clip_browser.selected()
+        if not self.editor or not clip:return
+        try:
+            start=clip_library.bar_at(self.editor.project,self.cursor)[0]
+            project=clip_library.audition(self.editor,clip,start)
+            _,reports=clip_library.native_pattern(self.editor,clip,start)
+            self.stop();self._playback_scope=dict(start=str(start),instance=None,loop=True,kind='library')
+            self.request_render(autoplay=True,preview_project=project,scope=self._playback_scope)
+            self.notice('Previewing '+clip['name']+('. '+'; '.join(reports) if reports else ''))
+        except (ValueError,KeyError,StopIteration) as error:self.notice(str(error))
+
+    def export_library_midi(self):
+        clip=self.clip_browser.selected()
+        if not clip:return
+        path,_=QFileDialog.getSaveFileName(self,'Save source MIDI clip',clip['id']+'.mid','MIDI (*.mid)')
+        if path:
+            try:
+                target=Path(path)
+                if target.suffix.lower() not in ('.mid','.midi'):target=target.with_suffix('.mid')
+                # The bundled source performance is distinct from resolved pattern MIDI.
+                from .contracts import atomic_json
+                raw=clip_library.midi_bytes(clip);source=self.work/'library-export.mid';source.write_bytes(raw);atomic_copy(source,target)
+                atomic_json(target.with_suffix('.credits.json'),{k:v for k,v in clip.items() if k!='pattern'})
+                self.notice('Saved source MIDI and its license credits. Placed-pattern Export MIDI uses your current harmony and pulse.')
+            except (ValueError,OSError,KeyError) as error:self.notice(str(error))
+
     def copy_dialog(self):
         if not self.editor or not self.selected_id:self.notice('Select a pattern on the timeline first.');return
         dialog=QDialog(self);dialog.setWindowTitle('Duplicate pattern');layout=QVBoxLayout(dialog);form=QFormLayout();destination=QComboBox()
@@ -613,7 +669,8 @@ class MainWindow(QMainWindow):
         self.undo_action.setEnabled(bool(self.editor.undo_stack));self.redo_action.setEnabled(bool(self.editor.redo_stack))
         self.undo_action.setText('Undo '+self.editor.undo_stack[-1][0] if self.editor.undo_stack else 'Undo');self.redo_action.setText('Redo '+self.editor.redo_stack[-1][0] if self.editor.redo_stack else 'Redo')
         self.save_status.setText('Unsaved changes' if self.editor.dirty else ('Saved' if self.editor.path else 'Editable starter · '+__version__))
-        self.setWindowTitle(project['title']+(' *' if self.editor.dirty else '')+' — PRDE1')
+        self.setWindowTitle(project['title']+(' *' if self.editor.dirty else '')+' — Raw Daw')
+        self.pulse_controls.refresh(self.editor);self.clip_browser.refresh(self.editor,self.cursor)
         self.timeline.refresh(self.editor,self.selected_id,self.cursor);self.refresh_steps();self.refresh_mixer();self.refresh_browser()
         try:
             self._plan=self.editor.plan();conflicts=self._plan['conflicts'];warnings=self._plan['warnings']
@@ -621,7 +678,7 @@ class MainWindow(QMainWindow):
                 '\n\nNatural limits and source notices\n'+'\n'.join(dict.fromkeys(warnings))+'\n\nSource credits\n'+'\n'.join(v['attribution']+'\n'+v['license'] for v in project['credits']))
             missing=any(v['code'].startswith('missing_') for v in conflicts)
             self.guidance.setText('Choose a covered chord or edit the flagged step — see Coverage & warnings.' if missing else f'{len(conflicts)} incompatible events are preserved and withheld. Review Coverage & warnings.' if conflicts else 'Ready to play. Select a pattern to edit its steps, or edit harmony above the tracks.')
-            if not project['instances']:self.guidance.setText('Choose a track and Add pattern here, then click steps. Source patterns are available in the Browser.')
+            if not project['instances']:self.guidance.setText('Choose a chord progression, then preview and place one-bar MIDI clips from the Browser. Edit any placed pattern below.')
             self.play_button.setEnabled(not missing);self.export_button.setEnabled(not missing)
         except (ValueError,OSError,KeyError) as error:
             self._plan=None;self.issues.setPlainText(str(error));self.guidance.setText('This project requests processing outside the current desktop slice. Its saved state is preserved.');self.play_button.setEnabled(False);self.export_button.setEnabled(False)
@@ -822,7 +879,7 @@ class MainWindow(QMainWindow):
                 plan=resolve(preview_project,self.pack)
             if any(v['code'].startswith('missing_') for v in plan['conflicts']):raise ContractError('Prepared sound requests are missing. Resolve Coverage & warnings before export/playback')
             executable=ROOT/'build/prde1-render'
-            if not executable.is_file():raise ContractError('Native renderer is missing. Relaunch with run-prde1.sh to build it')
+            if not executable.is_file():raise ContractError('Native renderer is missing. Relaunch with run-raw-daw.sh to build it')
         except (ValueError,OSError) as error:self.notice(str(error));return False
         key=self.editor.fingerprint
         source_key=key
@@ -913,12 +970,13 @@ class MainWindow(QMainWindow):
 
 
 def main(argv=None):
-    parser=argparse.ArgumentParser(description='PRDE1 desktop editor')
+    parser=argparse.ArgumentParser(description='Raw Daw desktop editor')
     parser.add_argument('--project',type=Path);parser.add_argument('--pack',type=Path)
     parser.add_argument('--safe-workspace',action='store_true',help='Use central tabs and the built-in Fusion style without restoring or replacing saved layout/scale')
     options=parser.parse_args(argv)
     begin_startup_log();startup_stage('Creating desktop application with Qt ' + qVersion())
     app=QApplication.instance() or QApplication(sys.argv[:1]);app.setApplicationName('PRDE1');app.setOrganizationName('ShaelRiley')
+    app.setApplicationDisplayName('Raw Daw');app.setWindowIcon(QIcon(str(ROOT/'prde1/data/raw-daw.svg')))
     if options.safe_workspace:app.setStyle('Fusion')
     startup_stage('Display platform: '+app.platformName()+'; widget style: '+app.style().objectName())
     screen=app.primaryScreen()

@@ -1,0 +1,83 @@
+{
+  "feature": "Raw Daw one-bar MIDI library, rhythmic pulse governor, and branding",
+  "baseCommit": "2ee1d90f9aa4c603f7ab3b9b161dd61420269aa9",
+  "canonicalDocument": "https://docs.google.com/document/d/1qb6LWTgkk3vVJB3aFnwkXvtZ1-IxRIY0VezW0P9e_HE/edit",
+  "canonicalRevision": "AHj4eMROiJtU7wk3roF0QA7VDlMsEo1qil9uiWeX3ssnTX_4Ea0fXa40Bt0JgO-H8jRkk0flaJYIR3imr8io88eu-KBzW3evpafLkG44WQ",
+  "python": "3.12.14",
+  "qt": "6.8.3",
+  "catalog": {
+    "counts": {
+      "bass": 175,
+      "drums": 247,
+      "lead": 169,
+      "rhythm": 112
+    },
+    "origins": {
+      "Groove MIDI Dataset": 231,
+      "Piano 3 Bass With Drums": 91,
+      "Raw Daw original": 381
+    },
+    "rejections": {}
+  },
+  "allPackAudit": {
+    "conflicts": 0,
+    "packs": [
+      {
+        "clips": 703,
+        "pack": "auld_lang_syne_bossa",
+        "packSha256": "715c53d363b5dd9cd4ef51d59f18595f9fe3f9010c0cae0a058ab8583d806b31",
+        "reducedKitReports": 62,
+        "resolvedEvents": 6111
+      },
+      {
+        "clips": 703,
+        "pack": "parachute",
+        "packSha256": "86cbbb967a7d8c00e004428272a389e3256a45e4010797fbfc7e69aa3cb0621c",
+        "reducedKitReports": 62,
+        "resolvedEvents": 6111
+      },
+      {
+        "clips": 703,
+        "pack": "reach_out",
+        "packSha256": "d03c80d14b5337b27a0a4361870a85c6c1fc6b7ad9d19f62fc205ca4b2f2e80b",
+        "reducedKitReports": 49,
+        "resolvedEvents": 6139
+      },
+      {
+        "clips": 703,
+        "pack": "where_you_are_now",
+        "packSha256": "f4892d2aac99613786fb0f8b6f9d479be08ebe7f2d621b7ab9b27d0cd0942f3a",
+        "reducedKitReports": 49,
+        "resolvedEvents": 6139
+      }
+    ],
+    "totalClipPlacements": 2812
+  },
+  "checks": {
+    "focusedMusicalTests": 10,
+    "focusedWidgetTests": 3,
+    "viewport": "1280x800 at 100% and 150%",
+    "pulsePCM": "80%/40% amplitude ratio, exact reopen and seek bytes",
+    "midi": "703 bounded hash-verified SMF clips plus pulse-resolved pattern export",
+    "rebuild": "Exact catalog and canonical MIDI ZIP reproduction",
+    "favorites": "QSettings persistence readback",
+    "desktopLauncher": "Per-user name, executable and icon verified",
+    "demo": "make demo passed",
+    "fullRegression": "make check: 136 Python/Qt tests, zero skips, plus native engine checks"
+  },
+  "evidence": [
+    "raw-daw-check.log",
+    "raw-daw-demo.log",
+    "clip-focused.log",
+    "clip-ui.log"
+  ],
+  "libraryHashes": {
+    "index.json.gz": "09f1e27025e0dad6de0625c8ff155d3cb2c3a3e7d976db7f7516d91d2dd39e8e",
+    "midi-clips.zip": "0fb7f1e57fb0ecbbb1873b4de44d33ef3a8b6b0f57aca784ea11a9c060c19c03"
+  },
+  "limitations": [
+    "No physical Steam Deck launch, device latency or human listening validation.",
+    "Song Pack hybrid sound fidelity and broader recording/VST/effect milestones remain open."
+  ],
+  "publication": "Shael explicitly authorized publishing this tested update to public ShaelRiley/RawDaw main on October 13, 2026. Verify remote HEAD/tree after publication."
+}

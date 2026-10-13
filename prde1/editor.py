@@ -195,8 +195,12 @@ class Editor(SequencerEditing):
 
     def add_pattern(self,role,position,length,source=None):
         pattern=copy.deepcopy(source) if source else dict(role=role,length=str(length),events=[],
-            provenance=dict(sourceClip='PRDE1 desktop authored pattern',license='MIT',changes='New performance'))
+            provenance=dict(sourceClip='Raw Daw desktop authored pattern',license='MIT',changes='New performance'))
         pattern['id']=identity('pattern')
+        if source:
+            from .pulse import entry_velocity
+            for event in pattern['events']:
+                event['expression']['velocity']=entry_velocity(self.project,position+beat(event['beat']),event['expression']['velocity'])
         instance=dict(id=identity('instance'),patternId=pattern['id'],beat=str(position),linked=False)
         def change(p):p['patterns'].append(pattern);p['instances'].append(instance)
         self.apply('Place '+role+' pattern',change)
@@ -243,6 +247,8 @@ class Editor(SequencerEditing):
                     available=[n for n,pc in enumerate(pitches) if any(k[0]==role and k[1]%12==pc for k in self.pack.mappings)]
                     if available:tone=available[0]
             event=new_event(role,position,duration,sound,tone)
+            from .pulse import entry_velocity
+            event['expression']['velocity']=entry_velocity(self.project,beat(self.instance(instance_id)['beat'])+position,event['expression']['velocity'])
             def change(p):next(v for v in p['patterns'] if v['id']==pid)['events'].append(event)
         self.apply('Toggle step',change)
 

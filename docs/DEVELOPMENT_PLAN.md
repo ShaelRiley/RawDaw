@@ -65,7 +65,8 @@ v1 scope remain in this plan.
    Variation, whole-song plans/locked sections, normalized MIDI adapters and
    exact rational/pulse behavior. The desktop now exposes copy/link/detach,
    Include Harmony warning, undo/recovery and regeneration. Freeze, full section
-   plans and complete pattern-library workflows remain to be implemented.
+   plans remain to be implemented. The 703-bar shared MIDI library and pulse
+   governor now support search, previews, placement, drops and favorites.
    The four full demos are fixed authored native scores with companion section
    documentation; they do not close generic Song Plan generation or section locks.
 5. **Fixed DSP graph:** role/drum EQ, every channel/group's independent reverb and
@@ -91,8 +92,8 @@ v1 scope remain in this plan.
 8. **Public builder and catalogs:** read skill-creator instructions, package the
    actual `prde1-song-pack-builder` plus pipeline/locks/shared schemas/tests and
    installation instructions. Curate the extensive progressions, tonal registry,
-   useful authorized demo pack and substantial properly licensed one-measure
-   library. Select/clear/test two to four existing instruments and a small effects
+   useful authorized demo pack. The initial shared one-measure library now
+   contains 703 source-traceable CC BY/CC0 clips; further breadth remains curation work. Select/clear/test two to four existing instruments and a small effects
    bundle; record every notice/hash/source obligation. No invented inventory.
 9. **Release gate:** full project/media state and migrations, native installers,
    privacy/local diagnostics, hardening, malicious-input and failure testing,

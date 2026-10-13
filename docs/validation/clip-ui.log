@@ -1,0 +1,14 @@
+qt.multimedia.symbolsresolver: Couldn't load pipewire-0.3 library
+qt.multimedia.symbolsresolver: Couldn't resolve pipewire-0.3 symbols
+test_drop_on_matching_track_places_a_bar_and_occupied_drop_is_preserved (test_library_widgets.NativeLibrary.test_drop_on_matching_track_places_a_bar_and_occupied_drop_is_preserved) ... qt.multimedia.ffmpeg: Using Qt multimedia with FFmpeg version 7.1 LGPL version 2.1 or later
+socket(): Operation not permitted
+socket(): Operation not permitted
+PulseAudioService: pa_context_connect() failed
+ok
+test_modes_commit_saved_values_and_browser_buttons_fit_large_text (test_library_widgets.NativeLibrary.test_modes_commit_saved_values_and_browser_buttons_fit_large_text) ... ok
+test_search_role_meter_favorites_place_and_real_preview_are_independent (test_library_widgets.NativeLibrary.test_search_role_meter_favorites_place_and_real_preview_are_independent) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 10.060s
+
+OK
