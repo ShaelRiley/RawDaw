@@ -95,6 +95,9 @@ def encode_notes(notes, quarter_bpm=120, ppq=960, tempo_map=None):
     for item in notes:
         start=round(item['beat']*ppq);end=max(start+1,round((item['beat']+item['duration'])*ppq))
         if not 0<=item['note']<=127 or not 0<=item['channel']<=15:raise ContractError('Invalid MIDI address')
+        # A zero-volume trigger is silent. MIDI note-on velocity zero means
+        # note-off, so omit it instead of exporting an audible velocity-one hit.
+        if item['velocity']==0:continue
         grouped.setdefault((item['channel'],item['note']),[]).append((start,end,max(1,min(127,round(item['velocity']*127)))))
     events=[]
     for (channel,note),items in grouped.items():

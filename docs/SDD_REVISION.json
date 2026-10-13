@@ -34,5 +34,8 @@
   "stepSequencerRequirementsRevisionReadBeforeCode": "AHj4eMTcGsIg48m2HDkH39fH3vVdsRFJuqhJk60JZgxI9ElSQ3OfWTYoI8c_LXrQh6H0kMao9d8hb4KkRCpPfe2J_E5gIcG8sFTPBYjFBQ",
   "stepSequencerAmendmentRevisionVerified": "AHj4eMTL6h_BBmsoK6P9tUVtGfMzWuAXXtIc_7hsb_OtSULNix-T-spmLTET5uNdk2oGJ2hBgwo9EPfxLa3dHUrSw8MfQ1_E54_QS6kerg",
   "stepSequencerUserAmendment": "Shael Riley, October 11, 2026: Cakewalk SONAR-style step sequencer, default for drum kits and bass lines, with pitch rows for bass/lead and instrument rows for drums; include core composition controls.",
-  "stepSequencerScope": "SDD Section 31; native default pitch/kit grid, saved row/step expression and timing, mono/poly scheduling, ties/flams/reuse, independent loop/row audition, keyboard step entry, native pattern saves and note MIDI interchange. Current complete harmonic coverage and source/DSP identities retained; external MIDI-device capture remains a separate integration."
+  "stepSequencerScope": "SDD Section 31; native default pitch/kit grid, saved row/step expression and timing, mono/poly scheduling, ties/flams/reuse, independent loop/row audition, keyboard step entry, native pattern saves and note MIDI interchange. Current complete harmonic coverage and source/DSP identities retained; external MIDI-device capture remains a separate integration.",
+  "noteVolumeRequirementsRevisionReadBeforeCode": "AHj4eMTL6h_BBmsoK6P9tUVtGfMzWuAXXtIc_7hsb_OtSULNix-T-spmLTET5uNdk2oGJ2hBgwo9EPfxLa3dHUrSw8MfQ1_E54_QS6kerg",
+  "noteVolumeUserClarification": "Shael Riley, October 12, 2026: per-note dynamics (volume) control like SONAR.",
+  "noteVolumeScope": "SDD Sections 9, 13 and 31: visible focused-note slider/percentage, default dynamics bars, tied-note editing, saved velocity, zero-volume MIDI silence and small/enlarged workspace sizing. Existing sample, musical and mixer contracts remain in force."
 }

@@ -7,7 +7,7 @@ from fractions import Fraction
 from pathlib import Path
 
 os.environ.setdefault('QT_QPA_PLATFORM','offscreen')
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QPoint
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QAbstractItemView
 
@@ -99,3 +99,66 @@ class StepInterface(unittest.TestCase):
         w=self.window;s=w.sequencer;row,point=self.target('n_48',0);QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
         s.parameter.setCurrentIndex(s.parameter.findData('duration'));s.draw_expression({0:1.032258064516129})
         self.assertGreater(w.editor.plan()['events'][0]['endFrame'],6000);self.assertEqual(w.editor.plan()['conflicts'],[])
+
+    def test_note_volume_keyboard_edits_only_focused_note_and_survives_undo_reopen(self):
+        w=self.window;s=w.sequencer
+        for col in (0,1):
+            _,point=self.target('n_48',col);QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+        s.grid.setCurrentCell(s.grid.currentRow(),0);before=w.editor.plan();count=len(w.editor.undo_stack)
+        s.note_volume.setFocus();s.note_volume.selectAll();QTest.keyClicks(s.note_volume,'35');QTest.keyClick(s.note_volume,Qt.Key.Key_Return)
+        notes=w.editor.pattern(self.bass)['events']
+        self.assertEqual([e['expression']['velocity'] for e in notes],[.35,.8]);self.assertEqual(len(w.editor.undo_stack),count+1)
+        changed=w.editor.plan();self.assertAlmostEqual(changed['events'][0]['gain']/before['events'][0]['gain'],.35/.8)
+        self.assertEqual(changed['events'][1],before['events'][1]);self.assertEqual(s.note_volume_slider.value(),35)
+        w.undo();self.assertEqual(w.editor.plan(),before);w.redo();self.assertEqual(w.editor.plan(),changed)
+        path=Path(self.folder.name)/'volume.prdeproj';w.editor.save(path)
+        from prde1.project import load_project
+        self.assertEqual(Editor(load_project(path),w.pack,path).plan(),changed)
+        self.assertTrue(s.show_lane.isChecked());self.assertTrue(s.lane.isVisible())
+
+    def test_note_volume_slider_drag_is_one_edit_and_sustain_cell_edits_original_attack(self):
+        w=self.window;s=w.sequencer
+        w.change(lambda:w.editor.paint_steps(self.bass,[('n_48',Fraction(i,4)) for i in range(4)]))
+        w.change(lambda:w.editor.tie_steps(self.bass,'n_48',Fraction(0),Fraction(3,4)))
+        # Draw and erase an intervening step: its disabled data must not steal
+        # focus from the original note still sustaining through this column.
+        w.change(lambda:w.editor.paint_steps(self.bass,[('n_48',Fraction(1,2))]))
+        erased=w.editor.pattern(self.bass)['events'][-1]['id']
+        w.change(lambda:w.editor.edit_step_values(self.bass,{erased},enabled=False))
+        row,_=self.target('n_48',2);s.grid.setCurrentCell(row,2);self.assertTrue(s.note_volume.isEnabled())
+        count=len(w.editor.undo_stack);slider=s.note_volume_slider
+        from PySide6.QtWidgets import QStyle, QStyleOptionSlider
+        option=QStyleOptionSlider();slider.initStyleOption(option)
+        handle=slider.style().subControlRect(QStyle.ComplexControl.CC_Slider,option,QStyle.SubControl.SC_SliderHandle,slider).center()
+        QTest.mousePress(slider,Qt.MouseButton.LeftButton,pos=handle)
+        QTest.mouseMove(slider,QPoint(2,handle.y()));QTest.mouseRelease(slider,Qt.MouseButton.LeftButton,pos=QPoint(2,handle.y()))
+        self.assertEqual(len(w.editor.undo_stack),count+1);self.assertEqual(s.note_volume.value(),0)
+        notes=w.editor.pattern(self.bass)['events'];self.assertEqual(len(notes),2);self.assertTrue(notes[0]['enabled']);self.assertEqual(notes[0]['beat'],'0')
+        self.assertFalse(notes[1]['enabled']);self.assertEqual(notes[1]['expression']['velocity'],.8)
+        self.assertEqual(notes[0]['expression']['velocity'],0);self.assertEqual(w.editor.plan()['events'][0]['gain'],0)
+        w.undo();self.assertEqual(s.note_volume.value(),80)
+
+    def test_visible_dynamics_bars_change_note_levels_without_creating_other_notes(self):
+        w=self.window;s=w.sequencer
+        w.change(lambda:w.editor.paint_steps(self.drums,[('d_kick',Fraction(0)),('d_kick',Fraction(1,4)),('d_snare',Fraction(0))]))
+        w.select('drums',Fraction(0),self.drums);row,_=self.target('d_kick',0);s.grid.setCurrentCell(row,0)
+        lane=s.lane;origin=s.grid.verticalHeader().width()+s.grid.frameWidth()
+        x=origin+s.grid.columnViewportPosition(0)+s.grid.columnWidth(0)//2
+        before=len(w.editor.undo_stack);point=QPoint(x,lane.height()//2)
+        QTest.mouseClick(lane,Qt.MouseButton.LeftButton,pos=point)
+        events=w.editor.pattern(self.drums)['events'];self.assertEqual([e['expression']['velocity'] for e in events],[.5,.8,.8])
+        self.assertEqual(len(w.editor.undo_stack),before+1);self.assertEqual(s.note_volume.value(),50)
+        row,_=self.target('d_kick',3);s.grid.setCurrentCell(row,3);self.assertFalse(s.note_volume.isEnabled())
+        x=origin+s.grid.columnViewportPosition(3)+s.grid.columnWidth(3)//2;QTest.mouseClick(lane,Qt.MouseButton.LeftButton,pos=QPoint(x,lane.height()//2))
+        self.assertEqual(len(w.editor.pattern(self.drums)['events']),3);self.assertIsNone(lane.values[3])
+
+    def test_note_volume_bars_and_focused_note_fit_the_deck_viewport_with_enlarged_text(self):
+        w=self.window;s=w.sequencer
+        _,point=self.target('n_48',0);QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+        for scale in (1,1.5):
+            w.resize(1280,800);w._apply_scale(scale);self.app.processEvents()
+            view=w.body_scroll.viewport()
+            for control in (s.note_volume,s.note_volume_slider,s.lane):
+                top=control.mapTo(view,QPoint(0,0));bottom=control.mapTo(view,QPoint(control.width()-1,control.height()-1))
+                self.assertTrue(view.rect().contains(top));self.assertTrue(view.rect().contains(bottom))
+            self.assertTrue(s.grid.viewport().rect().contains(s.grid.visualItemRect(s.grid.currentItem()).center()))

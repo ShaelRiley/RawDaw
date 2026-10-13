@@ -14,6 +14,13 @@ plans/cached previews while preserving authorship, saved variation and stale-job
 guards. Native pattern files retain attribution; SMF is note-level interchange.
 See `STEP_SEQUENCER.md` for controls, edge policies and validation.
 
+Focused-note volume controls reuse saved `expression.velocity` and the same
+native gain path. The slider commits one edit per drag; a continuation cell
+addresses its held note's original event. Dynamics bars are visible by default.
+Zero-volume realized events are omitted from SMF note output, preserving silence
+without treating MIDI velocity zero as a new note-on. No new event schema or
+sample/DSP operation is introduced.
+
 ## Current override: full harmonic coverage (SDD Section 30)
 
 Shael's October 11 amendment supersedes the coverage-gating and strict mode

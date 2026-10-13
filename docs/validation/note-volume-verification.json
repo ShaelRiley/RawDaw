@@ -1,0 +1,78 @@
+{
+  "verifiedAtUtc": "2026-10-13T02:19:31.307999+00:00",
+  "baseCommit": "2c83674b0aa50b9b902b8441eba891c2f33233a1",
+  "canonicalSddRevision": "AHj4eMTL6h_BBmsoK6P9tUVtGfMzWuAXXtIc_7hsb_OtSULNix-T-spmLTET5uNdk2oGJ2hBgwo9EPfxLa3dHUrSw8MfQ1_E54_QS6kerg",
+  "environment": {
+    "python": "3.12.14",
+    "qt": "6.8.3",
+    "platform": "Linux x86_64 offscreen",
+    "physicalAudioDevice": false
+  },
+  "implementation": {
+    "noteVolumePercent": [
+      0,
+      100
+    ],
+    "storedField": "expression.velocity",
+    "sliderUndo": "one operation per drag",
+    "focusedTiedNote": "edit original attack",
+    "defaultDynamicsBars": true,
+    "emptyBars": "no invented notes",
+    "midiZeroVolume": "silent realized triggers omitted",
+    "rendererChanged": false
+  },
+  "validation": {
+    "command": "QT_QPA_PLATFORM=offscreen make check PYTHON=.venv/bin/python",
+    "exitCode": 0,
+    "tests": 116,
+    "skipped": 0,
+    "seconds": 118.097,
+    "nativeEngineTests": true,
+    "focusedChecks": [
+      "keyboard volume entry edits only focused note",
+      "slider drag is one undo and works from tied continuation",
+      "volume bar gestures preserve other note levels and empty steps",
+      "native PCM attenuation and MIDI zero-volume silence",
+      "actual viewport bounds at 1280x800 and 150% text"
+    ],
+    "pcmTest": {
+      "sourceKind": "synthetic_fixture",
+      "noteVolumesPercent": [
+        80,
+        40,
+        0
+      ],
+      "expectedSecondToFirstAmplitudeRatio": 0.5,
+      "ratioTolerance": 0.0001,
+      "passed": true
+    },
+    "referenceRenders": [
+      {
+        "arrangement": "major",
+        "sourceKind": "synthetic_fixture",
+        "eventCount": 88,
+        "frames": 384000,
+        "peakDbFS": -13.925440353359143,
+        "wavSha256": "187fa5c7195b20a9f333065e89d45c73ed27994ac63f955f5a620c1792dc8a89"
+      },
+      {
+        "arrangement": "minor",
+        "sourceKind": "synthetic_fixture",
+        "eventCount": 88,
+        "frames": 384000,
+        "peakDbFS": -13.925440353359143,
+        "wavSha256": "3c6ae1c60286523ce38e140617be9ef9ccf99e02ee59443308d48e3656f4a761"
+      }
+    ],
+    "checkLog": "note-volume-check.log",
+    "demoLog": "note-volume-demo.log",
+    "focusedFinalUi": {
+      "tests": 12,
+      "exitCode": 0,
+      "evidence": "note-volume-focused-ui.log",
+      "additionalEdge": "A disabled intervening step cannot steal the volume control from the sustained note visible in its cell."
+    }
+  },
+  "physicalSteamDeckStartup": "unverified; existing device failure remains open",
+  "humanListening": "not performed"
+}

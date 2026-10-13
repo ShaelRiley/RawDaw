@@ -9,6 +9,20 @@ October 11 request, including his clarification that he means the step sequencer
 
 ## Composition controls
 
+Focus a note and use the visible **Note volume** slider or percentage field to
+set its individual level from 0–100%. Volume is saved as note velocity and applies
+before row dynamics and mixer levels. The tooltip also shows its MIDI velocity
+on the 0–127 scale. A slider drag creates one undoable edit. A tied note can be
+edited from any of its sustained cells without creating another attack.
+
+**Dynamics bars** are visible by default for the focused pitch or kit row. Drag
+each note's bar to shape its volume; empty columns remain empty. **More controls**
+opens new-note defaults, the other expression types, audition on entry and row
+timing. The event list/dialog exposes **Note volume** for exact off-grid notes.
+Values survive save/reopen, pattern reuse, undo/recovery, preview and audio export.
+Silent realized notes are omitted from MIDI export rather than becoming faint
+velocity-one hits. Percentages describe amplitude, not a decibel or loudness scale.
+
 | Control | Behavior |
 | --- | --- |
 | Left-click / drag | Enable steps; fast drags fill crossed columns |
@@ -21,7 +35,8 @@ October 11 request, including his clarification that he means the step sequencer
 | Ctrl-drag / Row → Tie | Merge adjacent steps into a held note; Ctrl-right-drag / Split restores separate attacks |
 | Double-click | Toggle a quieter flam grace trigger |
 | Expression bars | Draw velocity, gate duration, play/change probability or timing offsets; one drag is one undo operation |
-| Row controls | Mute/solo, velocity multiplier/offset, gate %, swing %, time offset %, flam timing |
+| Note volume | Slider and percentage for the focused note; Shift-drag and default dynamics bars provide gesture alternatives |
+| More controls | New-note volume, expression type, audition on entry, row velocity multiplier/offset, gate %, swing %, time offset %, flam timing |
 | Row menu | Insert/delete/rename/reorder, copy/cut/paste, shift, reverse, clear and fill every N steps |
 | Alt-left/right | Shift the focused row by one step, wrapping within the pattern |
 | Alt-up/down | Move a melodic column to the next higher/lower permitted pitches |
@@ -38,8 +53,8 @@ follows the real preview clock, including independent looped auditions.
 
 Rows offer their actual source or modeled kit sounds. Empty optional extras stay
 unassigned. Source-specific Extra 1/2 names remain visible. Row controls are
-collapsed initially to retain working space on a 1280×800 screen; their visible
-toggle and menus provide non-drag equivalents. The exact Event list remains an
+collapsed initially to retain working space on a 1280×800 screen; the visible
+More controls toggle and menus provide non-drag equivalents. The exact Event list remains an
 editable alternative and retains every off-grid event.
 
 ## Musical and persistence rules

@@ -154,3 +154,24 @@ class StepComposition(unittest.TestCase):
         self.editor.paint_steps(self.bass,[('n_48',Fraction(1,960))])
         self.editor.set_row(self.bass,'n_48',gatePercent=66.67,offsetPercent=37.67,swingPercent=66.67)
         self.assertEqual(self.editor.plan()['conflicts'],[]);self.assertEqual(len(self.editor.plan()['events']),1)
+
+    def test_per_note_volume_scales_actual_pcm_and_zero_stays_silent_in_midi(self):
+        import math,wave
+        from prde1.midi import inspect_midi
+        self.editor.paint_steps(self.bass,[('n_48',Fraction(i)) for i in range(3)])
+        notes=self.editor.pattern(self.bass)['events']
+        self.editor.edit_step_values(self.bass,{notes[1]['id']},velocity=.4)
+        self.editor.edit_step_values(self.bass,{notes[2]['id']},velocity=0)
+        self.editor.apply('Bypass master for volume measurement',lambda p:p['mix']['compressor'].update(on=False))
+        plan=self.editor.plan();path=self.root/'volume-plan.json';path.write_bytes(canonical_bytes(plan));output=self.root/'volume.wav'
+        result=subprocess.run([str(ROOT/'build/prde1-render'),str(path),str(self.pack.root),str(output)],capture_output=True,text=True)
+        self.assertEqual(result.returncode,0,result.stderr)
+        with wave.open(str(output)) as stream:raw=stream.readframes(stream.getnframes())
+        levels=[]
+        for e in plan['events']:
+            pcm=raw[e['startFrame']*6:e['endFrame']*6]
+            samples=[int.from_bytes(pcm[i:i+3],'little',signed=True) for i in range(0,len(pcm),3)]
+            levels.append(math.sqrt(sum(v*v for v in samples)/len(samples)))
+        self.assertGreater(levels[0],1000);self.assertAlmostEqual(levels[1]/levels[0],.5,delta=.0001);self.assertLessEqual(levels[2],1)
+        midi=self.root/'volume.mid';self.editor.export_midi(self.bass,midi);decoded=inspect_midi(midi.read_bytes())
+        self.assertEqual([(n['tick'],n['velocity']) for n in decoded['notes']],[(0,102),(960,51)])

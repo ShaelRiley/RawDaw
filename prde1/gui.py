@@ -22,7 +22,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
     QFormLayout, QLabel, QPushButton, QComboBox, QSpinBox, QSlider, QCheckBox, QLineEdit,
     QDockWidget, QSplitter, QScrollArea, QTabWidget, QTableWidget, QTableWidgetItem,
     QListWidget, QListWidgetItem, QFileDialog, QMessageBox, QDialog, QDialogButtonBox,
-    QPlainTextEdit, QAbstractItemView, QHeaderView)
+    QPlainTextEdit, QAbstractItemView, QHeaderView, QSizePolicy)
 
 from . import __version__
 from .contracts import ROOT, ContractError, RATE, SLOTS, atomic_json, canonical_bytes, read_json
@@ -193,9 +193,12 @@ class MainWindow(QMainWindow):
         self.bars=QSpinBox();self.bars.setRange(1,512);self.bars.setSuffix(' bars');self.bars.setKeyboardTracking(False);self.bars.editingFinished.connect(self.resize_song);timing.addWidget(self.bars)
         self.duration=QLabel();timing.addWidget(self.duration);timing.addStretch()
         self.zoom=QSlider(Qt.Orientation.Horizontal);self.zoom.setRange(50,200);self.zoom.setValue(100);self.zoom.setMaximumWidth(110);self.zoom.setAccessibleName('Timeline zoom');self.zoom.valueChanged.connect(self.set_zoom);timing.addWidget(QLabel('Zoom'));timing.addWidget(self.zoom);layout.addLayout(timing)
-        self.splitter=QSplitter(Qt.Orientation.Vertical);layout.addWidget(self.splitter,1)
+        self.splitter=QSplitter(Qt.Orientation.Vertical);self.splitter.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Ignored);layout.addWidget(self.splitter,1)
         self.timeline=Timeline();self.timeline.selected.connect(self.select);self.timeline.chord_requested.connect(self.edit_chord)
         self.timeline_scroll=QScrollArea();self.timeline_scroll.setWidget(self.timeline);self.timeline_scroll.setWidgetResizable(True);self.timeline_scroll.horizontalScrollBar().valueChanged.connect(self._scroll_changed)
+        # The timeline scrolls within its own pane. Its full track height must
+        # not force note controls below a small or enlarged-text viewport.
+        policy=self.timeline_scroll.sizePolicy();policy.setVerticalPolicy(QSizePolicy.Policy.Ignored);self.timeline_scroll.setSizePolicy(policy);self.timeline_scroll.setMinimumHeight(100)
         self.splitter.addWidget(self.timeline_scroll)
         self.dock_tabs=QTabWidget();self.splitter.addWidget(self.dock_tabs);self.splitter.setSizes([360,260])
         self.sequencer=StepSequencer(self.change,self.audition_steps,self.copy_dialog,self.detach_selected,self.remove_selected,self)
@@ -204,7 +207,7 @@ class MainWindow(QMainWindow):
         self.dock_tabs.addTab(self.sequencer,'Step sequencer')
         event_panel=QWidget();events_layout=QVBoxLayout(event_panel);tools=QHBoxLayout();tools.addWidget(QLabel('Exact event timing · no automatic quantization'),1)
         tools.addWidget(button('Edit selected step',self.edit_selected_event));tools.addWidget(button('Delete step',self.delete_selected_event));events_layout.addLayout(tools)
-        self.events=QTableWidget(0,9);self.events.setObjectName('eventList');self.events.setHorizontalHeaderLabels(['State','Beat','Gate','Choice','Velocity','Play %','Change %','Variation','Lock'])
+        self.events=QTableWidget(0,9);self.events.setObjectName('eventList');self.events.setHorizontalHeaderLabels(['State','Beat','Gate','Choice','Note volume %','Play %','Change %','Variation','Lock'])
         self.events.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);self.events.setAlternatingRowColors(True);self.events.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.events.cellDoubleClicked.connect(lambda *_:self.edit_selected_event());self.events.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents);self.events.horizontalHeader().setStretchLastSection(True)
         events_layout.addWidget(self.events);self.dock_tabs.addTab(event_panel,'Event list')

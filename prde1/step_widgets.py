@@ -9,7 +9,7 @@ from PySide6.QtCore import Qt, Signal, QEvent
 from PySide6.QtGui import QColor, QPainter, QPen
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QToolButton, QMenu, QComboBox, QCheckBox, QSpinBox, QTableWidget, QTableWidgetItem,
-    QHeaderView, QAbstractItemView, QFileDialog, QInputDialog)
+    QHeaderView, QAbstractItemView, QFileDialog, QInputDialog, QSlider)
 
 from .contracts import ContractError, SLOTS
 from .gui_widgets import FlowLayout, COLORS, SLOT_NAMES, spin
@@ -29,7 +29,7 @@ class StepGrid(QTableWidget):
         super().__init__(); self.drag = None; self.play_column = -1; self.step_entry = False
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
-        self.setAccessibleName('Step sequencer. Pitch or instrument rows, time columns. Arrows navigate; Space toggles; Delete erases; Control-drag ties; Shift-drag changes velocity.')
+        self.setAccessibleName('Step sequencer. Pitch or instrument rows, time columns. Arrows navigate; Space toggles; Delete erases; Control-drag ties; Shift-drag changes note volume.')
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
         self.horizontalHeader().setDefaultSectionSize(44); self.verticalHeader().setDefaultSectionSize(30)
         self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
@@ -105,6 +105,10 @@ class StepGrid(QTableWidget):
             x=self.columnViewportPosition(self.play_column)
             painter.drawRect(x,0,self.columnWidth(self.play_column)-1,self.viewport().height()-1);painter.end()
 
+    def resizeEvent(self,event):
+        super().resizeEvent(event)
+        if self.currentItem() is not None:self.scrollToItem(self.currentItem(),QAbstractItemView.ScrollHint.EnsureVisible)
+
 
 class ExpressionLane(QWidget):
     edited=Signal(int,float)
@@ -124,7 +128,7 @@ class ExpressionLane(QWidget):
     def edit_at(self,event):
         origin=self.grid.verticalHeader().width()+self.grid.frameWidth()
         x=int(event.position().x())-origin;column=self.grid.horizontalHeader().logicalIndexAt(x)
-        if column>=0:
+        if 0<=column<len(self.values) and self.values[column] is not None:
             value=max(self.minimum,min(self.maximum,self.minimum+(self.height()-event.position().y())/self.height()*(self.maximum-self.minimum)))
             if self.pending is not None:
                 self.pending[column]=value
@@ -170,24 +174,36 @@ class StepSequencer(QWidget):
         self.grid.activated.connect(self.toggle);self.grid.gesture.connect(self.gesture);self.grid.velocity.connect(self.set_velocity);self.grid.flam.connect(self.toggle_flam);self.grid.command.connect(self.row_action);self.grid.typed_note.connect(self.type_note)
         self.grid.currentCellChanged.connect(self.focus_row);self.grid.verticalHeader().sectionClicked.connect(self.audition_row)
         self.grid.verticalHeader().setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);self.grid.verticalHeader().customContextMenuRequested.connect(lambda point:row_menu.exec(self.grid.verticalHeader().mapToGlobal(point)))
+        dynamics=FlowLayout();dynamics.addWidget(QLabel('Note volume'))
+        self.note_volume_slider=QSlider(Qt.Orientation.Horizontal);self.note_volume_slider.setRange(0,100);self.note_volume_slider.setTracking(False)
+        self.note_volume_slider.setMinimumWidth(120);self.note_volume_slider.setMaximumWidth(200);self.note_volume_slider.setAccessibleName('Focused note volume slider')
+        self.note_volume_slider.valueChanged.connect(lambda value:self.set_note_volume(value/100));dynamics.addWidget(self.note_volume_slider)
+        self.note_volume=spin(0,100,80,1,' %');self.note_volume.setKeyboardTracking(False);self.note_volume.setAccessibleName('Focused note volume percentage')
+        self.note_volume.valueChanged.connect(lambda value:self.set_note_volume(value/100));dynamics.addWidget(self.note_volume)
+        self.note_volume_context=QLabel('Select a note');self.note_volume_context.setTextFormat(Qt.TextFormat.PlainText);dynamics.addWidget(self.note_volume_context)
+        self.note_volume_midi=QLabel();self.note_volume_midi.hide()
+        for widget in (self.note_volume,self.note_volume_slider):widget.setToolTip('Volume of the focused note, saved as velocity. Row dynamics and mixer levels apply afterwards. A slider drag is one undoable edit.')
+        layout.insertLayout(1,dynamics)
         self.help=QLabel();self.help.setWordWrap(True);self.help.setObjectName('muted');layout.addWidget(self.help)
         bottom=FlowLayout();self.row_label=QLabel('Row');self.row_label.setTextFormat(Qt.TextFormat.PlainText);bottom.addWidget(self.row_label)
         self.row_muted=QCheckBox('Mute');self.row_solo=QCheckBox('Solo')
-        for name,w in [('muted',self.row_muted),('solo',self.row_solo)]:w.clicked.connect(lambda _,name=name,w=w:self.row_change(**{name:w.isChecked()}));bottom.addWidget(w)
-        self.details=QCheckBox('Row controls');self.details.toggled.connect(lambda on:self.row_panel.setVisible(on));bottom.addWidget(self.details)
+        for name,w in [('muted',self.row_muted),('solo',self.row_solo)]:w.clicked.connect(lambda _,name=name,w=w:self.row_change(**{name:w.isChecked()}));dynamics.addWidget(w)
+        self.details=QCheckBox('More controls');self.details.toggled.connect(lambda on:(self.advanced_panel.setVisible(on),self.row_panel.setVisible(on)));dynamics.addWidget(self.details)
         self.preview_click=QCheckBox('Audition on entry');bottom.addWidget(self.preview_click)
-        self.default_velocity=spin(0,100,80,0,' %');self.default_velocity.setAccessibleName('Default new step velocity');self.default_velocity.editingFinished.connect(lambda:self.config_change(defaultVelocity=self.default_velocity.value()/100));bottom.addWidget(QLabel('New velocity'));bottom.addWidget(self.default_velocity)
+        self.default_velocity=spin(0,100,80,0,' %');self.default_velocity.setAccessibleName('Default new note volume');self.default_velocity.editingFinished.connect(lambda:self.config_change(defaultVelocity=self.default_velocity.value()/100));bottom.addWidget(QLabel('New note volume'));bottom.addWidget(self.default_velocity)
         self.parameter=QComboBox()
-        for label,key in [('Velocity','velocity'),('Duration','duration'),('Play probability','playPercent'),('Change probability','changePercent'),('Timing offset','offsetBeat')]:self.parameter.addItem(label,key)
+        for label,key in [('Volume / velocity','velocity'),('Duration','duration'),('Play probability','playPercent'),('Change probability','changePercent'),('Timing offset','offsetBeat')]:self.parameter.addItem(label,key)
         self.parameter.currentIndexChanged.connect(self.refresh_lane);bottom.addWidget(self.parameter)
-        self.show_lane=QCheckBox('Expression bars');self.show_lane.toggled.connect(lambda on:self.lane.setVisible(on));bottom.addWidget(self.show_lane);layout.addLayout(bottom)
+        self.show_lane=QCheckBox('Dynamics bars');self.show_lane.toggled.connect(lambda on:self.lane.setVisible(on));dynamics.addWidget(self.show_lane)
+        self.advanced_panel=QWidget();self.advanced_panel.setLayout(bottom);layout.addWidget(self.advanced_panel);self.advanced_panel.hide()
         self.row_panel=QWidget();controls=FlowLayout();self.row_controls={}
         for name,label,low,high,value in [('velocityScale','Velocity ×',0,2,1),('velocityOffset','Velocity ± %',-100,100,0),('gatePercent','Gate %',1,200,100),
                                         ('swingPercent','Swing %',1,99,50),('offsetPercent','Offset %',-50,50,0),('flamPercent','Flam %',-50,50,12)]:
             w=spin(low,high,value,2);w.setAccessibleName(label);w.setMaximumWidth(90);w.editingFinished.connect(lambda name=name,w=w:self.row_change(**{name:w.value()/100 if name=='velocityOffset' else w.value()}))
             controls.addWidget(QLabel(label));controls.addWidget(w);self.row_controls[name]=w
         self.row_panel.setLayout(controls);layout.addWidget(self.row_panel);self.row_panel.hide()
-        self.lane=ExpressionLane(self.grid);self.lane.edited.connect(self.set_parameter);layout.addWidget(self.lane);self.lane.hide()
+        self.lane=ExpressionLane(self.grid);self.lane.edited.connect(self.set_parameter);layout.addWidget(self.lane);self.show_lane.setChecked(True)
+        self.refresh_volume()
 
     def active(self):return self.editor is not None and bool(self.instance_id)
     def current_row(self):
@@ -212,6 +228,32 @@ class StepSequencer(QWidget):
         if ok:self.change(lambda:self.editor.pattern_action(self.instance_id,'fit',value=Fraction(str(value))))
     def selected_matches(self,row,col):
         return self.grid_matches.get((self.rows[row]['id'],col*beat(self.config['stepBeat'])),[])
+    def focused_event(self):
+        row=self.current_row();col=self.grid.currentColumn()
+        if not self.active() or row is None or col<0:return None
+        matches=self.selected_matches(self.grid.currentRow(),col)
+        enabled=next((e for e in matches if e['enabled']),None)
+        if enabled is not None:return enabled
+        position=col*beat(self.config['stepBeat']);pattern=self.editor.pattern(self.instance_id);instance=self.editor.instance(self.instance_id)
+        held=[e for e in pattern['events'] if e['enabled'] and beat(e['beat'])<position<beat(e['beat'])+beat(e['duration']) and event_row(self.editor.project,self.editor.pack,instance,pattern,e)==row['id']]
+        return max(held,key=lambda e:beat(e['beat']),default=matches[0] if matches else None)
+    def refresh_volume(self):
+        event=self.focused_event();was_refreshing=self.refreshing;self.refreshing=True
+        self.note_volume.setEnabled(event is not None);self.note_volume_slider.setEnabled(event is not None)
+        value=event['expression']['velocity'] if event else 0
+        self.note_volume.setValue(value*100);self.note_volume_slider.setValue(round(value*100))
+        self.note_volume.setToolTip('Volume of the focused note, saved as velocity '+str(round(value*127))+'/127. Row dynamics and mixer levels apply afterwards.')
+        row=self.current_row()
+        self.note_volume_context.setText((row['label'] or (note_name(row['note']) if row['note'] is not None else SLOT_NAMES.get(row['sound'],'Whole chord')))+' · beat '+event['beat'] if event else 'Select a note')
+        self.note_volume_midi.setText('Velocity '+str(round(value*127))+'/127' if event else '')
+        self.refreshing=was_refreshing
+    def set_note_volume(self,value):
+        if self.refreshing:return
+        event=self.focused_event()
+        if event is None:return
+        event_id=event['id']
+        def edit(pattern,_):next(e for e in pattern['events'] if e['id']==event_id)['expression']['velocity']=value
+        self.change(lambda:self.editor._step_edit(self.instance_id,'Set note volume',edit))
     def toggle(self,row,col):
         if not self.active():return
         matches=self.selected_matches(row,col);enabled=not any(e['enabled'] for e in matches)
@@ -328,10 +370,12 @@ class StepSequencer(QWidget):
             self.row_label.setText(row['label'] or (note_name(row['note']) if row['note'] is not None else SLOT_NAMES.get(row['sound'],'Whole chord')))
             self.row_muted.setChecked(row['muted']);self.row_solo.setChecked(row['solo'])
             for name,w in self.row_controls.items():w.setValue(row[name]*100 if name=='velocityOffset' else row[name])
-        self.refreshing=False;self.refresh_lane()
+        self.refreshing=False;self.refresh_volume();self.refresh_lane()
     def refresh_lane(self,*_):
         if not self.active() or self.current_row() is None:return
         parameter=self.parameter.currentData();self.lane.minimum=-.5 if parameter=='offsetBeat' else 0;self.lane.maximum=.5 if parameter=='offsetBeat' else 100 if parameter.endswith('Percent') else 2 if parameter=='duration' else 1
+        self.lane.setAccessibleName('Per-note volume bars for the focused row' if parameter=='velocity' else 'Step '+self.parameter.currentText()+' bars for the focused row')
+        self.lane.setToolTip('Drag each bar to set that note\'s '+('volume (velocity)' if parameter=='velocity' else self.parameter.currentText().lower())+'. Empty steps stay empty; each drag is one undoable edit.')
         values=[]
         for col in range(self.grid.columnCount()):
             matches=self.selected_matches(self.grid.currentRow(),col)
@@ -367,7 +411,7 @@ class StepSequencer(QWidget):
         self.editor=editor;self.instance_id=instance_id;self.refreshing=True
         self.grid.clear()
         if not instance_id:
-            self.grid.setRowCount(0);self.grid.setColumnCount(0);self.heading.setText('Select a pattern on the timeline');self.refreshing=False;return
+            self.grid.setRowCount(0);self.grid.setColumnCount(0);self.heading.setText('Select a pattern on the timeline');self.lane.values=[];self.lane.update();self.refreshing=False;self.refresh_volume();return
         pattern=editor.pattern(instance_id);instance=editor.instance(instance_id);role=pattern['role']
         self.config=settings(pattern,editor.pack);self.rows=self.config['rows'];step=beat(self.config['stepBeat']);columns=math.ceil(beat(pattern['length'])/step)
         if role in REGISTERS:
@@ -425,10 +469,11 @@ class StepSequencer(QWidget):
                 item.setData(Qt.ItemDataRole.UserRole,data)
                 description=labels[row]+', beat '+str(position)+', '+('enabled' if enabled else 'sustain' if continuing else 'empty')
                 if not allowed:description+='; outside governing chord' if role in REGISTERS else '; unassigned kit slot'
-                if enabled:description+=f", velocity {round(enabled['expression']['velocity']*100)}%, play {enabled['expression']['playPercent']}%, gate {enabled['duration']} beats"
+                if enabled:description+=f", note volume {round(enabled['expression']['velocity']*100)}% (velocity {round(enabled['expression']['velocity']*127)}/127), play {enabled['expression']['playPercent']}%, gate {enabled['duration']} beats"
                 item.setData(Qt.ItemDataRole.AccessibleTextRole,description);item.setToolTip(description);self.grid.setItem(row,col,item)
         offgrid=sum(bool(beat(e['beat'])/step%1) for e in events)
-        self.help.setText(f'Left-click/drag draws; right-click erases; Ctrl-drag ties; Shift-drag edits velocity; double-click adds a flam. {offgrid} off-grid steps retained. Swing 50% is straight.')
+        self.help.setText(f'Drag the bars to shape note volume; Shift-drag a step adjusts it. {offgrid} off-grid notes retained.')
+        self.help.setToolTip('Left-click/drag draws; right-click erases; Ctrl-drag ties; Shift-drag adjusts note volume; double-click adds a flam. More controls exposes new-note defaults, other expression and row timing.')
         if old_id==instance_id and 0<=previous[0]<len(self.rows) and 0<=previous[1]<columns:self.grid.setCurrentCell(*previous)
         else:
             focus=first_active or (len(self.rows)//2,0);self.grid.setCurrentCell(*focus);self.grid.scrollToItem(self.grid.item(*focus),QAbstractItemView.ScrollHint.PositionAtCenter)

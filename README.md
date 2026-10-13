@@ -1,7 +1,8 @@
 # PRDE1 — Pop Rock Development Environment 1
 
 **Default step sequencer:** bass/lead use labeled pitch rows; drums use named kit
-rows. Draw/erase steps, edit velocity and gates, tie notes, add flams, apply swing,
+rows. Each note has a visible volume slider/percentage and dynamics bars. Draw/erase
+steps, edit velocity and gates, tie notes, add flams, apply swing,
 mute/solo rows, fill/copy/shift/reverse patterns, and audition a loop independently.
 Keyboard step entry, full `.prdepattern` saves and note MIDI interchange are included.
 See [step-sequencer controls](docs/STEP_SEQUENCER.md).

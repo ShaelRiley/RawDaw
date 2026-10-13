@@ -1,0 +1,23 @@
+qt.multimedia.symbolsresolver: Couldn't load pipewire-0.3 library
+qt.multimedia.symbolsresolver: Couldn't resolve pipewire-0.3 symbols
+test_default_pitch_rows_select_actual_notes_and_right_click_erases (test_step_widgets.StepInterface.test_default_pitch_rows_select_actual_notes_and_right_click_erases) ... qt.multimedia.ffmpeg: Using Qt multimedia with FFmpeg version 7.1 LGPL version 2.1 or later
+socket(): Operation not permitted
+socket(): Operation not permitted
+PulseAudioService: pa_context_connect() failed
+ok
+test_drag_fills_skipped_columns_in_one_undo_and_control_drag_ties (test_step_widgets.StepInterface.test_drag_fills_skipped_columns_in_one_undo_and_control_drag_ties) ... ok
+test_duration_expression_drag_accepts_fractional_pixel_values (test_step_widgets.StepInterface.test_duration_expression_drag_accepts_fractional_pixel_values) ... ok
+test_fit_to_quarters_displays_custom_spacing_and_does_not_requantize (test_step_widgets.StepInterface.test_fit_to_quarters_displays_custom_spacing_and_does_not_requantize) ... ok
+test_note_volume_bars_and_focused_note_fit_the_deck_viewport_with_enlarged_text (test_step_widgets.StepInterface.test_note_volume_bars_and_focused_note_fit_the_deck_viewport_with_enlarged_text) ... ok
+test_note_volume_keyboard_edits_only_focused_note_and_survives_undo_reopen (test_step_widgets.StepInterface.test_note_volume_keyboard_edits_only_focused_note_and_survives_undo_reopen) ... ok
+test_note_volume_slider_drag_is_one_edit_and_sustain_cell_edits_original_attack (test_step_widgets.StepInterface.test_note_volume_slider_drag_is_one_edit_and_sustain_cell_edits_original_attack) ... ok
+test_pattern_preview_and_note_audition_never_modify_authored_song (test_step_widgets.StepInterface.test_pattern_preview_and_note_audition_never_modify_authored_song) ... ok
+test_row_controls_and_expression_edit_are_saved_and_reversible (test_step_widgets.StepInterface.test_row_controls_and_expression_edit_are_saved_and_reversible) ... ok
+test_step_entry_keyboard_adds_notes_and_rests_and_drum_columns_stack (test_step_widgets.StepInterface.test_step_entry_keyboard_adds_notes_and_rests_and_drum_columns_stack) ... ok
+test_track_selection_opens_default_step_view_without_mutating_notes (test_step_widgets.StepInterface.test_track_selection_opens_default_step_view_without_mutating_notes) ... ok
+test_visible_dynamics_bars_change_note_levels_without_creating_other_notes (test_step_widgets.StepInterface.test_visible_dynamics_bars_change_note_levels_without_creating_other_notes) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 11.454s
+
+OK

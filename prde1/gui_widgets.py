@@ -222,7 +222,7 @@ class EventDialog(QDialog):
             index=self.sound.findData(choice['soundIdentity'])
             if index<0:self.sound.addItem('Unresolved: '+choice['soundIdentity'],choice['soundIdentity']);index=self.sound.count()-1
             self.sound.setCurrentIndex(index);form.addRow('Fixed drum sound',self.sound)
-        self.velocity=spin(0,100,expression['velocity']*100,0,' %');self.attack=spin(0,100,expression['attackMs'],1,' ms')
+        self.velocity=spin(0,100,expression['velocity']*100,0,' %');self.velocity.setAccessibleName('Note volume (velocity)');self.velocity.setToolTip('Volume of this note, saved as velocity. Row dynamics and mixer levels apply afterwards.');self.attack=spin(0,100,expression['attackMs'],1,' ms')
         self.play=spin(0,100,expression['playPercent'],0,' %');self.change=spin(0,100,expression['changePercent'],0,' %')
         self.variation=QComboBox()
         for label,value in [('None','none'),('Nearby chord note','nearby_note'),('Double hit','double'),('Shorter gate','gate')]:self.variation.addItem(label,value)
@@ -230,7 +230,7 @@ class EventDialog(QDialog):
         self.locked=QCheckBox('Lock rhythm and role');self.locked.setChecked(expression['locked'])
         self.lock_exact=QCheckBox('Lock exact pitch');self.lock_exact.setChecked(expression['lockExactPitch']);self.lock_exact.setEnabled(self.role in ('lead','bass'))
         self.exact.currentIndexChanged.connect(lambda:self.lock_exact.setChecked(self.exact.currentData() is not None))
-        for label,widget in [('Velocity',self.velocity),('Attack',self.attack),('Play probability',self.play),('Change probability',self.change),('Variation',self.variation),('',self.locked),('',self.lock_exact)]:form.addRow(label,widget)
+        for label,widget in [('Note volume (velocity)',self.velocity),('Attack',self.attack),('Play probability',self.play),('Change probability',self.change),('Variation',self.variation),('',self.locked),('',self.lock_exact)]:form.addRow(label,widget)
         limits=[(s['frames']-s['onsetFrame'])/48000 for s in editor.pack.samples.values() if s['role']==self.role]
         info='Whole chord trigger; sustains for its authored gate.' if self.role=='rhythm' else 'One chord tone at a time; sustains for its authored gate.' if self.role in ('lead','bass') else 'Drum addresses are fixed sound identities.'
         if self.role=='drums' and limits:info+=f' Natural hit durations: {min(limits):.2f}–{max(limits):.2f} seconds.'

@@ -1,4 +1,29 @@
-# Current checkpoint — default step sequencer on the 0.3.4 engine
+# Current checkpoint — per-note volume on the 0.3.4 engine
+
+Shael's October 12 request exposes saved per-note dynamics directly. Focus a
+note and adjust its 0–100% slider or percentage; default dynamics bars shape the
+focused pitch/kit row. Tied-note continuations address the original attack. Edits
+use existing velocity, validation, undo/recovery, pattern persistence and the
+native preview/export path. Exact off-grid notes have the same volume label in
+the event list/dialog. Zero-volume realized notes stay silent in MIDI export.
+
+The focused volume controls, mute/solo and dynamics bars remain visible; More
+controls reveals defaults, other expression and row timing. Timeline scrolling
+and pane sizing preserve the editing viewport at 1280×800 and 150% text. The
+focused note stays visible when its grid resizes. Sample banks and the compiled
+renderer/DSP are unchanged.
+
+Validation: `make check` passed all 116 Python/Qt tests without skips plus
+native engine checks. The final focused Qt rerun passed 12 tests, including a
+disabled intervening step beneath a continuing note. Real mouse/keyboard volume edits, single-undo slider drags,
+tied notes, save/reopen/undo/redo, empty-step protection and actual viewport bounds
+pass. A native synthetic PCM test verifies the expected 80%/40% amplitude ratio
+and zero-level silence, including MIDI export. `make demo` passed both reference
+renders; existing desktop/source exports remain identical. Evidence and the live
+SDD revision are in `validation/note-volume-verification.json` and its referenced
+logs. Physical Steam Deck startup and human listening remain unverified.
+
+## Previous default step-sequencer checkpoint
 
 Shael's October 11 request and clarification add the Cakewalk-style step
 sequencer as the default bass/lead/kit pattern view. Pitch rows dispatch the
