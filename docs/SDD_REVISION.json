@@ -46,5 +46,9 @@
   "clipLibraryUserAmendment": "Shael Riley, October 13, 2026: substantial role-specific Creative Commons one-measure MIDI library and rhythmic pulse governor with Off, Guide and On modes.",
   "clipLibraryScope": "SDD Section 32: 703 genuinely distinct bars, source hashes/licenses, native harmonic/kit adaptation, searchable audition/place/drop/favorites, saved dynamics and shared audio/MIDI resolution. Original scores are identified as authored CC0.",
   "brandingUserAmendment": "Shael Riley, October 13, 2026: user-facing Raw Daw name and cute half-black/half-white dog with a spiked collar.",
-  "brandingScope": "SDD Section 33: native application/header/window icon, compatible Raw Daw launch and per-user desktop menu command; legacy modules/formats/settings/provenance retained."
+  "brandingScope": "SDD Section 33: native application/header/window icon, compatible Raw Daw launch and per-user desktop menu command; legacy modules/formats/settings/provenance retained.",
+  "progressionBankRequirementsRevisionReadBeforeCode": "AHj4eMROiJtU7wk3roF0QA7VDlMsEo1qil9uiWeX3ssnTX_4Ea0fXa40Bt0JgO-H8jRkk0flaJYIR3imr8io88eu-KBzW3evpafLkG44WQ",
+  "progressionBankAmendmentRevisionVerified": "AHj4eMS_K1M3ev47yLin3yhFl-jZCDjO6MceppWUzoUpCcvnLz-TeNORRHv-NvtHXF-dKwJMArmwF1r6GDnrfNa52n_Nrj8kdDKjt_4s4Q",
+  "progressionBankUserAmendment": "Shael Riley, October 13, 2026: progression-bank selection should be the default, with a large known-working library, optional custom entry and importing/uploading reusable progressions.",
+  "progressionBankScope": "SDD Sections 19–23 and 34: 206 distinct curated entries, mode-derived/exact-quality notation, modal recommendations, whole-cycle native audition, measure-aware undoable load, current/custom capture and a persistent bounded import/export/favorites bank. Section-plan generation and harmonic locks remain separately scoped."
 }

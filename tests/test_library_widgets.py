@@ -49,7 +49,7 @@ class NativeLibrary(unittest.TestCase):
         p.mode.setCurrentIndex(p.mode.findData('guide'));self.assertEqual(w.editor.project['rhythmicPulse']['mode'],'guide')
         p.mode.setCurrentIndex(p.mode.findData('on'));self.assertEqual(w.editor.project['rhythmicPulse']['mode'],'on')
         for scale in (1,1.5):
-            w._apply_scale(scale);w.dock_tabs.setCurrentWidget(w.browser_tabs);self.app.processEvents()
+            w._apply_scale(scale);w.dock_tabs.setCurrentWidget(w.browser_tabs);w.browser_tabs.setCurrentWidget(w.clip_browser);self.app.processEvents()
             self.assertTrue(w.play_button.isVisible());self.assertTrue(p.mode.isVisible())
             b=w.clip_browser;self.assertTrue(b.isVisible());self.assertGreater(b.list.viewport().height(),60)
             for widget in (b.search,b.role,b.style,b.favorite):

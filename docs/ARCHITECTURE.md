@@ -230,3 +230,29 @@ when an executable already exists. Verified archive installation replaces an old
 binary atomically; matching binaries need no archive reads. Extracted builds use
 their bound `BUILD_INFO.json`. This ensures a pulled engine fix reaches playback.
 
+## ADR-007: reusable progression bank
+
+`progression_bank.py` is the shared progression inventory, normalization,
+realization and preparation-cost ranking authority. `governor.rank_progressions`
+and the Qt browser use the same 206-entry catalog. Ranking caches costs by chord
+and pitch class and never materializes PCM; the browser refreshes its order only
+when pack, tonality or bank state changes. Mode-derived degree templates and
+exact-quality authored chords remain separate. Major-relative imported roots
+convert by actual pitch class into the legacy mode-relative chord representation.
+
+Personal entries and favorites live in an atomic, bounded, versioned JSON bank
+under the existing per-user application data directory. Whole-batch validation
+precedes writes; musical-content IDs deduplicate built-ins and user entries.
+Bank edits have their own bounded undo snapshots and do not consume project
+variation. Projects contain ordinary explicit harmony and credits, so loading a
+progression creates no runtime dependency on the catalog or its personal entry.
+
+Measure-based durations integrate through the meter map; realization follows
+each actual tonality boundary, including within a held chord. Loading uses one
+validated project transaction, preserving unrelated maps, media, patterns and
+mixing. Single-cycle placement restores the previous chord lane afterwards.
+Audition creates an independent rhythm-only project with the active pack,
+tempo/meter, pulse phase and downstream mix, then uses the same native resolver
+and renderer as playback/export. No schema, DSP or stored waveform change is
+needed. Section-plan generation and harmonic-region locks remain separate work.
+

@@ -9,6 +9,14 @@ follow your loaded bank and chord progression; placement never changes harmony.
 Use **New song**, choose a progression, and begin placing bars on empty tracks.
 The half-black, half-white dog with a spiked collar is the new app mascot.
 
+**Choose progression** opens a bank of **206 distinct chord progressions**.
+Start with twelve best fits for your key/mode, or browse all loops, cadences,
+seventh-chord colors, blues and modal choices. Preview, load into the song and
+edit afterwards. **Bank…** imports progression files, saves current harmony,
+exports your bank and manages favorites. **Custom…** remains available and can
+save a reusable preset. [Progression controls and import formats](docs/PROGRESSIONS.md)
+explain the bank.
+
 **Rhythmic Pulse Governor**, below the Chord Governor, offers **Off** (authored
 volumes), **Guide** (editable defaults for new notes) and **On** (accents govern
 each sounding hit). Presets and custom accent levels repeat within each measure.
@@ -82,7 +90,8 @@ Press **Play** to hear the full Parachute demo. In **Browser → Packs**, choose
 any song in **Full-length demos** and click **Load full demo** to hear and edit
 the complete arrangement. [The full demo scores and section timings](docs/FULL_DEMOS.md)
 describe their forms. Select a pattern in the timeline and click its
-steps to edit. **Edit chord** and **Custom progression** change harmony; **Save**
+steps to edit. **Choose progression** loads harmony from the bank; **Edit chord**
+and **Custom…** let you author it. **Save**
 writes a native project and **Export WAV** creates the stereo mix. The Browser
 loads all twelve included arrangements. [Desktop controls](docs/DESKTOP.md)
 explain the remaining controls and current boundaries.

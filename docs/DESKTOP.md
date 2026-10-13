@@ -34,15 +34,22 @@ describe the click fix.
   locks. Relative notes follow the chord. An exact prepared note uses the
   separate exact-pitch lock. Rhythm triggers one whole chord; drums use fixed
   source sound identities. Unassigned/unavailable drum cells are marked ×.
+* **Choose progression** opens the 206-entry bank with twelve best fits first,
+  All progressions, search, style filters, chord names and favorites. Preview
+  using the active pack, then **Load into song**. **Bank…** imports files, saves
+  current harmony and exports My bank. [Progression controls and file formats](PROGRESSIONS.md)
+  explain reuse, mode-relative versus major-relative roots, and single-cycle placement.
 * Select a timeline position and use Edit chord. Degree, quality, alteration and
-  inversion are explicit. Custom progression accepts Roman chords such as
-  `i IIImaj7 VI iv`, or mode-derived numbers such as `1 3 6 4`, with positive beat
-  durations. It fills only the chord lane and is undoable. Authored Roman case
-  is retained, including an unavailable request; there is no silent chord swap.
+  inversion are explicit. **Custom…** accepts Roman chords such as
+  `i IIImaj7 VI iv`, or mode-derived numbers such as `1 3 6 4`, with positive
+  measure or quarter-note durations. Save to My bank is initially checked.
+  Loading changes the chord lane in one undoable operation and preserves exact
+  authored qualities.
 * Set key here changes tonality at the edit cursor. Tempo is quarter-note BPM.
   Meter/grid applies at the current measure boundary. Changing the 3/4/6/8-cell
   Governor display never quantizes performance events.
-* To start from silence, use New song, choose a track in Inspector, and Add
+* To start from silence, use New song, choose a progression, then preview/place
+  one-measure MIDI clips from Browser → MIDI clips. Or choose a track in Inspector and Add
   pattern here. Draw steps or place the active pack's source pattern from
   Browser → Patterns. Source meter mismatches require an explicit future
   conversion workflow rather than automatic squeezing.
@@ -89,7 +96,7 @@ exports. Space controls transport except inside an editor that owns the key.
 This is a working desktop composition slice, not the completed v1 DAW. The one
 vocal placeholder does not capture audio. Recording/retakes/comping/correction,
 role/vocal EQ and reverb/delay, real-time native audio-device callbacks, Linux VST3 hosting,
-Freeze Variation, comprehensive progression/MIDI catalogs, section plans and
+Freeze Variation, further catalog curation, section plans and
 release installers remain in the development plan. Existing approved scope is
 preserved. Preview preparation adds latency before the first audible result; it
 is not a low-latency monitoring engine.

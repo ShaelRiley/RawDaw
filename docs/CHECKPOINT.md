@@ -1,4 +1,37 @@
-# Current checkpoint — Raw Daw clips, pulse and identity on the 0.3.4 engine
+# Current checkpoint — Raw Daw progression bank on the 0.3.4 engine
+
+October 13: Shael reports that the preceding version works well and requests a
+library-first harmony workflow. **Choose progression** now opens twelve best
+fits, with All progressions, search, styles, chord names and favorites. The
+original CC0 inventory contains 206 distinct patterns: 136 mode-derived degree
+templates and 70 exact-quality progressions, with a curated subset for all nine
+modes. Counts exclude transpositions and enharmonic aliases.
+
+Native loop previews use the loaded chord instrument. Load fills the song in one
+undoable edit; an empty song grows to fit a complete cycle. One-cycle placement
+restores the surrounding harmony. Existing patterns, takes, maps, mix and
+variation are retained. Durations follow real meter changes; chord realization
+follows tonality changes, and imported major-relative roots preserve pitch class.
+
+My bank persists custom/current harmony, JSON/text imports and favorites. Batch
+validation, musical deduplication, atomic writes, bank undo and export preserve
+the original notation and credits. Loaded projects retain explicit harmony and
+remain independent of bank entries. Source/DSP/project formats remain compatible.
+
+Validation: all 206 entries load and audition in each of four real banks (824
+loads and 824 resolved previews); 32 varied native WAVs render with actual chord
+pitches and unchanged source packs. Every key/mode ranks the entire catalog
+without generating PCM. Focused bank and step-editor checks pass, including
+import failure recovery, exact Roman qualities, undo, persistence and enlarged
+layouts. Final `make check` passed 149 Python/Qt tests with no skips plus the
+native engine checks; `make demo` passed both reference renders. All twelve
+existing GUI demo exports match their bundled WAVs exactly. The initial enlarged
+note-editor regression was fixed by keeping the harmony controls on one compact
+row. Full-song GUI test completion allows shared CI load without weakening its
+exact waveform comparison. A final isolated run passed all checks.
+See `PROGRESSIONS.md` and `validation/progression-bank-verification.json`.
+
+## Earlier October 13 MIDI library, pulse and branding update
 
 October 13: implemented the 703-bar offline MIDI library: 175 bass, 247 drums,
 169 lead and 112 chord performances. The browser supports search, role/style/meter

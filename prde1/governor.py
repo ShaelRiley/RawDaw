@@ -11,16 +11,10 @@ import math
 from fractions import Fraction
 
 from .contracts import ContractError, RATE, VERSION, validate
-from .music import REGISTERS, QUALITIES, at, beat, chord_identity, diatonic, quarter_seconds, roman
+from .music import REGISTERS, QUALITIES, at, beat, chord_identity, quarter_seconds
 from .project import validate_project
 
 DECLICK_FRAMES=240
-PRESETS=(
-    ("pop_axis",(1,5,6,4)), ("pop_classic",(1,6,4,5)), ("minor_loop",(1,6,3,7)),
-    ("home_return",(1,5,1,1)), ("modal_shuttle",(1,4,1,4)), ("long_cadence",(1,5,1,3,2,4,1,1)),
-)
-
-
 def context(project, position):
     tonality=at(project["tonalityMap"],position)
     chord=at(project["harmony"],position)["chord"]
@@ -231,22 +225,7 @@ def resolve(project, pack, *, approve_altered=False):
 
 
 def rank_progressions(pack,tonic,mode):
-    """Initial coverage ranking; no claim that these six fixtures form a large catalog."""
-    result=[]
-    for name,degrees in PRESETS:
-        missing=[]
-        costs=[]
-        for degree in degrees:
-            chord=diatonic(tonic,mode,degree)
-            root,pitches,legal=chord_identity(tonic,mode,chord)
-            costs.append(pack.coverage.cost(('rhythm',root,chord['quality'],0)))
-            for role in ("lead","bass"):
-                for pitch in pitches:
-                    low,high=REGISTERS[role]
-                    costs.append(min(pack.coverage.cost((role,note)) for note in range(low,high+1) if note%12==pitch))
-        result.append({"id":name,"degrees":list(degrees),"display":[roman(diatonic(tonic,mode,degree)) for degree in degrees],
-                       "playable":not missing,"missing":missing,"worstPreparationCost":max(costs,default=0),
-                       "averagePreparationCost":sum(costs)/max(1,len(costs)),
-                       "explanation":"Full chord coverage; native samples preferred, reconstruction supplies unrecorded targets"})
-    return sorted(result,key=lambda item:(len(item["missing"]),item["worstPreparationCost"],item["averagePreparationCost"],item["id"]))
+    """The same full bank used by the desktop; ranking never prepares audio."""
+    from .progression_bank import ranked
+    return ranked(pack,tonic,mode)
 

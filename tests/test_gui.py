@@ -33,9 +33,11 @@ class NativeDesktop(unittest.TestCase):
     def tearDown(self):
         self.window.editor.saved=canonical_bytes(self.window.editor.project);self.window.close();self.app.processEvents();self.folder.cleanup()
     def wait_render(self):
-        deadline=time.monotonic()+15
+        # Full three-minute scores use the buffered renderer. This is a bounded
+        # completion check, not a device-latency benchmark; allow shared CI load.
+        deadline=time.monotonic()+45
         while self.window._job and time.monotonic()<deadline:QTest.qWait(10)
-        self.assertIsNone(self.window._job,'Background native render timed out')
+        self.assertTrue(self.window._job is None,'Background native render timed out')
 
     def test_keyboard_step_edit_and_undo_resolve_the_actual_source_bank(self):
         w=self.window;before=w.editor.plan();w.steps.setCurrentCell(0,0);w.steps.setFocus();QTest.keyClick(w.steps,Qt.Key.Key_Space)

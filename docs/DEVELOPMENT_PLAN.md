@@ -1,6 +1,6 @@
 # Development plan
 
-Authority: the live PRDE1 SDD, sections 1–31 and the engineering selections in
+Authority: the live Raw Daw SDD, sections 1–34 and the engineering selections in
 28.8. Repository notes implement it; they do not supersede it.
 
 **Default step sequencer — implemented:** Section 31 provides melodic pitch rows
@@ -91,15 +91,19 @@ v1 scope remain in this plan.
    compensation and state-version handling. This is approved v1, not deferred.
 8. **Public builder and catalogs:** read skill-creator instructions, package the
    actual `prde1-song-pack-builder` plus pipeline/locks/shared schemas/tests and
-   installation instructions. Curate the extensive progressions, tonal registry,
-   useful authorized demo pack. The initial shared one-measure library now
+   installation instructions. The progression chooser now exposes 206 distinct
+   curated entries, modal subsets, native previews, measure-aware loading,
+   favorites and a persistent import/export/custom bank. Further listening and
+   recommendation calibration, tonal-registry breadth and useful authorized demo
+   packs remain ongoing. The initial shared one-measure library now
    contains 703 source-traceable CC BY/CC0 clips; further breadth remains curation work. Select/clear/test two to four existing instruments and a small effects
    bundle; record every notice/hash/source obligation. No invented inventory.
 9. **Release gate:** full project/media state and migrations, native installers,
    privacy/local diagnostics, hardening, malicious-input and failure testing,
    30-minute declared full workload on Linux laptop/Steam Deck/interface, listening
    and manual-free first-use/accessibility pilot. Public release requires Shael's
-   approval; keep the source repository private before that.
+   approval. Shael authorized publishing the tested source to the existing public
+   RawDaw repository on October 13; preserve that visibility.
 
 Current communication boundary: real hardware, singing, subjective listening and
 source rights require the creator when they become relevant. Compilation,

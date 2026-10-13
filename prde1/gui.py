@@ -26,16 +26,18 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
 
 from . import __version__
 from .contracts import ROOT, ContractError, RATE, SLOTS, atomic_json, canonical_bytes, read_json
-from .editor import Editor, atomic_copy, chord_label, measures, new_project, parse_progression, seconds_to_beat
-from .governor import context, rank_progressions
+from .editor import Editor, atomic_copy, chord_label, measures, new_project, seconds_to_beat
+from .governor import context
 from .gui_widgets import COLORS, ROLES, SLOT_NAMES, ChordDialog, EventDialog, FlowLayout, StepTable, Timeline, spin
-from .music import MODES, NAMES, at, beat, diatonic, quarter_seconds, roman
+from .music import MODES, NAMES, at, beat, quarter_seconds, roman
 from .pack import Pack
 from .project import load_project, save_project
 from .step_widgets import StepSequencer
 from .mixing import DRUM_PRESETS, DRUM_COMPRESSOR, BASS_SIDECHAIN, apply_punch_mix, drum_eq
 from .library_widgets import PulseControls, ClipBrowser
 from . import clip_library
+from . import progression_bank
+from .progression_widgets import ProgressionBrowser
 
 STYLE='''
 QMainWindow, QDialog, QWidget { background: #171e27; color: #e3ebf4; }
@@ -113,6 +115,7 @@ class MainWindow(QMainWindow):
         self._note_preview=None
         self.data_dir=Path(data_dir or QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation))
         self.data_dir.mkdir(parents=True,exist_ok=True)
+        self.progression_bank=progression_bank.Bank(self.data_dir/'progressions.json')
         self.recovery_dir=self.data_dir/'recovery';self.recovery_dir.mkdir(exist_ok=True)
         self.recovery_file=self.recovery_dir/(uuid.uuid4().hex+'.json')
         self.workspace=tempfile.TemporaryDirectory(prefix='prde1-desktop-');self.work=Path(self.workspace.name)
@@ -130,6 +133,7 @@ class MainWindow(QMainWindow):
         self.recover_button.setVisible(bool(self._recoveries))
         startup_stage('Loading project')
         self._bootstrap(project_path,pack_path)
+        if self.progression_bank.error:self.notice(self.progression_bank.error)
         if self._safe_workspace:
             startup_stage('Recovery workspace: central tabs; saved geometry, docks and scale preserved')
             self._apply_scale(1)
@@ -184,7 +188,9 @@ class MainWindow(QMainWindow):
         for name in MODES:self.mode.addItem(name.replace('_',' ').title(),name)
         self.mode.setAccessibleName('Mode at edit cursor');govern.addWidget(self.mode)
         govern.addWidget(button('Set key here',self.set_tonality));govern.addWidget(button('Edit chord',lambda:self.edit_chord(self.cursor)))
-        govern.addWidget(button('Custom progression',self.custom_dialog));govern.addStretch();layout.addLayout(govern)
+        self.progression_button=button('Choose progression',self.choose_progression,True);govern.addWidget(self.progression_button)
+        custom_button=button('Custom…',self.custom_dialog);custom_button.setAccessibleName('Create a custom chord progression')
+        custom_button.setToolTip('Write your own chord progression and save it to My bank');govern.addWidget(custom_button);govern.addStretch();layout.addLayout(govern)
         self.pulse_controls=PulseControls(self);layout.addWidget(self.pulse_controls)
         timing=FlowLayout();timing.addWidget(QLabel('Tempo'))
         self.tempo=spin(20,300,120,1,' qBPM');self.tempo.setAccessibleName('Quarter-note tempo at edit cursor');self.tempo.editingFinished.connect(self.set_tempo);timing.addWidget(self.tempo)
@@ -271,10 +277,9 @@ class MainWindow(QMainWindow):
             except (ValueError,OSError):continue
             row=QListWidgetItem(path.stem.replace('_',' ').title());row.setData(Qt.ItemDataRole.UserRole,str(path));row.setToolTip(project['title']);self.arrangements.addItem(row)
         layout.addWidget(button('Load arrangement',self.load_arrangement));tabs.addTab(pack_panel,'Packs')
-        preset_panel=QWidget();layout=QVBoxLayout(preset_panel);help_text=QLabel('Six development templates, ranked by source fidelity. Every chord and custom progression is playable.');help_text.setWordWrap(True);layout.addWidget(help_text)
-        self.presets=QListWidget();self.presets.setAccessibleName('Progression templates and coverage');layout.addWidget(self.presets,1);layout.addWidget(button('Apply selected progression',self.apply_preset));layout.addWidget(button('Custom progression…',self.custom_dialog));tabs.addTab(preset_panel,'Progressions')
+        self.progression_browser=ProgressionBrowser(self);self.presets=self.progression_browser.list;tabs.addTab(self.progression_browser,'Progressions')
         pattern_panel=QWidget();layout=QVBoxLayout(pattern_panel);self.source_clips=QListWidget();layout.addWidget(QLabel('Patterns recovered from active source'));layout.addWidget(self.source_clips,1);layout.addWidget(button('Place source pattern here',self.place_source));tabs.addTab(pattern_panel,'Patterns')
-        self.clip_browser=ClipBrowser(self);tabs.insertTab(0,self.clip_browser,'MIDI clips');tabs.setCurrentWidget(self.clip_browser)
+        self.clip_browser=ClipBrowser(self);tabs.insertTab(0,self.clip_browser,'MIDI clips');tabs.setCurrentWidget(self.progression_browser)
         self.timeline.clip_dropped.connect(self.drop_clip)
         if not self._safe_workspace:self.resizeDocks([self.inspector_dock,self.browser_dock],[205,245],Qt.Orientation.Horizontal)
 
@@ -397,6 +402,7 @@ class MainWindow(QMainWindow):
         # Reuse the validated bank; do not close its materialized samples.
         self.stop();self.editor=Editor(new_project(self.pack,tone['tonic'],tone['mode']),self.pack);self.editor.saved=canonical_bytes(self.editor.project)
         self.selected_id='';self.cursor=Fraction(0);self._preview_key=None;self.player.setSource(QUrl());self.refresh()
+        self.choose_progression()
 
     def save(self,save_as=False):
         if not self.editor:return False
@@ -498,27 +504,39 @@ class MainWindow(QMainWindow):
         if not self.editor:return
         dialog=QDialog(self);dialog.setWindowTitle('Custom progression');dialog.setMinimumWidth(470);layout=QVBoxLayout(dialog)
         help_text=QLabel('Author Roman chords with their exact qualities, e.g. i IIImaj7 VI iv. Numbers 1–7 explicitly derive the quality from the mode.');help_text.setWordWrap(True);layout.addWidget(help_text)
-        form=QFormLayout();chords=QLineEdit(' '.join(roman(v['chord']) for v in self.editor.project['harmony'][:16]));durations=QLineEdit('4');form.addRow('Chord sequence',chords);form.addRow('Beats per chord · one value or a list',durations);layout.addLayout(form)
+        form=QFormLayout();chords=QLineEdit(' '.join(roman(v['chord']) for v in self.editor.project['harmony'][:16]));durations=QLineEdit('1');form.addRow('Chord sequence',chords);form.addRow('Duration per chord · one value or a list',durations)
+        unit=QComboBox();unit.addItem('Measures / bars','bars');unit.addItem('Quarter-note beats','beats');form.addRow('Duration unit',unit)
+        basis=QComboBox();basis.addItem('Mode-relative roots (Raw Daw)','mode-relative');basis.addItem('Major-relative roots (common song charts)','major-relative');form.addRow('Roman numeral basis',basis)
+        name=QLineEdit('My progression');form.addRow('Bank name',name);layout.addLayout(form)
+        chords.setObjectName('progressionNotation');durations.setObjectName('progressionDurations');name.setObjectName('progressionName')
+        chords.setAccessibleName('Custom chord sequence');durations.setAccessibleName('Duration per custom chord');name.setAccessibleName('Custom progression bank name')
+        save_to_bank=QCheckBox('Save to My bank for future songs');save_to_bank.setChecked(True);layout.addWidget(save_to_bank)
         preview=QLabel('This replaces only the chord lane, repeating the sequence to the song ending. Instrumental patterns are retained.');preview.setWordWrap(True);layout.addWidget(preview)
         error=QLabel();error.setObjectName('warning');error.setWordWrap(True);layout.addWidget(error)
         buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Ok|QDialogButtonBox.StandardButton.Cancel);buttons.rejected.connect(dialog.reject);layout.addWidget(buttons)
         def apply():
             try:
-                tone=at(self.editor.project['tonalityMap'],self.cursor);values=parse_progression(chords.text(),tone['tonic'],tone['mode'])
-                lengths=[beat(v) for v in durations.text().replace(',',' ').split()]
-                if len(lengths)==1:lengths*=len(values)
-                self.editor.fill_progression(values,lengths)
-            except (ValueError,KeyError) as e:error.setText(str(e));return
+                import re
+                tokens=re.split(r'[\s,–—-]+',chords.text().strip());kind='degrees' if all(t in tuple(str(i) for i in range(1,8)) for t in tokens) else 'chords'
+                entry=progression_bank.validate_entry(dict(name=name.text(),kind=kind,basis='mode-relative' if kind=='degrees' else basis.currentData(),sequence=chords.text(),
+                    durations=durations.text().replace(',',' ').split(),durationUnit=unit.currentData()))
+                candidate=Editor(self.editor.project,self.pack);progression_bank.load_into(candidate,entry,grow_empty=True)
+                if save_to_bank.isChecked():self.progression_bank.import_entries([entry])
+                self.editor.apply('Load custom progression: '+entry['name'],lambda _:candidate.project)
+            except (ValueError,KeyError,OSError) as e:error.setText(str(e));return
             dialog.accept()
         buttons.accepted.connect(apply)
         if dialog.exec()==QDialog.DialogCode.Accepted:self.stop();self._preview_key=None;self.player.setSource(QUrl());self.refresh();self.autosave()
 
     def apply_preset(self):
-        if not self.editor or not self.presets.currentItem():return
-        row=self.presets.currentItem().data(Qt.ItemDataRole.UserRole);tone=at(self.editor.project['tonalityMap'],self.cursor)
-        values=[diatonic(tone['tonic'],tone['mode'],n) for n in row['degrees']]
-        if QMessageBox.question(self,'Apply progression','Replace the chord lane with '+ ' – '.join(row['display'])+'? Instrumental patterns are retained.',QMessageBox.StandardButton.Yes|QMessageBox.StandardButton.No,QMessageBox.StandardButton.No)==QMessageBox.StandardButton.Yes:
-            self.change(lambda:self.editor.fill_progression(values,[Fraction(4)]*len(values)))
+        self.progression_browser.load_selected()
+
+    def choose_progression(self):
+        self.browser_tabs.setCurrentWidget(self.progression_browser)
+        if self.focus_action.isChecked():self.focus_action.setChecked(False);self.focus_view()
+        if self.dock_tabs.indexOf(self.browser_tabs)>=0:self.dock_tabs.setCurrentWidget(self.browser_tabs)
+        elif self.browser_dock:self.browser_dock.show();self.browser_dock.raise_()
+        self.progression_browser.search.setFocus()
 
     def _free_space(self,role,position,length,exclude=''):
         for occurrence in self.editor.project['instances']:
@@ -729,12 +747,7 @@ class MainWindow(QMainWindow):
         if not self._refreshing:self.change(lambda:self.editor.set_mix(name,**values))
 
     def refresh_browser(self):
-        current=self.presets.currentItem().data(Qt.ItemDataRole.UserRole)['id'] if self.presets.currentItem() else None
-        tone=at(self.editor.project['tonalityMap'],self.cursor);self.presets.clear()
-        for row in rank_progressions(self.pack,tone['tonic'],tone['mode']):
-            title=' – '.join(row['display'])+'\n'+('Covered' if row['playable'] else str(len(row['missing']))+' missing targets')
-            value=QListWidgetItem(title);value.setData(Qt.ItemDataRole.UserRole,row);value.setToolTip(row['explanation']+'\n'+', '.join(row['missing']));self.presets.addItem(value)
-            if row['id']==current:self.presets.setCurrentItem(value)
+        self.progression_browser.refresh(self.editor,self.cursor)
         self.source_clips.clear()
         for row,pattern in self.editor.source_patterns():
             value=QListWidgetItem(pattern['role'].title()+' · '+row['id'].replace('_',' '));value.setData(Qt.ItemDataRole.UserRole,(row,pattern));value.setToolTip(pattern['provenance']['changes']);self.source_clips.addItem(value)

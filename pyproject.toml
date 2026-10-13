@@ -24,4 +24,4 @@ raw-daw = "prde1.desktop_startup:main"
 packages = ["prde1"]
 
 [tool.setuptools.package-data]
-prde1 = ["data/*.svg", "data/*.png", "data/clips/*.json.gz", "data/clips/*.zip", "data/clips/sources/*", "data/clips/licenses/*"]
+prde1 = ["data/*.svg", "data/*.png", "data/progressions.json", "data/clips/*.json.gz", "data/clips/*.zip", "data/clips/sources/*", "data/clips/licenses/*"]
