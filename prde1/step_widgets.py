@@ -24,6 +24,7 @@ class StepGrid(QTableWidget):
     flam = Signal(int, int)
     command = Signal(str)
     typed_note = Signal(int)
+    preview = Signal(int,int)
 
     def __init__(self):
         super().__init__(); self.drag = None; self.play_column = -1; self.step_entry = False
@@ -47,6 +48,7 @@ class StepGrid(QTableWidget):
         mods = event.modifiers(); right = event.button() == Qt.MouseButton.RightButton
         mode = 'split' if right and mods & Qt.KeyboardModifier.ControlModifier else 'tie' if mods & Qt.KeyboardModifier.ControlModifier else 'velocity' if mods & Qt.KeyboardModifier.ShiftModifier else 'erase' if right else 'paint'
         self.drag = dict(first=(row,col), cells=[(row,col)], mode=mode, y=event.position().y(), value=data.get('velocity', .8), free=bool(mods & Qt.KeyboardModifier.AltModifier))
+        if mode=='paint':self.preview.emit(row,col)
         event.accept()
 
     def mouseMoveEvent(self, event):
@@ -62,6 +64,7 @@ class StepGrid(QTableWidget):
                     if (row,col) not in self.drag['cells']:self.drag['cells'].append((row,col))
             elif cell not in self.drag['cells']:self.drag['cells'].append(cell)
             self.setCurrentCell(*cell)
+            if cell!=previous and self.drag['mode']=='paint':self.preview.emit(*cell)
         event.accept()
 
     def mouseReleaseEvent(self, event):
@@ -143,8 +146,8 @@ class ExpressionLane(QWidget):
 
 
 class StepSequencer(QWidget):
-    def __init__(self,change,audition,duplicate,detach,remove,parent=None):
-        super().__init__(parent);self.change=change;self.audition=audition;self.editor=None;self.instance_id='';self.rows=[];self.config=None;self.clipboard=None;self.refreshing=False;self.column_focus=0
+    def __init__(self,change,audition,duplicate,detach,remove,parent=None,*,preview_note=None):
+        super().__init__(parent);self.change=change;self.audition=audition;self.preview_note=preview_note;self.editor=None;self.instance_id='';self.rows=[];self.config=None;self.clipboard=None;self.refreshing=False;self.column_focus=0
         layout=QVBoxLayout(self);layout.setContentsMargins(6,6,6,6)
         toolbar=FlowLayout();self.heading=QLabel('Select a pattern');toolbar.addWidget(self.heading)
         self.length=spin(.25,64,4,2,' beats');self.length.setAccessibleName('Pattern length in beats');self.length.editingFinished.connect(self.set_length);toolbar.addWidget(self.length)
@@ -171,7 +174,7 @@ class StepSequencer(QWidget):
         for n in range(1,17):fill.addAction(str(n)+' steps',lambda n=n:self.row_action('fill',every=n))
         self.row_menu.setMenu(row_menu);toolbar.addWidget(self.row_menu);layout.addLayout(toolbar)
         self.grid=StepGrid();self.grid.setObjectName('stepGrid');layout.addWidget(self.grid,1)
-        self.grid.activated.connect(self.toggle);self.grid.gesture.connect(self.gesture);self.grid.velocity.connect(self.set_velocity);self.grid.flam.connect(self.toggle_flam);self.grid.command.connect(self.row_action);self.grid.typed_note.connect(self.type_note)
+        self.grid.activated.connect(self.toggle);self.grid.gesture.connect(lambda cells,mode:self.gesture(cells,mode,preview=False));self.grid.preview.connect(self.preview_cell);self.grid.velocity.connect(self.set_velocity);self.grid.flam.connect(self.toggle_flam);self.grid.command.connect(self.row_action);self.grid.typed_note.connect(self.type_note)
         self.grid.currentCellChanged.connect(self.focus_row);self.grid.verticalHeader().sectionClicked.connect(self.audition_row)
         self.grid.verticalHeader().setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);self.grid.verticalHeader().customContextMenuRequested.connect(lambda point:row_menu.exec(self.grid.verticalHeader().mapToGlobal(point)))
         dynamics=FlowLayout();dynamics.addWidget(QLabel('Note volume'))
@@ -189,7 +192,7 @@ class StepSequencer(QWidget):
         self.row_muted=QCheckBox('Mute');self.row_solo=QCheckBox('Solo')
         for name,w in [('muted',self.row_muted),('solo',self.row_solo)]:w.clicked.connect(lambda _,name=name,w=w:self.row_change(**{name:w.isChecked()}));dynamics.addWidget(w)
         self.details=QCheckBox('More controls');self.details.toggled.connect(lambda on:(self.advanced_panel.setVisible(on),self.row_panel.setVisible(on)));dynamics.addWidget(self.details)
-        self.preview_click=QCheckBox('Audition on entry');bottom.addWidget(self.preview_click)
+        self.preview_click=QCheckBox('Preview notes');self.preview_click.setAccessibleName('Live preview of placed notes');self.preview_click.setToolTip('Hear the selected pitch or kit sound as you draw or enter notes, at its saved volume. Toggle off for quiet editing.');self.preview_click.setChecked(True);dynamics.addWidget(self.preview_click)
         self.default_velocity=spin(0,100,80,0,' %');self.default_velocity.setAccessibleName('Default new note volume');self.default_velocity.editingFinished.connect(lambda:self.config_change(defaultVelocity=self.default_velocity.value()/100));bottom.addWidget(QLabel('New note volume'));bottom.addWidget(self.default_velocity)
         self.parameter=QComboBox()
         for label,key in [('Volume / velocity','velocity'),('Duration','duration'),('Play probability','playPercent'),('Change probability','changePercent'),('Timing offset','offsetBeat')]:self.parameter.addItem(label,key)
@@ -254,20 +257,27 @@ class StepSequencer(QWidget):
         event_id=event['id']
         def edit(pattern,_):next(e for e in pattern['events'] if e['id']==event_id)['expression']['velocity']=value
         self.change(lambda:self.editor._step_edit(self.instance_id,'Set note volume',edit))
+        if event['enabled']:self.preview_cell(self.grid.currentRow(),self.grid.currentColumn(),event_id=event_id)
+    def preview_cell(self,row,col,*,event_id=None):
+        if not self.active() or not self.preview_click.isChecked() or self.preview_note is None:return
+        if not 0<=row<len(self.rows) or not 0<=col<self.grid.columnCount():return
+        data=self.grid.item(row,col).data(Qt.ItemDataRole.UserRole) or {}
+        if not data.get('allowed') and event_id is None:return
+        self.preview_note(self.instance_id,self.rows[row]['id'],col*beat(self.config['stepBeat']),event_id)
     def toggle(self,row,col):
         if not self.active():return
         matches=self.selected_matches(row,col);enabled=not any(e['enabled'] for e in matches)
         self.gesture([(row,col)],'paint' if enabled else 'erase')
         if self.record.isChecked():self.grid.setCurrentCell(row,(col+1)%self.grid.columnCount())
-    def gesture(self,cells,mode):
+    def gesture(self,cells,mode,*,preview=True):
         if not self.active() or not cells:return
         step=beat(self.config['stepBeat']);converted=[(self.rows[row]['id'],col*step) for row,col in cells]
         if mode in ('tie','split'):
             row=cells[0][0];cols=[c for r,c in cells if r==row]
             self.change(lambda:self.editor.tie_steps(self.instance_id,self.rows[row]['id'],min(cols)*step,max(cols)*step,split=mode=='split'))
         else:
-            self.change(lambda:self.editor.paint_steps(self.instance_id,converted,enabled=mode=='paint',exact=self.config['pitchMode']=='exact'))
-            if mode=='paint' and self.preview_click.isChecked():self.audition_row(cells[-1][0])
+            self.change(lambda:self.editor.paint_steps(self.instance_id,converted,enabled=mode=='paint',exact=self.config['pitchMode']=='exact'),keep_note_preview=mode=='paint' and self.preview_click.isChecked())
+            if mode=='paint' and preview:self.preview_cell(*cells[-1])
         self.grid.setCurrentCell(*cells[-1])
     def set_velocity(self,row,col,value):
         matches=self.selected_matches(row,col)

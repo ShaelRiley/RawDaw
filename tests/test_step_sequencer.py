@@ -11,7 +11,7 @@ from prde1.contracts import ContractError, ROOT, canonical_bytes
 from prde1.editor import Editor, new_project
 from prde1.pack import Pack
 from prde1.project import load_project
-from prde1.sequencer import settings, audition_project
+from prde1.sequencer import settings, audition_project, placement_preview_plan
 from tools.build_fixture import make_fixture
 
 
@@ -175,3 +175,29 @@ class StepComposition(unittest.TestCase):
         self.assertGreater(levels[0],1000);self.assertAlmostEqual(levels[1]/levels[0],.5,delta=.0001);self.assertLessEqual(levels[2],1)
         midi=self.root/'volume.mid';self.editor.export_midi(self.bass,midi);decoded=inspect_midi(midi.read_bytes())
         self.assertEqual([(n['tick'],n['velocity']) for n in decoded['notes']],[(0,102),(960,51)])
+
+    def test_placement_preview_uses_pitch_kit_and_volume_without_committing_the_note(self):
+        before=canonical_bytes(self.editor.project);history=len(self.editor.undo_stack)
+        bass=placement_preview_plan(self.editor,self.bass,'n_48',Fraction(3))
+        kick=placement_preview_plan(self.editor,self.drums,'d_kick',Fraction(1))
+        self.assertEqual(bass['events'][0]['notePitches'],[48]);self.assertEqual(bass['events'][0]['startFrame'],0)
+        self.assertEqual(kick['events'][0]['role'],'drums.kick')
+        self.assertEqual(canonical_bytes(self.editor.project),before);self.assertEqual(len(self.editor.undo_stack),history)
+        self.editor.set_sequencer(self.bass,defaultVelocity=.4)
+        quieter=placement_preview_plan(self.editor,self.bass,'n_48',Fraction(3))
+        self.assertAlmostEqual(quieter['events'][0]['gain']/bass['events'][0]['gain'],.5)
+        self.editor.set_sequencer(self.bass,defaultVelocity=0)
+        self.assertIsNone(placement_preview_plan(self.editor,self.bass,'n_48',Fraction(3)))
+
+    def test_entry_preview_keeps_row_timing_harmony_and_saved_probabilities(self):
+        self.editor.project['harmony']=[dict(beat='0',chord=dict(degree=1,quality='major',inversion=0,alteration=0)),
+                                       dict(beat='1',chord=dict(degree=2,quality='minor',inversion=0,alteration=0))]
+        self.editor.paint_steps(self.bass,[('n_48',Fraction(7,8))]);event=self.editor.pattern(self.bass)['events'][0]
+        self.editor.edit_step_values(self.bass,{event['id']},playPercent=0,changePercent=100,variation='nearby_note')
+        self.editor.set_row(self.bass,'n_48',offsetPercent=50,velocityScale=.5)
+        before=canonical_bytes(self.editor.project)
+        plan=placement_preview_plan(self.editor,self.bass,'n_48',Fraction(7,8),event['id'])
+        self.assertEqual(plan['events'][0]['notePitches'],[50]);self.assertEqual(plan['events'][0]['startFrame'],0)
+        self.assertEqual(canonical_bytes(self.editor.project),before)
+        self.editor.set_row(self.bass,'n_48',muted=True)
+        self.assertIsNone(placement_preview_plan(self.editor,self.bass,'n_48',Fraction(7,8),event['id']))

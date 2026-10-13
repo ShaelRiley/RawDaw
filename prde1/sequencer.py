@@ -151,6 +151,37 @@ def audition_project(editor, instance_id, row=None, column=0):
     return project,start
 
 
+def placement_preview_plan(editor, instance_id, identity, position, event_id=None):
+    """Resolve a short note audition without committing an edit or variation.
+
+    Entry auditions the authored sound rather than its play/variation lottery.
+    Row/channel mutes, volume, gate, timing and harmonic eligibility still apply.
+    """
+    from .editor import Editor
+    from .governor import resolve
+    from .contracts import RATE, validate
+    project,_=audition_project(editor,instance_id)
+    candidate=Editor(project,editor.pack)
+    if event_id is None:
+        candidate.paint_steps(instance_id,[(identity,position)],exact=settings(candidate.pattern(instance_id),editor.pack)['pitchMode']=='exact')
+        event=next(e for e in candidate.step_matches(instance_id,identity,position) if e['enabled'])
+    else:event=next(e for e in candidate.pattern(instance_id)['events'] if e['id']==event_id)
+    event=copy.deepcopy(event)
+    event['expression'].update(playPercent=100,changePercent=0,variation='none',locked=True)
+    event['flam']=False  # Entry previews the primary sound, not a pattern fill.
+    candidate.pattern(instance_id)['events']=[event]
+    plan=resolve(candidate.project,editor.pack)
+    if not plan['events'] or not any(e['gain']>0 for e in plan['events']):return None
+    origin=min(e['startFrame'] for e in plan['events'])
+    for e in plan['events']:
+        e['startFrame']-=origin;e['endFrame']=min(e['endFrame']-origin,2*RATE)
+        e['releaseFrames']=min(e['releaseFrames'],e['endFrame']-e['startFrame'])
+    plan['events']=[e for e in plan['events'] if e['endFrame']>e['startFrame']]
+    plan['endFrame']=max(e['endFrame'] for e in plan['events'])
+    validate(plan,'prde1-events-v1.schema.json')
+    return plan
+
+
 class SequencerEditing:
     def _step_edit(self, instance_id, label, callback):
         pid = self.instance(instance_id)['patternId']

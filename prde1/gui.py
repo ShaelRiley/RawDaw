@@ -107,6 +107,7 @@ class MainWindow(QMainWindow):
         self._layout_ready=False;self._layout_changing=False
         self._preview_key=None;self._pending_seek=0;self._settings=QSettings('ShaelRiley','PRDE1') if remember else None
         self._playback_scope=None
+        self._note_preview=None
         self.data_dir=Path(data_dir or QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation))
         self.data_dir.mkdir(parents=True,exist_ok=True)
         self.recovery_dir=self.data_dir/'recovery';self.recovery_dir.mkdir(exist_ok=True)
@@ -201,7 +202,9 @@ class MainWindow(QMainWindow):
         policy=self.timeline_scroll.sizePolicy();policy.setVerticalPolicy(QSizePolicy.Policy.Ignored);self.timeline_scroll.setSizePolicy(policy);self.timeline_scroll.setMinimumHeight(100)
         self.splitter.addWidget(self.timeline_scroll)
         self.dock_tabs=QTabWidget();self.splitter.addWidget(self.dock_tabs);self.splitter.setSizes([360,260])
-        self.sequencer=StepSequencer(self.change,self.audition_steps,self.copy_dialog,self.detach_selected,self.remove_selected,self)
+        self.sequencer=StepSequencer(self.change,self.audition_steps,self.copy_dialog,self.detach_selected,self.remove_selected,self,preview_note=self.preview_note)
+        if self._settings:self.sequencer.preview_click.setChecked(self._settings.value('previewNotes',True,type=bool))
+        self.sequencer.preview_click.toggled.connect(self.set_note_preview_enabled)
         self.steps=self.sequencer.grid;self.step_resolution=self.sequencer.resolution
         self.pattern_heading=self.sequencer.heading;self.step_help=self.sequencer.help
         self.dock_tabs.addTab(self.sequencer,'Step sequencer')
@@ -424,14 +427,16 @@ class MainWindow(QMainWindow):
             self._activate(editor,bank);recovery.unlink();self._recoveries.pop(0);self.recover_button.setVisible(bool(self._recoveries));self.autosave();self.notice('Recovered unsaved session. Save it when ready.')
         except (ValueError,OSError,KeyError) as error:self.notice('Recovery failed; the recovery file is retained: '+str(error))
 
-    def change(self,operation):
+    def change(self,operation,*,keep_note_preview=False):
         if not self.editor:return
         serial=self.editor.serial
         try:operation()
-        except (ValueError,OSError,KeyError,StopIteration) as error:self.notice(str(error));self.refresh();return
+        except (ValueError,OSError,KeyError,StopIteration) as error:
+            if self._note_preview:self._note_preview.stop()
+            self.notice(str(error));self.refresh();return
         if self.editor.serial!=serial:
             self.editor.project['editorContext']['selection']=self.selected_id
-            self.stop();self._preview_key=None;self.player.setSource(QUrl());self.notice('');self.refresh();self.autosave()
+            self.stop(stop_notes=not keep_note_preview);self._preview_key=None;self.player.setSource(QUrl());self.notice('');self.refresh();self.autosave()
 
     def undo(self):self.change(self.editor.undo) if self.editor else None
     def redo(self):self.change(self.editor.redo) if self.editor else None
@@ -751,6 +756,7 @@ class MainWindow(QMainWindow):
         self.splitter.setSizes([360,260])
 
     def _devices_changed(self):
+        if self._note_preview:self._note_preview.set_device()
         current=self.audio.device().id();devices=self.devices.audioOutputs();self.outputs.blockSignals(True);self.outputs.clear()
         for device in devices:self.outputs.addItem(device.description(),device)
         if not devices:self.outputs.addItem('No audio output detected',None)
@@ -761,6 +767,7 @@ class MainWindow(QMainWindow):
             self.stop();self.notice('Audio output disconnected. Choose an output and press Play; playback was stopped.')
 
     def choose_output(self):
+        if self._note_preview:self._note_preview.set_device()
         device=self.outputs.currentData()
         if device is not None:self.audio.setDevice(device)
 
@@ -772,12 +779,28 @@ class MainWindow(QMainWindow):
         if state==QMediaPlayer.PlaybackState.PausedState and self._preview_key==self.editor.fingerprint:self.player.play();return
         self.request_render(autoplay=True)
 
-    def stop(self):
+    def stop(self,*,stop_notes=True):
+        if stop_notes and self._note_preview:self._note_preview.stop()
         self._generation+=1;self._job=None
         if self.process.state()!=QProcess.ProcessState.NotRunning:self.process.kill();self.process.waitForFinished(2000)
         self.player.stop();self.timeline.play_beat=None;self.timeline.update();self.seek.setValue(0)
         self.play_button.setText('Play');self.stop_button.setText('Stop')
         self._playback_scope=None;self.sequencer.playhead(None)
+
+    def set_note_preview_enabled(self,on):
+        if self._settings:self._settings.setValue('previewNotes',on)
+        if not on and self._note_preview:self._note_preview.stop()
+
+    def preview_note(self,instance_id,identity,position,event_id=None):
+        from .sequencer import placement_preview_plan
+        from .note_preview import NotePreview
+        try:
+            plan=placement_preview_plan(self.editor,instance_id,identity,position,event_id)
+            if self._note_preview is None:self._note_preview=NotePreview(self.work/'notes',lambda:self.outputs.currentData(),self.notice,self)
+            return self._note_preview.request(plan,self.pack.root,self.pack.manifest_hash)
+        except (ValueError,OSError,StopIteration) as error:
+            if self._note_preview:self._note_preview.stop()
+            self.notice('Note preview: '+str(error))
 
     def audition_steps(self,instance_id,row,column,loop):
         from .sequencer import audition_project
@@ -882,6 +905,7 @@ class MainWindow(QMainWindow):
     def closeEvent(self,event):
         if not self.confirm_discard():event.ignore();return
         self._closing=True;self.stop();self.autosave_timer.stop()
+        if self._note_preview:self._note_preview.close()
         if self._settings and not self._safe_workspace:self._settings.setValue('geometry',self.saveGeometry());self._settings.setValue('layout',self.saveState())
         self.player.setSource(QUrl());self.recovery_file.unlink(missing_ok=True)
         if self.pack:self.pack.close();self.pack=None

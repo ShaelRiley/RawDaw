@@ -1,4 +1,32 @@
-# Current checkpoint — per-note volume on the 0.3.4 engine
+# Current checkpoint — live note preview on the 0.3.4 engine
+
+Shael's October 12 request enables live per-note preview by default. The visible
+Preview notes switch remembers quiet-editing preferences. Mouse press and visited
+drag columns audition prospective notes; keyboard entry auditions placed notes.
+Focused volume edits audition the new level. The chosen pitch/chord/kit and
+note/row/mixer expression use the canonical resolver and unchanged native DSP.
+Auditions preserve project authorship, undo history, credits and saved variation.
+Dragging still commits one undo operation.
+
+A separate bounded native render queue prepares short clips, and cached sound
+effects provide entry playback independently of song transport. Rapid requests
+replace stale work; Stop, the preview switch, non-placement edits, pack/output
+changes and close cancel obsolete playback. Clips are capped at two seconds;
+64 clips and eight resident effects bound retention. Only audition PCM is repacked
+to 16-bit WAV for sound-effect playback; exports remain 24-bit. Sound-effect
+objects are created lazily after user input to preserve startup behavior.
+
+Validation: `make check` passed all 123 Python/Qt tests without skips plus native
+engine checks. New tests exercise pitch/kit/volume and row-timing dispatch, saved
+probability isolation, actual mouse/drag/keyboard gestures, preview before commit,
+cache reuse, stale-work/Stop cancellation and persisted preferences. The preview
+toggle, volume and bars fit the real 1280×800 viewport at 100% and 150% text.
+`make demo` passed both reference renders; existing desktop/source exports still
+match. Evidence and the live SDD revision are in
+`validation/live-note-preview-verification.json` and its referenced logs. Physical
+Steam Deck startup, hardware latency and human listening remain unverified.
+
+## Previous per-note volume checkpoint
 
 Shael's October 12 request exposes saved per-note dynamics directly. Focus a
 note and adjust its 0–100% slider or percentage; default dynamics bars shape the

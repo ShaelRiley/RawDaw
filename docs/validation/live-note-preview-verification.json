@@ -1,0 +1,68 @@
+{
+  "verifiedAtUtc": "2026-10-13T02:54:27.964841+00:00",
+  "baseCommit": "52d2e419456a63e48ebb17f895be493cc025ed8c",
+  "canonicalSddRevision": "AHj4eMTL6h_BBmsoK6P9tUVtGfMzWuAXXtIc_7hsb_OtSULNix-T-spmLTET5uNdk2oGJ2hBgwo9EPfxLa3dHUrSw8MfQ1_E54_QS6kerg",
+  "environment": {
+    "python": "3.12.14",
+    "qt": "6.8.3",
+    "display": "offscreen Linux x86_64",
+    "physicalAudioDevice": false
+  },
+  "behavior": {
+    "defaultPreviewNotes": true,
+    "preference": "previewNotes",
+    "entry": [
+      "mouse press",
+      "visited drag columns",
+      "keyboard notes"
+    ],
+    "sound": "current pack pitch/chord/kit, note/row/mix expression",
+    "muteAndEligibilityPreserved": true,
+    "primaryPreviewIgnoresSavedProbabilityAndVariationWithoutChangingThem": true,
+    "songTransport": "separate",
+    "renderQueue": "latest request wins",
+    "maximumSeconds": 2,
+    "maximumCachedClips": 64,
+    "maximumResidentEffects": 8,
+    "previewPcm": "48 kHz stereo 16-bit",
+    "exportPcm": "unchanged 48 kHz stereo 24-bit"
+  },
+  "validation": {
+    "tests": 123,
+    "skipped": 0,
+    "seconds": 123.93,
+    "nativeEngineChecks": true,
+    "regressionLog": "live-note-preview-check.log",
+    "referenceRenders": [
+      {
+        "name": "major",
+        "sourceKind": "synthetic_fixture",
+        "eventCount": 88,
+        "frames": 384000,
+        "wavSha256": "187fa5c7195b20a9f333065e89d45c73ed27994ac63f955f5a620c1792dc8a89"
+      },
+      {
+        "name": "minor",
+        "sourceKind": "synthetic_fixture",
+        "eventCount": 88,
+        "frames": 384000,
+        "wavSha256": "3c6ae1c60286523ce38e140617be9ef9ccf99e02ee59443308d48e3656f4a761"
+      }
+    ],
+    "referenceLog": "live-note-preview-demo.log",
+    "gesturePreviewBeforeCommit": true,
+    "dragSingleUndo": true,
+    "cacheReuseAndCanceledJobChecks": true,
+    "projectAndVariationUnchangedByAudition": true,
+    "previewPreferencePersistence": true,
+    "visibleViewportChecks": [
+      "1280x800 at 100%",
+      "1280x800 at 150%"
+    ],
+    "cancelAndRepeatSameNote": true,
+    "outputChangeCancelsPendingPreview": true
+  },
+  "physicalSteamDeckStartup": "unverified; existing physical startup failure remains open",
+  "humanListening": "not performed",
+  "measuredPhysicalLatency": "not measured"
+}

@@ -17,8 +17,8 @@ edited from any of its sustained cells without creating another attack.
 
 **Dynamics bars** are visible by default for the focused pitch or kit row. Drag
 each note's bar to shape its volume; empty columns remain empty. **More controls**
-opens new-note defaults, the other expression types, audition on entry and row
-timing. The event list/dialog exposes **Note volume** for exact off-grid notes.
+opens new-note defaults, the other expression types and row timing.
+The event list/dialog exposes **Note volume** for exact off-grid notes.
 Values survive save/reopen, pattern reuse, undo/recovery, preview and audio export.
 Silent realized notes are omitted from MIDI export rather than becoming faint
 velocity-one hits. Percentages describe amplitude, not a decibel or loudness scale.
@@ -36,14 +36,14 @@ velocity-one hits. Percentages describe amplitude, not a decibel or loudness sca
 | Double-click | Toggle a quieter flam grace trigger |
 | Expression bars | Draw velocity, gate duration, play/change probability or timing offsets; one drag is one undo operation |
 | Note volume | Slider and percentage for the focused note; Shift-drag and default dynamics bars provide gesture alternatives |
-| More controls | New-note volume, expression type, audition on entry, row velocity multiplier/offset, gate %, swing %, time offset %, flam timing |
+| More controls | New-note volume, expression type, row velocity multiplier/offset, gate %, swing %, time offset %, flam timing |
 | Row menu | Insert/delete/rename/reorder, copy/cut/paste, shift, reverse, clear and fill every N steps |
 | Alt-left/right | Shift the focused row by one step, wrapping within the pattern |
 | Alt-up/down | Move a melodic column to the next higher/lower permitted pitches |
 | Pattern menu | Save/load, clear, explicit quantize, Fit to quarters, duplicate, linked/independent reuse and MIDI interchange |
 | Play pattern / Loop | Audition the selected pattern independently of the song transport |
 | Click row label | Audition that pitch/instrument without changing the song |
-| Audition on entry | Optional; Off initially |
+| Preview notes | On initially; hear mouse press/drag and keyboard entries, with a saved preference for quiet editing |
 | Step entry | Use Space or Z S X D C V G B H N J M; period advances/rests, comma goes back; Ctrl-R toggles entry |
 
 Velocity inside each active cell is expressed as a percentage. `F` marks a flam;
@@ -90,6 +90,22 @@ Pattern audition isolates one pattern and its local harmony/tempo. Row audition
 uses a separate compatible audition context. Neither operation changes the song,
 its variation seed/revision, credits or undo history. Scope-specific preview keys
 cannot be confused with full-song exports; stale jobs remain cancelable on edits.
+
+Live entry preview has its own playback path and does not start or loop the song.
+It uses the chosen pitch, whole chord or kit sound and its note/row/mixer volume.
+Mouse previews can sound before the gesture commits; dragging still produces one
+undo operation. Keyboard entry previews each enabled note. Changing the focused
+note's volume also auditions the revised level. Erasing stays quiet.
+
+Entry preview temporarily auditions the primary sound with play probability 100%
+and variation Off; those values never replace saved probabilities or variation.
+Row/channel mutes, zero level and harmonic eligibility still apply. Previews start
+immediately in their clip and use the authored gate, capped at two seconds. The
+first use prepares a short native clip; repeated sounds reuse a bounded cache and
+preloaded Qt effects. Rapid input selects the latest note instead of building a
+delayed queue. Stop, disabling Preview notes, changing harmony/pack and closing
+cancel stale work. The switch is an application preference, separate from the
+musical project. Physical-device latency and listening remain unverified.
 
 ## Pattern and MIDI interchange
 

@@ -36,6 +36,10 @@ class StepInterface(unittest.TestCase):
         deadline=time.monotonic()+20
         while self.window._job and time.monotonic()<deadline:QTest.qWait(10)
         self.assertIsNone(self.window._job)
+    def wait_note_preview(self):
+        manager=self.window._note_preview;deadline=time.monotonic()+10
+        while (manager.job or manager.pending) and time.monotonic()<deadline:QTest.qWait(10)
+        self.assertIsNone(manager.job);self.assertIsNone(manager.pending)
 
     def test_default_pitch_rows_select_actual_notes_and_right_click_erases(self):
         w=self.window;s=w.sequencer;self.assertEqual(s.grid.rowCount(),33);self.assertEqual(s.grid.columnCount(),16)
@@ -158,7 +162,39 @@ class StepInterface(unittest.TestCase):
         for scale in (1,1.5):
             w.resize(1280,800);w._apply_scale(scale);self.app.processEvents()
             view=w.body_scroll.viewport()
-            for control in (s.note_volume,s.note_volume_slider,s.lane):
+            for control in (s.note_volume,s.note_volume_slider,s.preview_click,s.lane):
                 top=control.mapTo(view,QPoint(0,0));bottom=control.mapTo(view,QPoint(control.width()-1,control.height()-1))
                 self.assertTrue(view.rect().contains(top));self.assertTrue(view.rect().contains(bottom))
             self.assertTrue(s.grid.viewport().rect().contains(s.grid.visualItemRect(s.grid.currentItem()).center()))
+
+    def test_live_mouse_preview_precedes_commit_and_uses_an_independent_native_clip(self):
+        import wave
+        w=self.window;s=w.sequencer;self.assertTrue(s.preview_click.isChecked());self.assertTrue(s.preview_click.isVisible())
+        row,point=self.target('n_48',0);before=canonical_bytes(w.editor.project)
+        QTest.mousePress(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+        self.assertEqual(canonical_bytes(w.editor.project),before);self.assertIsNotNone(w._note_preview);self.assertIsNone(w._job)
+        QTest.mouseRelease(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point);self.wait_note_preview()
+        self.assertEqual(len(w.editor.plan()['events']),1);path=next(iter(w._note_preview.cache.values()))
+        with wave.open(str(path)) as stream:
+            self.assertEqual((stream.getnchannels(),stream.getsampwidth(),stream.getframerate()),(2,2,48000))
+            self.assertTrue(any(stream.readframes(stream.getnframes())))
+        self.assertIsNone(w._playback_scope);self.assertIsNone(w._preview_key)
+
+    def test_live_keyboard_preview_toggle_and_stop_keep_music_and_auditions_independent(self):
+        w=self.window;s=w.sequencer;row,_=self.target('n_48',0);s.grid.setCurrentCell(row,0);s.grid.setFocus()
+        before=canonical_bytes(w.editor.project);s.preview_click.setChecked(False);self.assertEqual(canonical_bytes(w.editor.project),before)
+        QTest.keyClick(s.grid,Qt.Key.Key_Space);self.assertIsNone(w._note_preview)
+        s.preview_click.setChecked(True);s.grid.setCurrentCell(row,1);QTest.keyClick(s.grid,Qt.Key.Key_Space);self.wait_note_preview()
+        self.assertEqual(len(w.editor.plan()['events']),2);self.assertTrue(w._note_preview.cache)
+        before=canonical_bytes(w.editor.project);w.stop();self.assertEqual(canonical_bytes(w.editor.project),before)
+        self.assertIsNone(w._note_preview.pending);self.assertIsNone(w._note_preview.play_request)
+
+    def test_live_drag_previews_each_visited_column_but_commits_one_undo_operation(self):
+        w=self.window;s=w.sequencer;requests=[];callback=s.preview_note
+        s.preview_note=lambda *args:(requests.append(args),callback(*args))[-1]
+        row,start=self.target('n_48',0);_,middle=self.target('n_48',1);_,end=self.target('n_48',3)
+        before=len(w.editor.undo_stack)
+        QTest.mousePress(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=start);QTest.mouseMove(s.grid.viewport(),middle);QTest.mouseMove(s.grid.viewport(),end)
+        QTest.mouseRelease(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=end);self.wait_note_preview()
+        self.assertEqual([r[2] for r in requests],[Fraction(0),Fraction(1,4),Fraction(3,4)])
+        self.assertEqual(len(w.editor.plan()['events']),4);self.assertEqual(len(w.editor.undo_stack),before+1)

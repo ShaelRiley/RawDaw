@@ -21,6 +21,18 @@ Zero-volume realized events are omitted from SMF note output, preserving silence
 without treating MIDI velocity zero as a new note-on. No new event schema or
 sample/DSP operation is introduced.
 
+`placement_preview_plan()` isolates and resolves a prospective or existing note
+without committing it, consuming saved variation or changing credits. It shifts
+the resolved primary trigger to frame zero and bounds its gate to two seconds.
+`note_preview.py` uses a separate QProcess and the unchanged native renderer;
+latest-request generations suppress canceled work. Acoustic keys include pack,
+sound, expression and mix data rather than authored event IDs. At most 64 short
+clips and eight resident QSoundEffect objects are retained. Only audition PCM is
+repacked from 24 to 16 bits for portable low-latency WAV playback; its sample
+clock, pitch and source/DSP path are unchanged. Stereo exports remain 24-bit.
+The extra sound objects are created lazily after user input, never at startup.
+See [Qt's QSoundEffect reference](https://doc.qt.io/qt-6/qsoundeffect.html).
+
 ## Current override: full harmonic coverage (SDD Section 30)
 
 Shael's October 11 amendment supersedes the coverage-gating and strict mode
