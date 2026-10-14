@@ -1,0 +1,535 @@
+{
+  "title": "Shop Vac",
+  "artist": "Jonathan Coulton",
+  "retrievedAt": "2026-10-14T22:20:29.691717+00:00",
+  "license": {
+    "selected": "CC-BY-NC-3.0",
+    "url": "https://creativecommons.org/licenses/by-nc/3.0/",
+    "artistDeclaration": "https://www.jonathancoulton.com/faq/",
+    "sourceDownloadAuthority": "https://www.jonathancoulton.com/source/",
+    "trackListAuthority": "https://www.jonathancoulton.com/2008/11/18/joco-looks-back/",
+    "archiveItem": "https://archive.org/details/JonathanCoultonJoCoLooksBackSourceTracks",
+    "archiveLabel": "CC-BY-NC-4.0",
+    "archiveLicenseUrl": "http://creativecommons.org/licenses/by-nc/4.0/",
+    "versionChoice": "Artist FAQ links BY-NC3.0. Archive upload is labeled BY-NC4.0. Preserve both statements and conservatively use the original artist linked3.0 license rather than claiming an unrestricted commercial grant.",
+    "commercialUse": false,
+    "shareAlike": false,
+    "derivatives": true,
+    "obligations": [
+      "Credit Shop Vac and Jonathan Coulton; link artist website and license.",
+      "Describe cropping, filtering, pitch warps, harmonic-mask processing and other modifications.",
+      "Noncommercial redistribution/remixing only; separate permission is required for commercial use.",
+      "No implication of endorsement; no additional DRM/legal restrictions on licensed material."
+    ]
+  },
+  "tempo": {
+    "quarterBpm": 150,
+    "authority": "JLB Source Tracks/06 Shop Vac/readme.txt"
+  },
+  "originalRecording": {
+    "filename": "shop-vac-original.mp3",
+    "url": "https://www.jonathancoulton.com/wp-content/uploads/encodes/Thing_a_Week_One/mp3/04_Shop_Vac_mp3_a4579fe.mp3",
+    "sha256": "1734a5e6a02d330baccc76da91fc50a37a3072e7448244b2124bc24d050a926c",
+    "bytes": 7164459,
+    "audioProbe": {
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "211.382857",
+        "tags": {
+          "title": "Shop Vac",
+          "album": "Thing a Week One",
+          "artist": "Jonathan Coulton"
+        }
+      }
+    },
+    "discoveredFrom": "https://www.jonathancoulton.com/store/",
+    "discovery": "Official store HTML JavaScript playlist entry with title Shop Vac and product id9172655878; public audio stream, no purchase or account"
+  },
+  "stems": [
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Acoustic Guitars.mp3",
+      "filename": "acoustic-guitars.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "f33062541ce88b4383add99f0e8a0d0bbeaf5f9e8218287ce5605b90586ee96a",
+      "bytes": 5843261,
+      "zipCrc32": "e00bda08",
+      "zipLocalHeaderOffset": 117928020,
+      "zipCompressedBytes": 5753137,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Back Vox.mp3",
+      "filename": "back-vox.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "669f36cac7e3c1c8d8c28fc8d6a8c2c776595b958665b3aff3ad2e88170989c0",
+      "bytes": 1413347,
+      "zipCrc32": "cb239826",
+      "zipLocalHeaderOffset": 123681269,
+      "zipCompressedBytes": 679315,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Bass.mp3",
+      "filename": "bass.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "657b954a52f990c7aaf047385baa3ff8d639049daa7d01e396f5360157260b46",
+      "bytes": 2520683,
+      "zipCrc32": "7a960dcc",
+      "zipLocalHeaderOffset": 124360688,
+      "zipCompressedBytes": 2458979,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 1,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Claps.mp3",
+      "filename": "claps.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "a9c90be0148c4f13e7245abb53c63f97c5176c7594c9a8a611213ea96fe9503f",
+      "bytes": 2681141,
+      "zipCrc32": "41ef52d2",
+      "zipLocalHeaderOffset": 126819767,
+      "zipCompressedBytes": 2221005,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Drums.mp3",
+      "filename": "drums.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "069c28fb82447ea63e7039b0696a61caf2e07c8af1f768e663e2ea31f525e431",
+      "bytes": 7092248,
+      "zipCrc32": "c8a09650",
+      "zipLocalHeaderOffset": 129040873,
+      "zipCompressedBytes": 7070625,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Electric Guitar 1.mp3",
+      "filename": "electric-guitar-1.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "6ebb36fa6e9a7aa148cbc56f76b2040af1a4d5ef5055430beba6efc760ccd2d1",
+      "bytes": 2469740,
+      "zipCrc32": "a47db8c4",
+      "zipLocalHeaderOffset": 136111599,
+      "zipCompressedBytes": 2364322,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 1,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Electric Guitar 2.mp3",
+      "filename": "electric-guitar-2.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "e1fbd1721d3ccbe8ef9ea12dadb61f8f29cd15976a932cee638fbd952ea7c356",
+      "bytes": 2362312,
+      "zipCrc32": "59e89295",
+      "zipLocalHeaderOffset": 138476034,
+      "zipCompressedBytes": 2267438,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 1,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Harmony Vox.mp3",
+      "filename": "harmony-vox.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "52aaee65e7a53ce2b4cd23ccfbaf6a271da705a15967b78113bcf7d73c6c9c7d",
+      "bytes": 2948640,
+      "zipCrc32": "6defdddd",
+      "zipLocalHeaderOffset": 140743585,
+      "zipCompressedBytes": 2425284,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Lead Vox Double.mp3",
+      "filename": "lead-vox-double.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "d262ed5d3dc86be485992aaf364c0a312d029aa40928ddfd88106bd2c193cb97",
+      "bytes": 3018371,
+      "zipCrc32": "4894c511",
+      "zipLocalHeaderOffset": 143168976,
+      "zipCompressedBytes": 2906905,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 1,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Lead Vox.mp3",
+      "filename": "lead-vox.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "de8d861bd29b0b0bdf71427c04db78e17061a8d333f536ca93eb5091bbfb6370",
+      "bytes": 3151322,
+      "zipCrc32": "fdd8da17",
+      "zipLocalHeaderOffset": 146075992,
+      "zipCompressedBytes": 3038859,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 1,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/readme.txt",
+      "filename": "shop-vac-readme.txt",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "ce5cc903c7c4d4cafb213abfa6ccdb23daa70b60c0d32e25683216f4e4c942cf",
+      "bytes": 140,
+      "zipCrc32": "c00a4080",
+      "zipLocalHeaderOffset": 149114955,
+      "zipCompressedBytes": 100,
+      "zipCompression": 8,
+      "zipFlags": 8
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Synth.mp3",
+      "filename": "synth.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "990a29eb6deb3626faddeaf9286df660cd5bffc5bf1c76e48d2dca8911b1b3bf",
+      "bytes": 1740828,
+      "zipCrc32": "8b92f69d",
+      "zipLocalHeaderOffset": 149115157,
+      "zipCompressedBytes": 1083743,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "210.442449",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/The Radio.mp3",
+      "filename": "the-radio.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "b3c977e60bc0bb2cfce88422de39f0d4ba4c71728f9127296e09a32a4a0adeba",
+      "bytes": 1943223,
+      "zipCrc32": "fcb12d66",
+      "zipLocalHeaderOffset": 150199001,
+      "zipCompressedBytes": 1093976,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "248.058776",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/06 Shop Vac/Vincent Solo.mp3",
+      "filename": "vincent-solo.mp3",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "b9a5b70c90ceb5320aebdfcd37668ad9c26b8daf54dee2301af9b61ae7989f35",
+      "bytes": 924645,
+      "zipCrc32": "6fc8f044",
+      "zipLocalHeaderOffset": 151293082,
+      "zipCompressedBytes": 386944,
+      "zipCompression": 8,
+      "zipFlags": 8,
+      "audioProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "44100",
+            "channels": 2,
+            "side_data_list": [
+              {}
+            ]
+          }
+        ],
+        "format": {
+          "duration": "153.652245",
+          "tags": {
+            "artist": "Jonathan Coulton",
+            "album": "Shop Vac Source"
+          }
+        }
+      }
+    },
+    {
+      "member": "JLB Source Tracks/readme.txt",
+      "filename": "archive-readme.txt",
+      "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+      "sha256": "6114c5027b953ea7e112f72a72ae6ce8d401dab810e18c874fbe5593e4879d51",
+      "bytes": 829,
+      "zipCrc32": "6fca8dbf",
+      "zipLocalHeaderOffset": 556192969,
+      "zipCompressedBytes": 479,
+      "zipCompression": 8,
+      "zipFlags": 8
+    }
+  ],
+  "zip": {
+    "url": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+    "bytes": 556221027,
+    "metadata": {
+      "name": "Jonathan Coulton - JoCo Looks Back Source Tracks.zip",
+      "source": "original",
+      "format": "ZIP",
+      "mtime": "1407267751",
+      "size": "556221027",
+      "md5": "c7a5e47d50a7703b00a2b4133ce7a150",
+      "crc32": "12467d57",
+      "sha1": "ecedd893c7c2b886d405433b2bb9e25b1e178ed8",
+      "filecount": "238"
+    },
+    "acquisition": "HTTP byte ranges of central directory and Shop Vac folder; each extracted entry checked against central directory size and CRC32; each file separately SHA256 hashed. Entire556MBarchive was not downloaded or independently hashed."
+  },
+  "recommendedBankSources": [
+    "acoustic-guitars.mp3",
+    "bass.mp3",
+    "drums.mp3",
+    "lead-vox.mp3",
+    "electric-guitar-1.mp3",
+    "claps.mp3"
+  ],
+  "excludedFromBank": [
+    "the-radio.mp3",
+    "vincent-solo.mp3"
+  ],
+  "sourceLimitations": [
+    "Source archive readme warns raw tracks may need nudging to align a tempo grid.",
+    "Backing vocals may retain processing; original mix panning and processing not preserved.",
+    "Vincent Solo is identified by artist posts as a fan-contest winning solo; avoid extracting it unless its permission scope is independently established."
+  ],
+  "licensePageSnapshots": {
+    "faq.html": "2ea8af221fbddeb0d0d09e7e2792cab34924532bc4312eefaf8d439fa47729aa",
+    "source.html": "1577d5fc318bca9d55a6c94b3936038f150b4da893983684b12b9b142ed6c8c7",
+    "store.html": "22b2bd68f4da37e2d219074add92e333d6a823dcd5f11d7807d5c9f7e8bdfce3"
+  }
+}

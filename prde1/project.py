@@ -2,17 +2,84 @@
 from __future__ import annotations
 
 import copy
+import math
 import uuid
+from fractions import Fraction
 from pathlib import Path
 
 from .contracts import ContractError, ROLES, SLOTS, atomic_json, read_json, validate
 from .music import MODES, QUALITIES, beat
 
 
+def instance_length(instance: dict, pattern: dict) -> Fraction:
+    """Arrangement span; the editable source pattern keeps its original cycle."""
+    return beat(instance.get('playbackLength', pattern['length']))
+
+
+def check_arrangement_space(project, role, start, length, exclude=''):
+    """Protect occupied material, including trimmed/repeated clip spans."""
+    start=beat(str(start));length=beat(str(length));stop=start+length
+    if length<=0 or stop>beat(project['length']):
+        raise ContractError('Clip must fit inside the song')
+    cycle=project.get('trackLoops',{}).get(role)
+    if cycle and not beat(cycle['startBeat'])<=start<stop<=beat(cycle['endBeat']):
+        raise ContractError('Clip must fit the track loop source cycle; turn track looping off to extend the arrangement')
+    patterns={p['id']:p for p in project['patterns']}
+    for occurrence in project['instances']:
+        if occurrence['id']==exclude:continue
+        pattern=patterns[occurrence['patternId']];other=beat(occurrence['beat'])
+        if pattern['role']==role and max(start,other)<min(stop,other+instance_length(occurrence,pattern)):
+            raise ContractError('Clip would overlap existing material on this track')
+
+
+def arrangement_spans(project):
+    """Saved clips and track-loop ghosts as (source, pattern, start, span, cycle)."""
+    patterns={p['id']:p for p in project['patterns']};song_end=beat(project['length'])
+    for source in project['instances']:
+        pattern=patterns[source['patternId']]
+        start=beat(source['beat']);length=instance_length(source,pattern)
+        track=project.get('trackLoops',{}).get(pattern['role'])
+        period=beat(track['endBeat'])-beat(track['startBeat']) if track else None
+        cycle=0
+        while start<song_end:
+            yield source,pattern,start,min(length,song_end-start),cycle
+            if period is None:break
+            start+=period;cycle+=1
+
+
+def arrangement_occurrences(project):
+    """Expand musical loops without saving duplicate patterns or consuming RNG.
+
+    IDs at the first placement remain unchanged. Later cycle addresses depend
+    only on saved identity and repeat number, so extending a loop retains the
+    realization of every preceding repeat. The caller validates the project
+    first; the project budget bounds this iterator to 100,000 source cycles.
+    """
+    song_end=beat(project['length'])
+    for source,pattern,start,length,track_repeat in arrangement_spans(project):
+        period=beat(pattern['length']);clip_end=start+length
+        track=project.get('trackLoops',{}).get(pattern['role'])
+        offset=Fraction(0);clip_repeat=0
+        while start+offset<clip_end:
+            occurrence=dict(source,beat=str(start+offset))
+            suffix=(f':track_{track_repeat}' if track_repeat else '')+(f':loop_{clip_repeat}' if clip_repeat else '')
+            occurrence['id']=source['id']+suffix
+            # A clip loop bounds each pattern cycle. A whole-track loop bounds
+            # the track cycle, preserving authored holds across shorter source
+            # clip ends. Legacy one-shots preserve their existing gates.
+            if 'playbackLength' in source:
+                limit=min(clip_end,start+offset+period)
+            elif track:
+                track_period=beat(track['endBeat'])-beat(track['startBeat'])
+                limit=min(song_end,beat(track['endBeat'])+track_repeat*track_period)
+            else:limit=song_end
+            yield occurrence,pattern,limit
+            offset+=period;clip_repeat+=1
+
+
 def validate_project(project: dict) -> None:
     validate(project, "prde1-project-v1.schema.json")
     end = beat(project["length"])
-    from fractions import Fraction
     initial_phase=beat(project.get('rhythmicPulse',{}).get('phaseBeat','0'))
     first_meter=project['meterMap'][0]
     if initial_phase>=Fraction(4*first_meter['numerator'],first_meter['denominator']):
@@ -31,7 +98,6 @@ def validate_project(project: dict) -> None:
         if chord["inversion"]>=len(QUALITIES[chord["quality"]]):
             raise ContractError("Impossible chord inversion")
     for previous, current in zip(project["meterMap"],project["meterMap"][1:]):
-        from fractions import Fraction
         offset=initial_phase if beat(previous['beat'])==0 else Fraction(0)
         if (beat(current["beat"])-beat(previous["beat"])+offset)/Fraction(4*previous["numerator"],previous["denominator"]) % 1:
             raise ContractError("Meter changes must align to a preceding bar boundary")
@@ -53,17 +119,38 @@ def validate_project(project: dict) -> None:
     instances={}
     uses={}
     total_events=0
+    total_cycles=0
+    loops=project.get('trackLoops',{})
+    for role,cycle in loops.items():
+        if not beat(cycle['startBeat'])<beat(cycle['endBeat'])<=end:
+            raise ContractError('Track loop must have a positive cycle inside the song')
+        if not any(patterns[i['patternId']]['role']==role for i in project['instances'] if i['patternId'] in patterns):
+            raise ContractError('An empty track cannot loop')
     for instance in project["instances"]:
         if instance["id"] in instances or instance["patternId"] not in patterns:
             raise ContractError("Duplicate instance or missing pattern")
         pattern=patterns[instance["patternId"]]
-        if beat(instance["beat"])+beat(pattern["length"])>end:
+        length=instance_length(instance,pattern)
+        if length<=0 or beat(instance["beat"])+length>end:
             raise ContractError("Pattern occurrence exceeds song boundary")
+        cycles=math.ceil(length/beat(pattern['length']))
+        if pattern['role'] in loops:
+            loop=loops[pattern['role']];start,stop=beat(loop['startBeat']),beat(loop['endBeat'])
+            if not start<=beat(instance['beat'])<beat(instance['beat'])+length<=stop:
+                raise ContractError('Track loop source clips must fit inside its cycle')
+            cycles*=math.ceil((end-beat(instance['beat']))/(stop-start))
         instances[instance["id"]]=instance
         uses.setdefault(instance["patternId"],[]).append(instance)
-        total_events+=sum(4 if event.get('flam') else 2 for event in pattern['events'])
-    if total_events>100000:
+        total_cycles+=cycles
+        total_events+=cycles*sum(4 if event.get('flam') else 2 for event in pattern['events'])
+    if total_events>100000 or total_cycles>100000:
         raise ContractError("Expanded event budget exceeded")
+    # Old one-shot overlaps remain accepted. New loop spans and complete track
+    # loops must not obscure another saved clip on the same lane.
+    for instance in project['instances']:
+        pattern=patterns[instance['patternId']]
+        if 'playbackLength' in instance or pattern['role'] in loops:
+            check_arrangement_space(project,pattern['role'],instance['beat'],instance_length(instance,pattern),instance['id'])
     for occurrences in uses.values():
         if len(occurrences)>1 and not all(occurrence["linked"] for occurrence in occurrences):
             raise ContractError("Shared patterns must be explicitly Linked Repeat")
@@ -112,13 +199,15 @@ def duplicate(project: dict, instance_id: str, destination: str, *, linked=False
         for item in result["instances"]:
             if item["patternId"]==pattern["id"]:
                 item["linked"]=True
-    result["instances"].append({"id":"instance_"+uuid.uuid4().hex,"patternId":pattern["id"],"beat":destination,"linked":linked})
+    occurrence={"id":"instance_"+uuid.uuid4().hex,"patternId":pattern["id"],"beat":destination,"linked":linked}
+    if 'playbackLength' in source:occurrence['playbackLength']=source['playbackLength']
+    result["instances"].append(occurrence)
     if include_harmony:
         # The caller must obtain the SDD's overwrite warning/confirmation in the UI.
         from .music import at
         start=beat(source["beat"])
         target=beat(destination)
-        length=beat(pattern["length"])
+        length=instance_length(source,pattern)
         harmony=[item for item in result["harmony"] if not target<=beat(item["beat"])<target+length]
         first=copy.deepcopy(at(project["harmony"],start))
         first["beat"]=str(target)

@@ -288,7 +288,11 @@ def prepare(recipe, source_root, output, work):
         for path in sorted(files):
             entry=zipfile.ZipInfo(path,(2026,10,9,0,0,0));entry.compress_type=zipfile.ZIP_DEFLATED;entry.external_attr=0o100644<<16
             archive.writestr(entry,files[path])
-    with Pack(temporary):pass
+    # Materialize the complete compact bank as part of extraction. The original
+    # pack contains immutable source crops; persistent, hash-bound targets live
+    # separately and are reused by playback without a substitute synthesizer.
+    with Pack(temporary) as prepared:
+        bank_report=prepared.coverage.prepare_bank()
     projects=[]
     for index,spec in enumerate(recipe["demonstrations"]):
         project=make_project(manifest,sha256(raw_manifest),spec,clip,"ab"[index])
@@ -297,7 +301,8 @@ def prepare(recipe, source_root, output, work):
     temporary.replace(pack_path)
     for project_path,project in projects:save_project(project_path,project)
     (work/"asset-audit.json").write_bytes(canonical_bytes(audit))
-    print(pack_path,len(samples),"source-derived assets; coverage-limited",flush=True)
+    (work/"complete-bank.json").write_bytes(canonical_bytes(bank_report))
+    print(pack_path,len(samples),"recorded assets; complete source-derived bank prepared",flush=True)
     return pack_path
 
 

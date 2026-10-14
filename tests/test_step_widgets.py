@@ -42,7 +42,8 @@ class StepInterface(unittest.TestCase):
         self.assertIsNone(manager.job);self.assertIsNone(manager.pending)
 
     def test_default_pitch_rows_select_actual_notes_and_right_click_erases(self):
-        w=self.window;s=w.sequencer;self.assertEqual(s.grid.rowCount(),33);self.assertEqual(s.grid.columnCount(),16)
+        w=self.window;s=w.sequencer;self.assertEqual(s.grid.rowCount(),128);self.assertEqual(s.grid.columnCount(),16)
+        self.assertEqual(s.current_row()['note'],36)
         self.assertIs(w.dock_tabs.currentWidget(),s)
         _,point=self.target('n_48',0);QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
         self.assertEqual(w.editor.plan()['events'][0]['notePitches'],[48])
@@ -65,10 +66,29 @@ class StepInterface(unittest.TestCase):
         QTest.keyClick(s.grid,Qt.Key.Key_Z);self.assertEqual(s.grid.currentColumn(),1)
         QTest.keyClick(s.grid,Qt.Key.Key_Period);self.assertEqual(s.grid.currentColumn(),2)
         QTest.keyClick(s.grid,Qt.Key.Key_C);self.assertEqual([e['notePitches'] for e in w.editor.plan()['events']],[[48],[52]])
-        w.select('drums',Fraction(0),self.drums);self.assertEqual(s.grid.rowCount(),8)
+        w.select('drums',Fraction(0),self.drums)
+        from prde1.percussion import records
+        self.assertEqual(s.grid.rowCount(),len(records(w.pack)))
+        self.assertTrue({'d_gm_'+str(n) for n in range(35,82)}<={row['id'] for row in s.rows})
         for identity in ('d_kick','d_snare'):
             _,point=self.target(identity,0);QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
         self.assertEqual({e['role'] for e in w.editor.plan()['events'] if e['role'].startswith('drums.')},{'drums.kick','drums.snare'})
+
+    def test_standard_gm_articulations_have_named_rows_and_keep_midi_identity(self):
+        from prde1.percussion import record
+        from prde1.midi import inspect_midi
+        w=self.window;s=w.sequencer;s.preview_click.setChecked(False)
+        w.select('drums',Fraction(0),self.drums)
+        for address in (54,56):
+            row,point=self.target('d_gm_'+str(address),0)
+            self.assertIn(record(w.pack,'gm_'+str(address))['displayName'],s.grid.verticalHeaderItem(row).text())
+            QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+        events=w.editor.pattern(self.drums)['events']
+        expected={record(w.pack,'gm_'+str(n))['soundIdentity'] for n in (54,56)}
+        self.assertEqual({event['choice']['soundIdentity'] for event in events},expected)
+        output=Path(self.folder.name)/'articulations.mid';w.editor.export_midi(self.drums,output)
+        self.assertEqual({note['note'] for note in inspect_midi(output.read_bytes())['notes']},{54,56})
+        w.undo();self.assertEqual(len(w.editor.pattern(self.drums)['events']),1)
 
     def test_row_controls_and_expression_edit_are_saved_and_reversible(self):
         w=self.window;s=w.sequencer;row,point=self.target('n_48',0);QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)

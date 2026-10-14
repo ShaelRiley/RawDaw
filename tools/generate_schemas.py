@@ -38,8 +38,12 @@ ROLES = ["lead", "rhythm", "bass", "drums"]
 SLOTS = ["kick", "snare", "hatClosed", "hatOpen", "tom1", "tom2", "extra1", "extra2"]
 
 quality = {"type": "string", "enum": ["major", "minor", "diminished", "augmented", "power", "sus2", "sus4",
-           "major7", "minor7", "dominant7", "halfDiminished7", "diminished7", "minorMajor7"]}
-chord = obj({"degree": integer(1, 7), "alteration": integer(-1, 1), "quality": quality, "inversion": integer(0, 3)})
+           "major7", "minor7", "dominant7", "halfDiminished7", "diminished7", "minorMajor7",
+           "major6", "minor6", "add9", "minorAdd9", "major6Add9", "minor6Add9", "dominant9", "major9",
+           "minor9", "minorMajor9", "dominant11", "minor11", "dominant13", "major13", "minor13",
+           "dominant7sus4", "dominant9sus4", "dominant7b5", "dominant7Sharp5", "dominant7b9", "dominant7Sharp9",
+           "major7Sharp11"]}
+chord = obj({"degree": integer(1, 7), "alteration": integer(-1, 1), "quality": quality, "inversion": integer(0, 6)})
 
 status = obj({"status": {"type": "string", "enum": ["available", "unavailable", "empty"]},
               "reason": TEXT, "sampleId": {"type": ["string", "null"], "maxLength": 100},
@@ -63,7 +67,7 @@ sample = obj({"id": ID, "role": {"type": "string", "enum": ROLES}, "articulation
 mapping = obj({"role": {"type": "string", "enum": ["lead", "rhythm", "bass"]},
                "note": {"type": ["integer", "null"], "minimum": 0, "maximum": 127},
                "root": {"type": ["integer", "null"], "minimum": 0, "maximum": 11},
-               "quality": {"type": ["string", "null"]}, "inversion": integer(0,3), "sampleId": ID})
+               "quality": {"type": ["string", "null"]}, "inversion": integer(0,6), "sampleId": ID})
 
 pack = obj({"schemaVersion": {"const": VERSION}, "packId": ID,
             "builder": obj({"version": TEXT, "profileVersion": TEXT, "modelVersion": TEXT}),
@@ -96,6 +100,7 @@ step_row=obj({'id':ID,'note':{'type':['integer','null'],'minimum':0,'maximum':12
 pattern['properties']['sequencer']=obj({'version':{'const':'step-v1'},'stepBeat':BEAT,'defaultVelocity':number(0,1),
     'pitchMode':{'type':'string','enum':['follow','exact']},
     'entryMode':{'type':'string','enum':['mono','poly']},'rows':array(step_row,128,1)})
+pattern['properties']['sequencer']['properties']['bankProfile']={'const':'complete-v1'}
 
 insert = obj({"pluginId": TEXT, "version":TEXT, "statePath":{ "type":["string","null"]},
               "bypassed":BOOLEAN, "missing":BOOLEAN})
@@ -138,6 +143,9 @@ project['properties']['mix']['properties'].update(drumBusCompressor=drum_compres
 project['properties']['rhythmicPulse']=obj({'version':{'const':'pulse-v1'},
     'mode':{'type':'string','enum':['off','guide','on']},'preset':TEXT,
     'levels':array(number(0,1),64,2),'phaseBeat':BEAT})
+project['properties']['instances']['items']['properties']['playbackLength']=BEAT
+project['properties']['trackLoops']=obj({role:obj({'startBeat':BEAT,'endBeat':BEAT}) for role in ROLES},required=[])
+project['properties']['loopPlayback']=BOOLEAN
 
 resolved = obj({"formatVersion":{"const":VERSION},"sampleRate":{"const":48000},"endFrame":integer(1,86400000),
                 "assets":array(obj({"id":ID,"path":PATH,"channels":integer(1,2),"frames":integer(1,1440000),
@@ -153,6 +161,7 @@ resolved['properties']['processing']=obj({"version":{"const":"drum-mix-v1"},
     "drumEq":obj({slot:eq for slot in SLOTS}),"drumBusCompressor":drum_compressor,"bassSidechain":sidechain,
     "drumBusGain":number(0,4),"drumBusPan":number(-1,1)})
 resolved['properties']['events']['items']['properties']['noteVelocity']=number(0,1)
+resolved['properties']['events']['items']['properties']['drumMidiAddress']=MIDI
 
 if __name__ == "__main__":
     (ROOT / "schemas").mkdir(exist_ok=True)

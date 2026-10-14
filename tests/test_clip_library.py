@@ -68,14 +68,16 @@ class ClipComposition(unittest.TestCase):
         self.editor.project['meterMap'][0].update(numerator=6,denominator=8)
         iid,_=lib.place(self.editor,self.clip('bass',(6,8)),F(0));self.assertEqual(self.editor.pattern(iid)['length'],'3')
 
-    def test_kit_extra_omissions_are_explicit_not_silent_extra_reassignment(self):
+    def test_missing_crash_and_ride_are_explicit_source_derived_articulations(self):
         clip=next(c for c in lib.catalog()['clips'] if c['role']=='drums' and any(e['choice']['soundIdentity'] in ('crash','ride') for e in c['pattern']['events']))
         pattern,report=lib.native_pattern(self.editor,clip,F(0))
         self.assertTrue(report)
-        known={r['soundIdentity'] for r in self.pack.instruments['drums'].values() if r['status']=='available'}
+        from prde1.percussion import records
+        known={r['soundIdentity'] for r in records(self.pack).values() if r['status']=='available'}
         self.assertTrue(all(e['choice']['soundIdentity'] in known for e in pattern['events']))
         self.assertTrue(all(e['choice']['soundIdentity'] not in ('fixture_extra1','fixture_extra2') for e in pattern['events']))
-        self.assertIn('omitted',pattern['provenance']['changes'])
+        self.assertIn('source-derived approximate articulation',pattern['provenance']['changes'])
+        self.assertNotIn('omitted',pattern['provenance']['changes'])
 
     def test_guide_only_seeds_new_entries_and_leaves_existing_edits_free(self):
         iid=self.editor.add_pattern('bass',F(0),F(4));self.editor.paint_steps(iid,[('n_48',F(0))])

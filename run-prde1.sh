@@ -9,9 +9,9 @@ fi
 python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else "Raw Daw needs Python 3.11 or newer")'
 
 PRDE_PYTHON=python3
-if [ -x .venv/bin/python ] && .venv/bin/python -c 'from PySide6.QtWidgets import QApplication; from PySide6.QtMultimedia import QMediaPlayer' >/dev/null 2>&1; then
+if [ -x .venv/bin/python ] && .venv/bin/python -c 'import numpy; from PySide6.QtWidgets import QApplication; from PySide6.QtMultimedia import QMediaPlayer' >/dev/null 2>&1; then
     PRDE_PYTHON=.venv/bin/python
-elif ! python3 -c 'from PySide6.QtWidgets import QApplication; from PySide6.QtMultimedia import QMediaPlayer' >/dev/null 2>&1; then
+elif ! python3 -c 'import numpy; from PySide6.QtWidgets import QApplication; from PySide6.QtMultimedia import QMediaPlayer' >/dev/null 2>&1; then
     printf '%s\n' 'First launch: installing the native desktop libraries in a local virtual environment.'
     python3 -m venv .venv || {
         printf '%s\n' 'Could not create a virtual environment. On Ubuntu/Linux Lite install python3-venv, then retry.' >&2

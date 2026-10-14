@@ -22,9 +22,46 @@ QUALITIES = {
     "power": (0, 7), "sus2": (0, 2, 7), "sus4": (0, 5, 7),
     "major7": (0, 4, 7, 11), "minor7": (0, 3, 7, 10), "dominant7": (0, 4, 7, 10),
     "halfDiminished7": (0, 3, 6, 10), "diminished7": (0, 3, 6, 9), "minorMajor7": (0, 3, 7, 11),
+    "major6": (0, 4, 7, 9), "minor6": (0, 3, 7, 9),
+    "add9": (0, 4, 7, 14), "minorAdd9": (0, 3, 7, 14),
+    "major6Add9": (0, 4, 7, 9, 14), "minor6Add9": (0, 3, 7, 9, 14),
+    "dominant9": (0, 4, 7, 10, 14), "major9": (0, 4, 7, 11, 14),
+    "minor9": (0, 3, 7, 10, 14), "minorMajor9": (0, 3, 7, 11, 14),
+    "dominant11": (0, 4, 7, 10, 14, 17), "minor11": (0, 3, 7, 10, 14, 17),
+    "dominant13": (0, 4, 7, 10, 14, 17, 21), "major13": (0, 4, 7, 11, 14, 17, 21),
+    "minor13": (0, 3, 7, 10, 14, 17, 21),
+    "dominant7sus4": (0, 5, 7, 10), "dominant9sus4": (0, 5, 7, 10, 14),
+    "dominant7b5": (0, 4, 6, 10), "dominant7Sharp5": (0, 4, 8, 10),
+    "dominant7b9": (0, 4, 7, 10, 13), "dominant7Sharp9": (0, 4, 7, 10, 15),
+    "major7Sharp11": (0, 4, 7, 11, 18),
 }
-REGISTERS = {"bass": (28, 60), "lead": (48, 84)}
+# Source-derived banks cover the entire standard MIDI address space. A bass or
+# lead role influences voicing and suggestions, never restricts composition.
+REGISTERS = {"bass": (0, 127), "lead": (0, 127)}
 NAMES = ("C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B")
+CHORD_SUFFIXES = {
+    "major": "", "minor": "m", "diminished": "dim", "augmented": "+",
+    "power": "5", "sus2": "sus2", "sus4": "sus4", "major7": "maj7", "minor7": "m7",
+    "dominant7": "7", "halfDiminished7": "ø7", "diminished7": "dim7", "minorMajor7": "m(maj7)",
+    "major6": "6", "minor6": "m6", "add9": "add9", "minorAdd9": "madd9",
+    "major6Add9": "6/9", "minor6Add9": "m6/9", "dominant9": "9", "major9": "maj9",
+    "minor9": "m9", "minorMajor9": "m(maj9)", "dominant11": "11", "minor11": "m11",
+    "dominant13": "13", "major13": "maj13", "minor13": "m13", "dominant7sus4": "7sus4",
+    "dominant9sus4": "9sus4", "dominant7b5": "7b5", "dominant7Sharp5": "7#5",
+    "dominant7b9": "7b9", "dominant7Sharp9": "7#9", "major7Sharp11": "maj7#11",
+}
+MINOR_QUALITIES = frozenset(name for name in QUALITIES if name.startswith("minor")) | {
+    "diminished", "diminished7", "halfDiminished7"
+}
+ROMAN_SUFFIXES = dict(CHORD_SUFFIXES, minor="", diminished="°", diminished7="°7", minorMajor7="(maj7)",
+                     minorMajor9="(maj9)")
+for _quality in MINOR_QUALITIES:
+    if ROMAN_SUFFIXES[_quality].startswith("m"):
+        ROMAN_SUFFIXES[_quality] = ROMAN_SUFFIXES[_quality][1:]
+
+
+def chord_suffix(quality: str) -> str:
+    return CHORD_SUFFIXES[quality]
 
 
 def beat(value: str) -> Fraction:
@@ -72,13 +109,11 @@ def diatonic(tonic: int, mode: str, degree: int) -> dict:
 def roman(chord: dict) -> str:
     base = ("I", "II", "III", "IV", "V", "VI", "VII")[chord["degree"] - 1]
     quality = chord["quality"]
-    if quality in ("minor", "diminished", "minor7", "halfDiminished7", "diminished7", "minorMajor7"):
+    if quality in MINOR_QUALITIES:
         base = base.lower()
-    suffix = {"diminished": "°", "augmented": "+", "power": "5", "sus2": "sus2", "sus4": "sus4",
-              "major7": "maj7", "minor7": "7", "dominant7": "7", "halfDiminished7": "ø7",
-              "diminished7": "°7", "minorMajor7": "(maj7)"}.get(quality, "")
+    suffix = ROMAN_SUFFIXES[quality]
     prefix = {0: "", -1: "♭", 1: "♯"}[chord["alteration"]]
-    inversion = ("", "/1st", "/2nd", "/3rd")[chord["inversion"]]
+    inversion = ("", "/1st", "/2nd", "/3rd", "/4th", "/5th", "/6th")[chord["inversion"]]
     return prefix + base + suffix + inversion
 
 

@@ -11,6 +11,7 @@ from pathlib import Path
 
 from .contracts import ROOT, ContractError, read_json
 from .music import beat
+from .percussion import records as drum_records, semantic_slot
 
 DATA = ROOT / 'prde1/data/clips'
 
@@ -59,18 +60,15 @@ def native_pattern(editor,clip,position):
     from .sequencer import settings
     from .pulse import entry_velocity
     pattern=copy.deepcopy(clip['pattern']);report=[];events=[];seen={}
-    instruments=editor.pack.instruments['drums']
+    instruments=drum_records(editor.pack)
     for event in pattern['events']:
         if pattern['role']=='drums':
-            sound=event['choice']['soundIdentity'];slot=sound if sound in instruments else None
-            if slot is None:
-                # Only declared MIDI addresses or literal semantic identities qualify.
-                addresses={'crash':{49,52,55,57},'ride':{51,53,59}}
-                slot=next((s for s,r in instruments.items() if r['status']=='available' and
-                    (r['soundIdentity'].casefold()==sound.casefold() or r['midiAddress'] in addresses.get(sound,set()))),None)
+            sound=event['choice']['soundIdentity'];slot=semantic_slot(editor.pack,sound)
             if slot is None or instruments[slot]['status']!='available':
                 report.append(sound+' omitted: this bank has no matching sound');continue
             event['choice']['soundIdentity']=instruments[slot]['soundIdentity']
+            if instruments[slot].get('derived'):
+                report.append(instruments[slot]['displayName']+' uses a source-derived approximate articulation')
             key=(event['beat'],event['choice']['soundIdentity'])
             if key in seen:
                 old=seen[key];old['expression']['velocity']=max(old['expression']['velocity'],event['expression']['velocity'])
@@ -90,11 +88,11 @@ def place(editor,clip,position):
     """One undoable insertion, including the source credit and conversion report."""
     from .editor import identity
     compatible(editor.project,clip,position)
-    pattern,report=native_pattern(editor,clip,position);stop=position+beat(pattern['length'])
-    for occurrence in editor.project['instances']:
-        other=editor.pattern(occurrence['id']);start=beat(occurrence['beat'])
-        if other['role']==pattern['role'] and max(position,start)<min(stop,start+beat(other['length'])):
-            raise ContractError('This track already has a pattern here. Choose an empty measure.')
+    pattern,report=native_pattern(editor,clip,position)
+    try:editor.check_instance_space(pattern['role'],position,beat(pattern['length']))
+    except ContractError as error:
+        if 'overlap' in str(error):raise ContractError('This track already has a pattern here. Choose an empty measure.') from error
+        raise
     pattern['id']=identity('pattern');instance=dict(id=identity('instance'),patternId=pattern['id'],beat=str(position),linked=False)
     credit=dict(source=clip['origin']+' / '+clip['id'],license=clip['license']+' — '+(
         'https://creativecommons.org/licenses/by/4.0/' if clip['license']=='CC-BY-4.0' else 'https://creativecommons.org/publicdomain/zero/1.0/'),
@@ -111,6 +109,6 @@ def audition(editor,clip,position):
     from .editor import Editor
     from .sequencer import audition_project
     compatible(editor.project,clip,position)
-    project=copy.deepcopy(editor.project);project['patterns']=[];project['instances']=[]
+    project=copy.deepcopy(editor.project);project['patterns']=[];project['instances']=[];project.pop('trackLoops',None)
     candidate=Editor(project,editor.pack);instance,_=place(candidate,clip,position)
     return audition_project(candidate,instance)[0]

@@ -7,9 +7,8 @@ from fractions import Fraction
 from PySide6.QtCore import Qt, Signal, QRectF, QRect, QSize
 from PySide6.QtGui import QColor, QPainter, QPen
 from PySide6.QtWidgets import (QWidget, QTableWidget, QDialog, QVBoxLayout, QFormLayout,
-    QLabel, QComboBox, QLineEdit, QDoubleSpinBox, QCheckBox, QDialogButtonBox, QSpinBox, QLayout)
+    QLabel, QComboBox, QLineEdit, QDoubleSpinBox, QCheckBox, QDialogButtonBox, QSpinBox, QLayout, QMenu)
 
-from .contracts import SLOTS
 from .editor import chord_label, measures
 from .governor import context
 from .music import at, beat, chord_identity, NAMES, QUALITIES, roman
@@ -69,33 +68,53 @@ class Timeline(QWidget):
     selected=Signal(str,object,str)  # role, exact edit position, occurrence ID
     chord_requested=Signal(object)
     clip_dropped=Signal(str,str,object)
+    instance_moved=Signal(str,object)
+    instance_resized=Signal(str,object)
+    move_requested=Signal(str)
+    length_requested=Signal(str)
+    track_loop_requested=Signal(str)
     def __init__(self,parent=None):
         super().__init__(parent);self.editor=None;self.cursor=Fraction(0);self.play_beat=None;self.selected_id=''
         self.pixels_per_beat=44;self.header=108;self.row_height=50;self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-        self.setAccessibleName('Song timeline. Arrow keys move the edit cursor; Enter edits a chord. Use the event list to edit steps.')
+        self.setAccessibleName('Song timeline. Drag a clip to move it; drag its right edge to repeat it. Shift and arrow keys move a selected clip; Control and arrow keys change its loop length. Control L toggles track looping. Enter edits a chord. The context menu offers Move and Loop length.')
         self.setMinimumHeight(334);self.setObjectName('songTimeline')
-        self.setAcceptDrops(True)
+        self.setAcceptDrops(True);self.setMouseTracking(True);self._drag=None;self._drop_preview=None
+        self.setToolTip('Drag MIDI clips from the Browser. Drag a block to move it; drag its right edge to loop it. Right-click for exact Move / Loop length. Click ↻ beside a track name to loop that track to the song ending.')
+
+    def _clip_drop(self,event):
+        from .library_widgets import MIME
+        from . import clip_library
+        if not self.editor or not event.mimeData().hasFormat(MIME):return None
+        raw=bytes(event.mimeData().data(MIME))
+        if len(raw)>100:return None
+        try:clip=clip_library.find(raw.decode('ascii'))
+        except (ValueError,KeyError,UnicodeError,StopIteration):return None
+        row=int((event.position().y()-30)//self.row_height)
+        if not 1<=row<=4 or event.position().x()<self.header:return None
+        role=ROLES[row-1]
+        if clip['role']!=role:return None
+        bar=clip_library.bar_at(self.editor.project,self.position(event.position().x()))
+        if bar is None:return None
+        return clip['id'],role,bar[0],bar[1]
 
     def dragEnterEvent(self,event):
         from .library_widgets import MIME
         if event.mimeData().hasFormat(MIME):event.acceptProposedAction()
 
     def dragMoveEvent(self,event):
-        from .library_widgets import MIME
-        if event.mimeData().hasFormat(MIME):event.acceptProposedAction()
+        self._drop_preview=self._clip_drop(event);self.update()
+        if self._drop_preview:
+            event.acceptProposedAction();self._scroll_drag(event.position())
+        else:event.ignore()
+
+    def dragLeaveEvent(self,event):
+        self._drop_preview=None;self.update();event.accept()
 
     def dropEvent(self,event):
-        from .library_widgets import MIME
-        if not self.editor or not event.mimeData().hasFormat(MIME):return
-        raw=bytes(event.mimeData().data(MIME))
-        if len(raw)>100:return
-        try:clip_id=raw.decode('ascii')
-        except UnicodeError:return
-        row=int((event.position().y()-30)//self.row_height)
-        if 1<=row<=4 and event.position().x()>=self.header:
-            position=self.position(event.position().x())
-            start=next(start for start,length,_ in measures(self.editor.project) if start<=position<start+length)
-            self.clip_dropped.emit(clip_id,ROLES[row-1],start);event.acceptProposedAction()
+        target=self._clip_drop(event);self._drop_preview=None;self.update()
+        if target:
+            clip_id,role,start,_=target
+            self.clip_dropped.emit(clip_id,role,start);event.acceptProposedAction()
 
     def refresh(self,editor,selection,cursor):
         self.editor=editor;self.selected_id=selection;self.cursor=cursor
@@ -114,6 +133,38 @@ class Timeline(QWidget):
                 return start+int((raw-start)/step)*step
         return bars[-1][0]
 
+    def snap(self,x):
+        """Nearest governing grid boundary, including the exact song ending."""
+        end=beat(self.editor.project['length'])
+        raw=Fraction(max(0,(x-self.header)/self.pixels_per_beat)).limit_denominator(1000000)
+        if raw>=end:return end
+        for start,length,meter in measures(self.editor.project):
+            if start<=raw<start+length:
+                step=Fraction(4*meter['numerator'],meter['denominator'])/meter['governorSegments']
+                return min(start+length,start+int((raw-start)/step+Fraction(1,2))*step)
+        return end
+
+    def _occurrences(self):
+        from .project import arrangement_spans
+        return arrangement_spans(self.editor.project)
+
+    def _hit(self,x,y):
+        row=int((y-30)//self.row_height)
+        if not 1<=row<=4:return None
+        role=ROLES[row-1]
+        for occurrence in reversed(list(self._occurrences())):
+            instance,pattern,start,length,*_=occurrence
+            if pattern['role']==role and self.x(start)+2<=x<=self.x(start+length)-2:
+                return instance,pattern,start,length
+        return None
+
+    def _scroll_drag(self,position):
+        parent=self.parentWidget()
+        while parent is not None:
+            if hasattr(parent,'ensureVisible'):
+                parent.ensureVisible(round(position.x()),round(position.y()),35,0);break
+            parent=parent.parentWidget()
+
     def paintEvent(self,event):
         p=QPainter(self);p.setRenderHint(QPainter.RenderHint.Antialiasing)
         p.fillRect(self.rect(),QColor('#151b23'))
@@ -122,7 +173,11 @@ class Timeline(QWidget):
         for row,name in enumerate(('GOVERNOR','LEAD','RHYTHM','BASS','DRUM KIT','VOCAL 1')):
             top=30+row*self.row_height
             p.fillRect(QRectF(0,top,self.width(),self.row_height),QColor('#1d2631' if row%2==0 else '#18212b'))
-            p.setPen(QColor('#c5d2df'));p.drawText(QRectF(8,top,self.header-12,self.row_height),Qt.AlignmentFlag.AlignVCenter,name)
+            p.setPen(QColor('#c5d2df'));p.drawText(QRectF(8,top,self.header-(32 if 1<=row<=4 else 12),self.row_height),Qt.AlignmentFlag.AlignVCenter,name)
+            if 1<=row<=4:
+                enabled=ROLES[row-1] in project.get('trackLoops',{})
+                p.setPen(QColor('#81e6b7' if enabled else '#8395aa'))
+                p.drawText(QRectF(self.header-26,top,24,self.row_height),Qt.AlignmentFlag.AlignCenter,'↻')
         for index,(start,length,meter) in enumerate(measures(project)):
             x=self.x(start);p.setPen(QPen(QColor('#3c4a5a'),1));p.drawLine(round(x),26,round(x),330)
             p.setPen(QColor('#c9d5e2'));p.drawText(QRectF(x+7,0,140,26),Qt.AlignmentFlag.AlignVCenter,f'{index+1}   {meter["numerator"]}/{meter["denominator"]}')
@@ -137,37 +192,105 @@ class Timeline(QWidget):
             p.setPen(QColor('#73d4b1' if legal else '#f3ab76'));p.setBrush(QColor('#24473f' if legal else '#533d2e'))
             p.drawRoundedRect(QRectF(x+2,34,max(2,width-4),41),5,5)
             p.setPen(QColor('#edf7f3'));p.drawText(QRectF(x+10,35,max(0,width-15),38),Qt.AlignmentFlag.AlignVCenter,chord_label(project,start))
-        patterns={v['id']:v for v in project['patterns']}
-        for instance in project['instances']:
-            pattern=patterns[instance['patternId']];row=ROLES.index(pattern['role'])+1
-            start=beat(instance['beat']);x=self.x(start);width=float(beat(pattern['length']))*self.pixels_per_beat
-            top=30+row*self.row_height;selected=instance['id']==self.selected_id
+        for instance,pattern,start,length,ghost in self._occurrences():
+            row=ROLES.index(pattern['role'])+1
+            x=self.x(start);width=float(length)*self.pixels_per_beat;source_length=beat(pattern['length'])
+            if x>event.rect().right() or x+width<event.rect().left():continue
+            top=30+row*self.row_height;selected=instance['id']==self.selected_id and not ghost
             color=COLORS[pattern['role']]
+            p.setOpacity(.38 if ghost else 1)
             p.setBrush(QColor(color).darker(290));p.setPen(QPen(QColor('#f4f8ff' if selected else color),2 if selected else 1))
             p.drawRoundedRect(QRectF(x+3,top+5,max(3,width-6),40),5,5)
             p.setPen(QColor('#e4edf6'))
-            tag='Linked' if instance['linked'] else 'Independent'
+            tag='Track loop' if ghost else '↻ '+str(length/source_length)+' cycles' if length>source_length else 'Linked' if instance['linked'] else 'Independent'
             p.drawText(QRectF(x+10,top+7,max(0,width-18),19),Qt.AlignmentFlag.AlignVCenter,f'{pattern["role"].title()} · {tag}')
-            for e in pattern['events']:
-                if not e['enabled']:continue
-                ex=self.x(start+beat(e['beat']));ew=max(2,min(18,float(beat(e['duration']))*self.pixels_per_beat))
-                p.fillRect(QRectF(ex+4,top+31,ew,6),QColor(color))
+            left=max(Fraction(0),Fraction(max(0,event.rect().left()-self.header)/self.pixels_per_beat).limit_denominator(1000000)-start)
+            right=min(length,Fraction(max(0,event.rect().right()-self.header)/self.pixels_per_beat).limit_denominator(1000000)-start)
+            cycle=max(Fraction(0),int(left/source_length)*source_length)
+            while cycle<right:
+                if cycle:
+                    edge=self.x(start+cycle);p.setPen(QPen(QColor(color),1,Qt.PenStyle.DashLine));p.drawLine(round(edge),top+8,round(edge),top+42)
+                for e in pattern['events']:
+                    position=cycle+beat(e['beat'])
+                    if not e['enabled'] or position>=length:continue
+                    ex=self.x(start+position);ew=max(2,min(18,float(min(beat(e['duration']),length-position))*self.pixels_per_beat))
+                    p.fillRect(QRectF(ex+4,top+31,ew,6),QColor(color))
+                cycle+=source_length
+            if not ghost:
+                p.setPen(QPen(QColor('#f4f8ff' if selected else color),2))
+                p.drawLine(round(x+width-7),top+14,round(x+width-7),top+37)
+            p.setOpacity(1)
+        if self._drag and self._drag.get('changed'):
+            drag=self._drag;row=ROLES.index(drag['role'])+1;start=drag['target'] if drag['mode']=='move' else drag['start'];length=drag['length'] if drag['mode']=='move' else drag['target']
+            p.setBrush(QColor('#6fb6ec44'));p.setPen(QPen(QColor('#e7f5ff'),2,Qt.PenStyle.DashLine))
+            p.drawRoundedRect(QRectF(self.x(start)+3,35+row*self.row_height,max(3,float(length)*self.pixels_per_beat-6),40),5,5)
+        if self._drop_preview:
+            _,role,start,length=self._drop_preview;row=ROLES.index(role)+1
+            p.setBrush(QColor('#71b9ff33'));p.setPen(QPen(QColor('#9bcaff'),2,Qt.PenStyle.DashLine))
+            p.drawRoundedRect(QRectF(self.x(start)+3,35+row*self.row_height,float(length)*self.pixels_per_beat-6,40),5,5)
         p.setPen(QColor('#97a7b9'));p.drawText(QRectF(self.header+10,286,self.width()-self.header-20,38),Qt.AlignmentFlag.AlignVCenter,'Recording and vocal comping are in the next development stage.')
         p.setPen(QPen(QColor('#71b9ff'),2));p.drawLine(round(self.x(self.cursor)),26,round(self.x(self.cursor)),332)
         if self.play_beat is not None:
             p.setPen(QPen(QColor('#81e6b7'),2));p.drawLine(round(self.x(self.play_beat)),26,round(self.x(self.play_beat)),332)
 
     def mousePressEvent(self,event):
-        if not self.editor or event.position().x()<self.header:return
+        if not self.editor:return
+        row=int((event.position().y()-30)//self.row_height)
+        if event.position().x()<self.header:
+            if 1<=row<=4 and event.position().x()>=self.header-30 and event.button()==Qt.MouseButton.LeftButton:self.track_loop_requested.emit(ROLES[row-1])
+            return
         self.setFocus();position=self.position(event.position().x());row=int((event.position().y()-30)//self.row_height)
         role=ROLES[row-1] if 1<=row<=4 else ''
-        found=''
-        if role:
-            patterns={p['id']:p for p in self.editor.project['patterns']}
-            for instance in self.editor.project['instances']:
-                pattern=patterns[instance['patternId']];start=beat(instance['beat'])
-                if pattern['role']==role and start<=position<start+beat(pattern['length']):found=instance['id']
+        hit=self._hit(event.position().x(),event.position().y());found=hit[0]['id'] if hit else ''
         self.selected.emit(role,position,found)
+        if hit and event.button()==Qt.MouseButton.LeftButton:
+            instance,pattern,start,length=hit
+            # Repeated track blocks select their source; move/resize the solid block.
+            if start!=beat(instance['beat']):return
+            mode='resize' if self.x(start+length)-event.position().x()<=11 else 'move'
+            self._drag=dict(id=found,role=role,mode=mode,start=start,length=length,pressX=event.position().x(),target=length if mode=='resize' else start,changed=False)
+            self.setCursor(Qt.CursorShape.SizeHorCursor if mode=='resize' else Qt.CursorShape.ClosedHandCursor)
+
+    def mouseMoveEvent(self,event):
+        if not self.editor:return
+        if self._drag:
+            drag=self._drag
+            if abs(event.position().x()-drag['pressX'])<4 and not drag['changed']:return
+            end=beat(self.editor.project['length'])
+            if drag['mode']=='move':
+                target=self.snap(self.x(drag['start'])+event.position().x()-drag['pressX'])
+                drag['target']=max(Fraction(0),min(end-drag['length'],target));drag['changed']=drag['target']!=drag['start']
+            else:
+                meter=at(self.editor.project['meterMap'],drag['start'])
+                step=Fraction(4*meter['numerator'],meter['denominator'])/meter['governorSegments']
+                drag['target']=max(step,self.snap(event.position().x())-drag['start']);drag['changed']=drag['target']!=drag['length']
+            self._scroll_drag(event.position());self.update();event.accept();return
+        hit=self._hit(event.position().x(),event.position().y())
+        if hit and hit[2]==beat(hit[0]['beat']):
+            self.setCursor(Qt.CursorShape.SizeHorCursor if self.x(hit[2]+hit[3])-event.position().x()<=11 else Qt.CursorShape.OpenHandCursor)
+        else:self.unsetCursor()
+
+    def mouseReleaseEvent(self,event):
+        drag=self._drag;self._drag=None;self.unsetCursor();self.update()
+        if drag and drag['changed']:
+            signal=self.instance_moved if drag['mode']=='move' else self.instance_resized
+            signal.emit(drag['id'],drag['target']);event.accept()
+
+    def contextMenuEvent(self,event):
+        if not self.editor:return
+        hit=self._hit(event.pos().x(),event.pos().y()) if event.reason()!=event.Reason.Keyboard else None
+        selected=hit[0]['id'] if hit else self.selected_id
+        role=hit[1]['role'] if hit else self.editor.pattern(selected)['role'] if selected else ''
+        if hit:self.selected.emit(role,self.position(event.pos().x()),selected)
+        menu=QMenu(self)
+        if selected:
+            menu.addAction('Move clip…',lambda:self.move_requested.emit(selected))
+            menu.addAction('Loop length…',lambda:self.length_requested.emit(selected))
+            menu.addAction('Restore one source cycle',lambda:self.instance_resized.emit(selected,beat(self.editor.pattern(selected)['length'])))
+        if role:
+            enabled=role in self.editor.project.get('trackLoops',{})
+            action=menu.addAction('Loop '+role.title()+' track to song end',lambda:self.track_loop_requested.emit(role));action.setCheckable(True);action.setChecked(enabled)
+        if menu.actions():menu.exec(event.globalPos())
 
     def mouseDoubleClickEvent(self,event):
         if self.editor and 30<=event.position().y()<80:self.chord_requested.emit(self.position(event.position().x()))
@@ -176,7 +299,18 @@ class Timeline(QWidget):
         if not self.editor:return
         meter=at(self.editor.project['meterMap'],self.cursor)
         step=Fraction(4*meter['numerator'],meter['denominator'])/meter['governorSegments']
-        if event.key() in (Qt.Key.Key_Left,Qt.Key.Key_Right):
+        if event.key()==Qt.Key.Key_Escape and self._drag:
+            self._drag=None;self.unsetCursor();self.update();event.accept()
+        elif event.key()==Qt.Key.Key_L and event.modifiers()&Qt.KeyboardModifier.ControlModifier and self.selected_id:
+            self.track_loop_requested.emit(self.editor.pattern(self.selected_id)['role']);event.accept()
+        elif event.key() in (Qt.Key.Key_Left,Qt.Key.Key_Right) and self.selected_id and event.modifiers()&(Qt.KeyboardModifier.ShiftModifier|Qt.KeyboardModifier.ControlModifier):
+            direction=-1 if event.key()==Qt.Key.Key_Left else 1
+            if event.modifiers()&Qt.KeyboardModifier.ControlModifier:
+                length=self.editor.instance_length(self.selected_id);source=beat(self.editor.pattern(self.selected_id)['length'])
+                self.instance_resized.emit(self.selected_id,max(step,length+direction*source))
+            else:self.instance_moved.emit(self.selected_id,max(Fraction(0),beat(self.editor.instance(self.selected_id)['beat'])+direction*step))
+            event.accept()
+        elif event.key() in (Qt.Key.Key_Left,Qt.Key.Key_Right):
             delta=-step if event.key()==Qt.Key.Key_Left else step
             self.selected.emit('',max(Fraction(0),min(beat(self.editor.project['length'])-step,self.cursor+delta)),self.selected_id)
         elif event.key() in (Qt.Key.Key_Return,Qt.Key.Key_Enter):self.chord_requested.emit(self.cursor)
@@ -195,14 +329,20 @@ class ChordDialog(QDialog):
         self.alteration=QComboBox()
         for name,n in [('Unaltered',0),('Flatten root',-1),('Sharpen root',1)]:self.alteration.addItem(name,n)
         self.alteration.setCurrentIndex(self.alteration.findData(current['alteration']))
-        self.inversion=QComboBox();self.inversion.addItems(['Root position','1st inversion','2nd inversion','3rd inversion']);self.inversion.setCurrentIndex(current['inversion'])
+        self.inversion=QComboBox();self.update_inversions();self.inversion.setCurrentIndex(current['inversion'])
         form.addRow('Degree',self.degree);form.addRow('Quality',self.quality);form.addRow('Root alteration',self.alteration);form.addRow('Inversion',self.inversion)
         self.explanation=QLabel();self.explanation.setWordWrap(True);layout.addWidget(self.explanation)
-        layout.addWidget(QLabel('Every chord is playable. Native sounds are preferred; unrecorded chords are reconstructed.'))
+        note=QLabel('Every chord is playable. Native sounds are preferred; missing voicings are prepared from this pack’s source waveforms.');note.setWordWrap(True);layout.addWidget(note)
         buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Ok|QDialogButtonBox.StandardButton.Cancel);buttons.accepted.connect(self.accept);buttons.rejected.connect(self.reject);layout.addWidget(buttons)
         self.buttons=buttons
+        self.quality.currentIndexChanged.connect(self.update_inversions)
         for box in (self.degree,self.quality,self.alteration,self.inversion):box.currentIndexChanged.connect(self.explain)
         self.explain()
+
+    def update_inversions(self):
+        previous=self.inversion.currentIndex();self.inversion.blockSignals(True);self.inversion.clear()
+        labels=['Root position','1st inversion','2nd inversion','3rd inversion','4th inversion','5th inversion','6th inversion']
+        self.inversion.addItems(labels[:len(QUALITIES[self.quality.currentData()])]);self.inversion.setCurrentIndex(max(0,min(previous,self.inversion.count()-1)));self.inversion.blockSignals(False)
 
     def value(self):return dict(degree=self.degree.currentIndex()+1,quality=self.quality.currentData(),alteration=self.alteration.currentData(),inversion=self.inversion.currentIndex())
 
@@ -212,7 +352,7 @@ class ChordDialog(QDialog):
         sample=self.editor.pack.mappings.get(('rhythm',root,chord['quality'],chord['inversion']))
         valid_inversion=chord['inversion']<len(QUALITIES[chord['quality']])
         self.buttons.button(QDialogButtonBox.StandardButton.Ok).setEnabled(valid_inversion)
-        status='Native whole chord' if sample else 'Playable · reconstructed whole chord'
+        status='Native whole chord' if sample else 'Playable · source-derived whole chord'
         if not legal:status+=' · borrowed chord outside the selected mode'
         if not valid_inversion:status='This chord has no such inversion'
         self.explanation.setText(chord_label(self.editor.project,self.position,chord)+'\n'+status)
@@ -238,9 +378,11 @@ class EventDialog(QDialog):
             form.addRow('Relative chord tone',self.tone);form.addRow('Preferred MIDI register',self.register);form.addRow('Exact prepared note',self.exact)
         self.sound=QComboBox()
         if self.role=='drums':
-            for slot in SLOTS:
-                value=editor.pack.instruments['drums'][slot]
-                self.sound.addItem(SLOT_NAMES[slot]+' · '+value['displayName']+(' · unavailable' if value['status']!='available' else ''),value['soundIdentity'])
+            from .percussion import records
+            for slot,value in records(editor.pack).items():
+                name=SLOT_NAMES.get(slot,value['displayName'])
+                label=name+(' · '+value['displayName'] if slot in SLOT_NAMES else ' · source-derived' if value.get('derived') else ' · recorded')
+                self.sound.addItem(label+(' · unavailable' if value['status']!='available' else ''),value['soundIdentity'])
                 if value['status']!='available':self.sound.model().item(self.sound.count()-1).setEnabled(False)
             index=self.sound.findData(choice['soundIdentity'])
             if index<0:self.sound.addItem('Unresolved: '+choice['soundIdentity'],choice['soundIdentity']);index=self.sound.count()-1

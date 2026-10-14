@@ -1,6 +1,7 @@
-"""Render every registered chord in all four shipped packs and inspect PCM."""
+"""Render every registered chord in the shipped packs and inspect PCM."""
 from __future__ import annotations
 import copy
+import argparse
 import hashlib
 import json
 import subprocess
@@ -19,9 +20,13 @@ from prde1.project import load_project
 from tools.build_fixture import event
 
 
-def main():
+def main(only=None):
     reports = []
-    for path in sorted((ROOT / 'packs').glob('*.prdepack')):
+    paths=sorted((ROOT / 'packs').glob('*.prdepack'))
+    if only:
+        paths=[path for path in paths if path.stem==only]
+        if not paths:raise ValueError('Unknown Song Pack')
+    for path in paths:
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         base = load_project(path.with_name(path.stem + '_a.prdeproj'))
         report = dict(pack=path.name, originalSha256=digest, chordsRendered=0, notesPrepared=0, silentEvents=0, conflicts=0)
@@ -68,11 +73,16 @@ def main():
         report.update(packUnchanged=True, humanListening='not_performed', pcmAudited=True)
         reports.append(report)
         print(path.name, report['chordsRendered'], 'chords rendered without gaps', flush=True)
-    assert len(reports) == 4
+    assert len(reports) == len(paths)
     target = ROOT / 'docs/validation/full-chord-coverage.json'
     target.parent.mkdir(exist_ok=True)
+    if only and target.exists():
+        previous=json.loads(target.read_text())
+        reports=sorted([r for r in previous if r['pack'] not in {x['pack'] for x in reports}]+reports,key=lambda r:r['pack'])
     target.write_text(json.dumps(reports, indent=2) + '\n')
 
 
 if __name__ == '__main__':
-    main()
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--only',help='Audit one additional pack and preserve existing evidence')
+    main(parser.parse_args().only)

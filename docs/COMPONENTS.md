@@ -2,15 +2,16 @@
 
 | Component | Version / distribution | License / state |
 | --- | --- | --- |
-| PRDE1 application code, authored demo scores and synthetic fixtures | 0.3.3 desktop/source / compiled Linux renderer | MIT, `LICENSE`; score licensing does not relicense the source audio |
+| Raw Daw application code, authored demo scores and synthetic fixtures | 0.4.0 desktop/source / compiled Linux renderer | MIT, `LICENSE`; score licensing does not relicense the source audio |
 | Three prepared CC Song Packs and source-derived estimated drum MIDI | Curated CC stem profile 0.2.0; 69 assets | CC BY 3.0; source credits/license/change notices embedded and listed in `SONG_PACKS.md` |
 | Parachute Song Pack and estimated source drum MIDI | Curated user-stem profile 0.2.1; 28 native assets | Shael Riley's authorization and Suno paid-account declaration; not independently verified or relicensed as CC/MIT; existing private development build |
+| Shop Vac Song Pack and estimated source drum MIDI | Artist-released JoCo Looks Back stems; 26 prepared source assets; two editable demos | Jonathan Coulton, CC BY-NC 3.0 with attribution and noncommercial restrictions; archive's BY-NC 4.0 metadata also retained; no commercial grant or endorsement |
 | nlohmann/json | 3.12.0 vendored single header | MIT; original license/embedded notices retained |
 | Python | System interpreter 3.11+; tested with 3.12.14 | PSF terms; not bundled |
 | GNU compiler / libstdc++ / libgcc / glibc | System g++ 13 / Ubuntu 24.04 libraries | Compiler and system runtime terms/exceptions apply; libraries not bundled |
 | FFmpeg and ffprobe with Rubber Band filter | System 6.1.1-3ubuntu5 | GPL-enabled system build; preparation-only, no binaries bundled |
 | Rubber Band | System FFmpeg filter dependency | GPL/commercial library; preparation-only, not bundled with PRDE1 |
-| NumPy | 2.3.5 | BSD; optional preparation dependency, not bundled/imported by runtime |
+| NumPy | 2.3.5 | BSD; separately installed core dependency for offline sample preparation; no processing in the native audio loop; not bundled |
 | SciPy | 1.17.0 | BSD; optional preparation dependency, not bundled/imported by runtime |
 | Qt6/PySide6, Essentials, Addons and shiboken6 | 6.8.3, separately installed/dynamically imported for Widgets and Multimedia | Community LGPLv3/GPLv3 choices and per-module terms; PRDE1 uses the LGPL-capable desktop modules. No Qt libraries are bundled/relicensed in this archive; installation retains its notices/licenses. A future bundled installer needs full source/replacement/notice compliance. |
 | PortAudio | Shortlisted for device I/O | MIT; not bundled/implemented |

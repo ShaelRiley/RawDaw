@@ -15,8 +15,8 @@ from pathlib import Path
 
 from .contracts import ContractError, SLOTS, VERSION, canonical_bytes, read_json
 from .governor import context, resolve
-from .music import MODES, NAMES, QUALITIES, REGISTERS, at, beat, chord_identity, diatonic, quarter_seconds, roman
-from .project import duplicate, load_project, make_independent, save_project, validate_project
+from .music import MODES, NAMES, QUALITIES, REGISTERS, at, beat, chord_identity, chord_suffix, diatonic, quarter_seconds, roman
+from .project import check_arrangement_space, duplicate, instance_length, load_project, make_independent, save_project, validate_project
 from .sequencer import SequencerEditing
 
 
@@ -76,10 +76,7 @@ def chord_label(project, position, chord=None):
     chord=chord or at(project['harmony'],position)['chord']
     root,_,_=chord_identity(tone['tonic'],tone['mode'],chord)
     names=('C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B') if tone['tonic'] in (1,3,5,6,8,10) else NAMES
-    suffix={'major':'','minor':'m','diminished':'dim','augmented':'+','power':'5',
-            'major7':'maj7','minor7':'m7','dominant7':'7','halfDiminished7':'ø7',
-            'diminished7':'dim7','minorMajor7':'m(maj7)'}.get(chord['quality'],chord['quality'])
-    return roman(chord)+' · '+names[root]+suffix
+    return roman(chord)+' · '+names[root]+chord_suffix(chord['quality'])
 
 
 def parse_progression(text, tonic, mode):
@@ -89,13 +86,25 @@ def parse_progression(text, tonic, mode):
         if not token:continue
         if token in tuple(str(n) for n in range(1,8)):
             result.append(diatonic(tonic,mode,int(token)));continue
-        match=re.fullmatch(r'([♭♯b#]?)([IViv]+)(maj7|m7|7|°7|ø7|°|dim|\+|sus2|sus4|5|\(maj7\))?(?:/([123])(?:st|nd|rd)?)?',token)
+        match=re.fullmatch(r'([♭♯b#]?)([IViv]+)(.*?)(?:/([1-6])(?:st|nd|rd|th)?)?',token)
         if not match or match[2].upper() not in numerals or not (match[2].islower() or match[2].isupper()):raise ContractError('Use degrees 1–7 or Roman chords, e.g. i IIImaj7 VI iv')
         prefix,base,suffix,inversion=match.groups()
-        quality={'maj7':'major7','m7':'minor7','°7':'diminished7','ø7':'halfDiminished7',
-                 '°':'diminished','dim':'diminished','+':'augmented','sus2':'sus2','sus4':'sus4','5':'power',
-                 '(maj7)':'minorMajor7'}.get(suffix)
-        if quality is None:quality=('minor7' if base.islower() else 'dominant7') if suffix=='7' else ('minor' if base.islower() else 'major')
+        suffix=suffix.replace('♭','b').replace('♯','#')
+        authored={'':('major','minor'),'6':('major6','minor6'),'7':('dominant7','minor7'),
+                  '9':('dominant9','minor9'),'11':('dominant11','minor11'),'13':('dominant13','minor13'),
+                  'add9':('add9','minorAdd9'),'6/9':('major6Add9','minor6Add9')}
+        aliases={'maj7':'major7','maj9':'major9','maj13':'major13','maj7#11':'major7Sharp11',
+                 'm':'minor','m6':'minor6','m7':'minor7','m9':'minor9','m11':'minor11','m13':'minor13',
+                 'madd9':'minorAdd9','m6/9':'minor6Add9','m(maj7)':'minorMajor7','m(maj9)':'minorMajor9',
+                 '(maj7)':'minorMajor7','(maj9)':'minorMajor9','°7':'diminished7','dim7':'diminished7',
+                 'ø7':'halfDiminished7','m7b5':'halfDiminished7','°':'diminished','dim':'diminished',
+                 '+':'augmented','aug':'augmented','+7':'dominant7Sharp5','7#5':'dominant7Sharp5',
+                 '7b5':'dominant7b5','7b9':'dominant7b9','7#9':'dominant7Sharp9',
+                 '7sus4':'dominant7sus4','9sus4':'dominant9sus4','sus2':'sus2','sus4':'sus4','5':'power'}
+        if suffix in authored:quality=authored[suffix][base.islower()]
+        else:quality=aliases.get(suffix)
+        if quality is None:raise ContractError('Unsupported chord quality; use a registered triad, sixth, seventh, ninth, eleventh or thirteenth')
+        if int(inversion or 0)>=len(QUALITIES[quality]):raise ContractError('Impossible inversion for this chord quality')
         result.append(dict(degree=numerals.index(base.upper())+1, alteration={'':0,'♭':-1,'b':-1,'♯':1,'#':1}[prefix],
                            quality=quality,inversion=int(inversion or 0)))
     if not result:raise ContractError('Enter at least one chord')
@@ -105,7 +114,7 @@ def parse_progression(text, tonic, mode):
 def new_event(role, position, duration, sound='', tone=0, register=None):
     return dict(id=identity('event'), beat=str(position), duration=str(duration), enabled=True,
         kind={'lead':'note','bass':'note','rhythm':'chord','drums':'drum'}[role],
-        choice=dict(tone=tone,registerMidi=register or (40 if role=='bass' else 64),exactMidi=None,soundIdentity=sound),
+        choice=dict(tone=tone,registerMidi=register if register is not None else (40 if role=='bass' else 64),exactMidi=None,soundIdentity=sound),
         expression=dict(velocity=.8,attackMs=0,playPercent=100,changePercent=0,variation='none',locked=False,lockExactPitch=False))
 
 
@@ -173,6 +182,49 @@ class Editor(SequencerEditing):
         instance=self.instance(instance_id)
         return next(p for p in self.project['patterns'] if p['id']==instance['patternId'])
 
+    def instance_length(self,instance_id):
+        return instance_length(self.instance(instance_id),self.pattern(instance_id))
+
+    def check_instance_space(self,role,start,length,exclude=''):
+        check_arrangement_space(self.project,role,start,length,exclude)
+
+    def move_instance(self,instance_id,position):
+        """Move a musical block; stable IDs retain variation and source edits."""
+        role=self.pattern(instance_id)['role'];length=self.instance_length(instance_id)
+        self.check_instance_space(role,position,length,instance_id)
+        def change(p):next(i for i in p['instances'] if i['id']==instance_id)['beat']=str(position)
+        self.apply('Move clip',change)
+
+    def resize_instance(self,instance_id,length):
+        """Extend a clip by repeating its source; allow a partial final cycle."""
+        length=beat(str(length));instance=self.instance(instance_id);pattern=self.pattern(instance_id)
+        self.check_instance_space(pattern['role'],instance['beat'],length,instance_id)
+        def change(p):
+            target=next(i for i in p['instances'] if i['id']==instance_id)
+            if length==beat(pattern['length']):target.pop('playbackLength',None)
+            else:target['playbackLength']=str(length)
+        self.apply('Resize looping clip',change)
+
+    def set_track_loop(self,role,on,start=None,end=None):
+        if role not in ('lead','bass','rhythm','drums'):raise ContractError('Unknown instrument track')
+        def change(p):
+            loops=p.setdefault('trackLoops',{})
+            if not on:
+                loops.pop(role,None)
+                if not loops:p.pop('trackLoops',None)
+                return
+            patterns={part['id']:part for part in p['patterns']}
+            clips=[i for i in p['instances'] if patterns[i['patternId']]['role']==role]
+            if not clips:raise ContractError('Place a clip before looping this track')
+            first=beat(str(start)) if start is not None else min(beat(i['beat']) for i in clips)
+            last=beat(str(end)) if end is not None else max(beat(i['beat'])+instance_length(i,patterns[i['patternId']]) for i in clips)
+            loops[role]=dict(startBeat=str(first),endBeat=str(last))
+        self.apply('Loop '+role+' track' if on else 'Stop '+role+' track loop',change)
+
+    def set_playback_loop(self,on):
+        def change(p):p['loopPlayback']=bool(on)
+        self.apply('Loop song playback' if on else 'Stop song playback loop',change)
+
     def set_map(self,name,position,values,label):
         if not 0<=position<beat(self.project['length']):raise ContractError('Position must be inside the song')
         def change(p):
@@ -197,6 +249,7 @@ class Editor(SequencerEditing):
         pattern=copy.deepcopy(source) if source else dict(role=role,length=str(length),events=[],
             provenance=dict(sourceClip='Raw Daw desktop authored pattern',license='MIT',changes='New performance'))
         pattern['id']=identity('pattern')
+        self.check_instance_space(role,position,beat(pattern['length']))
         if source:
             from .pulse import entry_velocity
             for event in pattern['events']:
@@ -207,6 +260,7 @@ class Editor(SequencerEditing):
         return instance['id']
 
     def copy(self,instance_id,position,linked=False,include_harmony=False):
+        self.check_instance_space(self.pattern(instance_id)['role'],position,self.instance_length(instance_id))
         before={i['id'] for i in self.project['instances']}
         self.apply('Linked repeat' if linked else 'Duplicate pattern',
                    lambda p:duplicate(p,instance_id,str(position),linked=linked,include_harmony=include_harmony))
@@ -218,6 +272,10 @@ class Editor(SequencerEditing):
         def change(p):
             p['instances']=[i for i in p['instances'] if i['id']!=instance_id]
             used={i['patternId'] for i in p['instances']};p['patterns']=[v for v in p['patterns'] if v['id'] in used]
+            roles={v['role'] for v in p['patterns']}
+            if 'trackLoops' in p:
+                p['trackLoops']={role:cycle for role,cycle in p['trackLoops'].items() if role in roles}
+                if not p['trackLoops']:p.pop('trackLoops')
         self.apply('Remove pattern',change)
 
     def edit_event(self,instance_id,event_id,updated):
@@ -237,7 +295,8 @@ class Editor(SequencerEditing):
                 for e in target['events']:
                     if e['id'] in {v['id'] for v in matches}:e['enabled']=enabled
         else:
-            if role=='drums' and not any(v['status']=='available' and v['soundIdentity']==sound for v in self.pack.instruments['drums'].values()):
+            from .percussion import records as drum_records
+            if role=='drums' and not any(v['status']=='available' and v['soundIdentity']==sound for v in drum_records(self.pack).values()):
                 raise ContractError('This drum slot has no prepared sound')
             tone=0
             if role in REGISTERS:
@@ -270,7 +329,8 @@ class Editor(SequencerEditing):
             for _ in range(bars):
                 meter=at(p['meterMap'],position);position+=Fraction(4*meter['numerator'],meter['denominator'])
             # Existing music/media is never truncated by a song-length control.
-            if any(beat(i['beat'])+beat(next(v['length'] for v in p['patterns'] if v['id']==i['patternId']))>position for i in p['instances']):
+            patterns={v['id']:v for v in p['patterns']}
+            if any(beat(i['beat'])+instance_length(i,patterns[i['patternId']])>position for i in p['instances']):
                 raise ContractError('Patterns extend past that ending. Move or remove them first')
             if any(beat(v['beat'])>=position for key in ('harmony','tempoMap','meterMap','tonalityMap') for v in p[key]):
                 raise ContractError('Map changes extend past that ending. Remove those changes first')

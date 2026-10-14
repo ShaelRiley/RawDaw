@@ -1,10 +1,19 @@
-# Four Song Packs — curated source-stem prototype
+# Five source-based Song Packs
 
 The user authorized selecting the first three Creative Commons songs and pushing a build
 containing their Song Packs. Artist upload pages were checked on 2026-10-09;
 each audio upload lists CC BY 3.0. This differs from the site's license for its
 page text. Sources were processed locally. No original complete recording or
 stem is distributed in the prepared packs.
+
+The October 14 update adds Jonathan Coulton's **Shop Vac** from the genuine
+JoCo Looks Back source tracks and retains Shael Riley's authorized Parachute
+as the fourth source. The immutable pack archives preserve their recorded crop
+inventory and provenance. A separate, hash-bound prepared bank now supplies
+all 128 lead and bass pitches, every registered chord root/quality and the
+standard percussion palette through source-waveform transformations. Native
+recordings remain preferred. See `HARMONIC_COVERAGE.md` for preparation limits;
+these functional banks do not constitute a pack-wide listening assessment.
 
 ## Selection and credits
 
@@ -27,26 +36,28 @@ or remix offset is claimed as verified.
 
 ## Prepared coverage
 
-| Pack | Assets | Native whole chords (root-position estimates) | Demonstration A / B |
+| Pack | Assets | Native whole chords (root/quality and voicing estimates) | Demonstration A / B |
 | --- | ---: | --- | --- |
 | Reach Out | 21 | B minor, G major, A major | B natural minor / D major; 113 / 126 BPM; 4 / 8 Governor segments |
 | Where You Are Now | 25 | C minor, F major, A-flat major, B-flat major | C natural minor / C Dorian; 100 / 118 BPM; 4 / 6 segments |
 | Auld Lang Syne (Bossa) | 23 | F major, C dominant seventh, D minor, B-flat major seventh | F major / D natural minor; 130 / 110 BPM; 4 / 3 segments |
 | Parachute | 28 | B-flat minor, D-flat major seventh, E-flat minor, G-flat major, F major | B-flat natural minor / B-flat harmonic minor; 165 / 132 BPM; 4 / 8 segments |
+| Shop Vac | 26 | C-sharp power/minor, E major, G-sharp major, A major seventh, B dominant seventh; documented source inversions | E major / C-sharp natural minor; 150 / 128 BPM; two short arrangements |
 
 Each pack supplies real lead, rhythm, bass, kick, snare and closed-hat candidates.
 Open hat, tom 1 and tom 2 are explicitly unavailable because isolated identities
 have not been established. Reach Out has one source crash extra and an empty
 second extra. The synth pack has a bright backbeat/clap and a longer cymbal;
 the bossa pack has low/high hand percussion. Percussion labels remain estimates.
-No fixed-slot fallback, stock content or synthetic fill was introduced.
+No stock content or synthetic fill was introduced into the recorded inventory.
 
-Coverage is intentionally limited. Many progression presets or requested notes,
-qualities/inversions will be unavailable. Runtime checks use the stored bank's
-actual mappings. The twelve supplied arrangements request covered material; their
-reports retain natural-duration warnings. All samples are one-shots with no
-sustain loops. Short vocal fragments are a lead sound bank, not complete words
-or a replacement for future microphone/comp/correction features.
+The table records the original native crop inventory, rather than the complete
+prepared playback inventory. Unrecorded pitches/chords now derive from the
+nearest appropriate source waveform, and sustained gates use prepared
+continuations. The original source archives remain one-shots with no sustain
+loops. Source role identities, isolation, percussion labels and listening quality
+remain provisional. Short vocal fragments are a lead sound bank, not complete
+words or a replacement for microphone/comp/correction features.
 
 ## Fourth source — Parachute
 
@@ -109,11 +120,52 @@ checks. See `docs/validation/parachute-preparation.json` and
 `source-render-0.2.1.json`. Listening, percussion identity, inversion/isolation,
 full source analysis and reference-device checks remain open.
 
+## Fifth source — Shop Vac
+
+Jonathan Coulton's [JoCo Looks Back source-track archive](https://archive.org/details/JonathanCoultonJoCoLooksBackSourceTracks)
+contains the actual **Shop Vac** multitracks. The archive identifies Jonathan
+Coulton as creator and preserves his source-track readme. The selected
+ingredients are the lead vocal, bass, acoustic guitar and drum tracks, with
+separately documented optional percussion. They are source stems from this
+recording, rather than a reconstructed cover or substitute sound bank.
+
+The archive metadata links **CC BY-NC 4.0**, while the
+[artist's FAQ](https://www.jonathancoulton.com/faq/) identifies **CC BY-NC 3.0**.
+Both observations remain in the recipe's license evidence; the pack does not
+silently recast the noncommercial grant as CC BY or MIT. Attribution names
+Jonathan Coulton, links the source and license evidence, and identifies cropping,
+cleanup, estimated transcription and later waveform transformations. Use of
+this pack and its rendered derivatives remains subject to that noncommercial
+permission unless the artist separately grants commercial rights.
+
+The source-track readme supplies a 150 quarter-note BPM reference and cautions
+that stems may need adjustment to align to a tempo grid. The selected MP3 tracks
+have matching probed durations of 210.442449 seconds and a 44.1 kHz
+source sample rate, with mono/stereo differences retained in the input audit.
+Matching dimensions are not a claimed acoustic alignment check. Each accepted
+crop binds to its original ingredient's SHA-256 and source-local seconds.
+
+The accepted native inventory contains eight vocal-note fragments, eight bass
+notes, six complete acoustic-guitar chords and four percussion crops (kick,
+snare, closed-hat candidate and the separate hand-clap track). Chord/inversion
+and percussion identities remain measured estimates. These 26 source crops
+feed the same complete prepared note/chord/percussion bank as the other packs;
+the remaining offered targets use explicitly attributed source-derived PCM.
+
+`recipes/shop-vac.json` supplies two new editable short arrangements, A and B,
+using different harmonies. These are composition demonstrations built from the
+source bank, rather than a recreation of the complete original song. The four
+existing full-length demos remain available; Shop Vac does not advertise an
+unwritten full-length arrangement. The archive's **The Radio** and **Vincent Solo**
+tracks are excluded from pack ingredients because they contain separate
+third-party material.
+
 ## Reproduce the first three CC packs
 
-Playback has no third-party Python dependencies. Rebuilding source assets
-additionally requires FFmpeg/ffprobe with the Rubber Band filter, NumPy 2.3.5
-and SciPy 1.17.0. These are system/preparation tools and are not bundled.
+Local bank preparation requires NumPy; the native audio processing loop remains
+independent of Python. Rebuilding source crops additionally requires
+FFmpeg/ffprobe with the Rubber Band filter and SciPy. Recorded preparation
+versions include NumPy 2.3.5 and SciPy 1.17.0; these system tools are not bundled.
 
 ```bash
 python3 tools/fetch_cc_sources.py --sources ../source-work
@@ -164,9 +216,10 @@ identified as new authorship rather than additions to the source transcription.
 
 ## Verification and release gate
 
-The loader checks the actual four `.prdepack` archives, checksums, PCM dimensions,
-prepared mappings, JSON contracts and source MIDI. All twelve projects resolve and
-reopen. Native exports require no missing-material approval. Repeated exports
+The loader checks the five `.prdepack` archives, checksums, PCM dimensions,
+prepared mappings, JSON contracts and source MIDI. The catalog supplies fourteen
+projects (ten short arrangements and four full-length demos) for resolution and
+save/reopen verification. Native exports require no missing-material approval. Repeated exports
 are byte-identical; verified seeks equal the full-render PCM slices (frame 123457
 for short auditions; three quarters into each full song); source
 packs remain unchanged. See `docs/validation/cc-check.log` and `cc-render.json`.

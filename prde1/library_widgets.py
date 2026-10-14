@@ -62,7 +62,8 @@ class PulseControls(QWidget):
 
 class ClipList(QListWidget):
     def __init__(self):
-        super().__init__();self.setDragEnabled(True);self.setAccessibleName('One-measure MIDI clips. Select then Preview or Place; drag to an empty measure on the matching track.')
+        super().__init__();self.setDragEnabled(True);self.setAccessibleName('One-measure MIDI clips. Select then Preview or Place; drag to an empty measure on the matching track. Drag the placed clip’s right edge to repeat it.')
+        self.setToolTip('Drag a clip onto its Lead, Rhythm, Bass or Drum Kit track. The outlined measure shows where it will land. Extend the placed block’s right edge to repeat its editable pattern.')
     def startDrag(self,actions):
         if not self.currentItem():return
         mime=QMimeData();mime.setData(MIME,self.currentItem().data(Qt.ItemDataRole.UserRole).encode())

@@ -1,3 +1,47 @@
+# Current checkpoint — Raw Daw 0.4.0 source banks and loops
+
+October 14: Shael requested source-waveform completion instead of a substitute
+MIDI/model synth, Cakewalk-style clip dragging/repetition and track/song looping.
+He subsequently requested Shop Vac by Jonathan Coulton as a fifth bundled bank.
+
+All lead/bass MIDI addresses 0–127, 420 root-position chords, 1,860 registered
+inversion voicings and 47 standard GM percussion articulations are now available
+through each bank. Native source recordings win; missing targets use nearest
+recorded PCM warps, polyphonic harmonic-mask voice transforms and recorded sustain
+loops. Preparation/cache work remains outside native sample playback. Cache
+corruption and extreme low-note loop tuning were found and corrected in review.
+Legacy reconstructed kit sound IDs remain playable with the new source waveforms.
+
+The timeline supports snapped protected clip moves and right-edge repetitions;
+track source cycles show translucent repeat spans and extend through song end.
+Every repeated trigger follows its actual harmony, pulse and deterministic saved
+variation. Completed gestures are undoable; copies/detach/save/reopen preserve
+loop spans. The saved Loop song control repeats transport playback independently
+of export length. Keyboard/context equivalents and enlarged layouts are retained.
+
+Shop Vac contains 26 verified prepared source crops from Coulton's official lead
+voice, acoustic guitars, bass, drum submix and clap stems. Its original master and
+stem SHA-256/ZIP CRC provenance are recorded. It retains CC BY-NC 3.0 attribution
+and noncommercial restrictions, alongside the archive's BY-NC 4.0 label; no Radio
+or Vincent Solo ingredients are used. Two new short editable arrangements bring
+the inventory to five banks and fourteen arrangements, with four existing full
+song demos preserved.
+
+All five real banks passed every 1,860 chord voicing (9,300 total), all 256 note
+addresses and 47 standard percussion addresses. All fourteen source arrangements
+passed repeat identity, exact seek slices and unchanged source hashes. The
+compiled Linux renderer upgrade is hash-bound and installer-verified. Final make check passed 186 Python/Qt tests with no skips plus native engine
+checks; make demo passed both reference renders. Detailed reports and logs are
+under docs/validation. Synthetic test fixtures remain clearly separate from
+source coverage. Physical listening, Steam Deck playback and a gapless whole-song
+transport seam are not certified by headless checks. Extreme warps and coincident
+polyphonic harmonics retain source-dependent fidelity limits.
+
+See HARMONIC_COVERAGE.md, CLIP_LOOPS.md and SONG_PACKS.md. The earlier approved
+recording/comping, wider DSP and Linux VST hosting scope remains open.
+
+---
+
 # Current checkpoint — Raw Daw progression bank on the 0.3.4 engine
 
 October 13: Shael reports that the preceding version works well and requests a

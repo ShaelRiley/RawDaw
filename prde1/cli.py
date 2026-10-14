@@ -20,7 +20,11 @@ def main(argv=None):
     desktop.add_argument('--project',type=Path);desktop.add_argument('--pack',type=Path)
     inspect=commands.add_parser("validate-pack",help="Validate archive, musical mappings and prepared audio")
     inspect.add_argument("pack",type=Path)
-    ranking=commands.add_parser("rank",help="Show initial six-template coverage ranking, not a finished catalog")
+    prepare=commands.add_parser("prepare-bank",help="Prepare every MIDI pitch and root-position chord from this pack's recorded waveforms")
+    prepare.add_argument("pack",type=Path)
+    prepare.add_argument("--inversions",action="store_true",help="Also prepare every selectable inversion; ordinary playback prepares these on demand")
+    prepare.add_argument("--report",type=Path,help="Save the bank inventory and preparation report")
+    ranking=commands.add_parser("rank",help="Rank the built-in progression bank by source preparation cost")
     ranking.add_argument("pack",type=Path); ranking.add_argument("--tonic",type=int,default=0); ranking.add_argument("--mode",default="major")
     for name in ("resolve","render"):
         command=commands.add_parser(name)
@@ -44,10 +48,16 @@ def main(argv=None):
             save_project(options.output,load_project(options.input))
             print(json.dumps({"saved":str(options.output)})); return 0
         with Pack(options.pack) as pack:
+            if options.command=="prepare-bank":
+                report=pack.coverage.prepare_bank(inversions=options.inversions)
+                report.update(packId=pack.manifest["packId"],manifestSha256=pack.manifest_hash,
+                              sourceArchiveUnchanged=True)
+                if options.report:atomic_json(options.report,report)
+                print(json.dumps(report,indent=2));return 0
             if options.command=="validate-pack":
                 print(json.dumps({"packId":pack.manifest["packId"],"manifestSha256":pack.manifest_hash,
                                   "sourceKind":pack.manifest["source"]["kind"],"sampleCount":len(pack.samples),
-                                  "schemaValid":True,"coverageStatus":"complete-hybrid","sourceCoverageStatus":pack.manifest["validation"]["status"],"warnings":pack.warnings},indent=2)); return 0
+                                  "schemaValid":True,"coverageStatus":"source-derived-addressable-bank","sourceCoverageStatus":pack.manifest["validation"]["status"],"warnings":pack.warnings},indent=2)); return 0
             if options.command=="rank":
                 print(json.dumps(rank_progressions(pack,options.tonic,options.mode),indent=2,ensure_ascii=False)); return 0
             project=load_project(options.project)

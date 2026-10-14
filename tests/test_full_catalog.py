@@ -15,7 +15,9 @@ from tools.source_catalog import pack_for_project, projects
 
 class FullSongCatalog(unittest.TestCase):
     def test_complete_songs_reopen_and_select_only_covered_immutable_sources(self):
-        self.assertEqual(len(projects()), 12)
+        self.assertEqual({path.name for path in projects() if path.stem.endswith('_full')},
+                         {'reach_out_full.prdeproj','where_you_are_now_full.prdeproj','auld_lang_syne_bossa_full.prdeproj','parachute_full.prdeproj'})
+        self.assertEqual(len(projects()), 14)
         for pack_id in PROFILES:
             with self.subTest(pack=pack_id):
                 path = ROOT / 'packs' / (pack_id + '_full.prdeproj')

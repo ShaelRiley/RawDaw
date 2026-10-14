@@ -1,5 +1,32 @@
 # Architecture decisions — first core checkpoint
 
+## Current source banks and virtual loops — 0.4.0
+
+Shael's October 14 request replaces the earlier modeled-instrument fallback.
+`source_waveform.py` performs band-limited nearest-note PCM warps, recorded stereo
+sustain loops and complex-spectrum polyphonic voice separation/recombination.
+`coverage.py` owns deterministic seed choice, truthful lineage and a validated
+persistent cache. `percussion.py` supplies all 47 standard GM articulations using
+native or transformed source hits; their saved addresses remain distinct while
+routing through the original eight downstream EQ families. No oscillator, noise
+instrument, external bank or network model fills missing material. See
+`HARMONIC_COVERAGE.md` for bounds and fidelity limits.
+
+Lead/bass MIDI 0–127 and 35 chord qualities are addressable; 420 root-position
+chords form a compact complete bank, with 1,860 inversion voicings available on
+demand. Native archives/project identities stay intact. Shop Vac is the fifth
+bank, prepared from Jonathan Coulton's official multitrack stems, with separate
+CC BY-NC rights and two short editable demonstrations.
+
+Optional instance playback spans repeat the editable source pattern virtually.
+Optional track cycles repeat whole lane arrangements to the song ending.
+`project.py` expands bounded exact musical occurrences; `governor.py` validates
+harmony, pulse and deterministic variation at every actual trigger position.
+The native sampler processes the same immutable asset/event plan. The Qt timeline
+provides snapped protected moves, edge extension, visible repeat boundaries,
+track ghosts, keyboard/context alternatives and one undo per gesture. Song
+transport looping is separate from exported arrangement length. See `CLIP_LOOPS.md`.
+
 ## Current shared clip library and rhythmic pulse (SDD Sections 32–33)
 
 `clip_library.py` reads a bounded offline compressed catalog and adapts whole-bar
@@ -57,7 +84,7 @@ See [Qt's QSoundEffect reference](https://doc.qt.io/qt-6/qsoundeffect.html).
 ## Current override: full harmonic coverage (SDD Section 30)
 
 Shael's October 11 amendment supersedes the coverage-gating and strict mode
-withholding rules below. The current hybrid bank prefers native targets, prepares
+withholding rules below. The October 11 hybrid checkpoint preferred native targets and prepared
 unrecorded notes/chords and sustain continuations through `coverage.py`, and feeds
 ordinary immutable PCM assets to the unchanged native player. Every registered
 chord is playable in every pack; mode guides degree interpretation and ranking.

@@ -7,6 +7,9 @@ from pathlib import Path
 
 from .contracts import ContractError, SLOTS, atomic_json, read_json
 from .music import REGISTERS, NAMES, at, beat, chord_identity
+from .percussion import SOUND_SLOTS, address_slot, record as drum_record, records as drum_records
+
+BANK_PROFILE = 'complete-v1'
 
 
 def note_name(note):
@@ -25,11 +28,26 @@ def row_defaults(role, address, label=''):
 
 def settings(pattern, pack):
     if 'sequencer' in pattern:
-        return copy.deepcopy(pattern['sequencer'])
+        config = copy.deepcopy(pattern['sequencer'])
+        if config.get('bankProfile') == BANK_PROFILE:
+            return config
+        if pattern['role'] in REGISTERS:
+            # Older projects saved only a small customary register. Expanding
+            # the keyboard preserves every authored row control and note.
+            role = pattern['role']
+            saved = {row['note']: row for row in config['rows']}
+            config['rows'] = [saved[n] if n in saved else row_defaults(role, n)
+                              for n in range(REGISTERS[role][1], REGISTERS[role][0] - 1, -1)]
+        elif pattern['role'] == 'drums':
+            saved = {row['sound']: row for row in config['rows']}
+            config['rows'] = [saved[slot] if slot in saved else row_defaults('drums', slot)
+                              for slot in drum_records(pack)]
+        config['bankProfile'] = BANK_PROFILE
+        return config
     role = pattern['role']
     rows = [row_defaults(role, n) for n in range(REGISTERS[role][1], REGISTERS[role][0] - 1, -1)] if role in REGISTERS else (
-        [row_defaults(role, slot) for slot in SLOTS] if role == 'drums' else [row_defaults(role, 'chord')])
-    return dict(version='step-v1', stepBeat=str(max(Fraction(1,4),beat(pattern['length'])/1024)), defaultVelocity=.8, pitchMode='follow', entryMode='poly' if role == 'drums' else 'mono', rows=rows)
+        [row_defaults(role, slot) for slot in drum_records(pack)] if role == 'drums' else [row_defaults(role, 'chord')])
+    return dict(version='step-v1', bankProfile=BANK_PROFILE, stepBeat=str(max(Fraction(1,4),beat(pattern['length'])/1024)), defaultVelocity=.8, pitchMode='follow', entryMode='poly' if role == 'drums' else 'mono', rows=rows)
 
 
 def pitch(project, pack, instance, event):
@@ -48,7 +66,7 @@ def pitch(project, pack, instance, event):
 
 def event_row(project, pack, instance, pattern, event):
     if pattern['role'] == 'drums':
-        slot = next((slot for slot, row in pack.instruments['drums'].items() if row['soundIdentity'] == event['choice']['soundIdentity']), None)
+        slot = next((slot for slot, row in drum_records(pack).items() if row['soundIdentity'] == event['choice']['soundIdentity']), None)
         return row_id('drums', slot) if slot else 'unknown'
     if pattern['role'] in REGISTERS:
         return row_id(pattern['role'], pitch(project, pack, instance, event))
@@ -113,7 +131,7 @@ def validate_pattern(pattern):
                 if type(row['note']) is not int or not REGISTERS[role][0] <= row['note'] <= REGISTERS[role][1] or row['sound'] or row['id'] != row_id(role, row['note']):
                     raise ContractError('Pitch row outside role register')
             elif role == 'drums':
-                if row['note'] is not None or row['sound'] not in SLOTS or row['id'] != row_id(role, row['sound']):
+                if row['note'] is not None or row['sound'] not in SOUND_SLOTS or row['id'] != row_id(role, row['sound']):
                     raise ContractError('Invalid kit row identity')
             elif row['id'] != 'chord' or row['note'] is not None or row['sound']:
                 raise ContractError('Rhythm uses a whole-chord row')
@@ -131,7 +149,7 @@ def audition_project(editor, instance_id, row=None, column=0):
         start+=column*beat(settings(pattern,editor.pack)['stepBeat']);length=Fraction(1,2)
         event=new_event(pattern['role'],Fraction(0),length)
         if pattern['role']=='drums':
-            record=editor.pack.instruments['drums'][row['sound']]
+            record=drum_record(editor.pack,row['sound'])
             if record['status']!='available':raise ContractError('This optional kit sound is unassigned')
             event['choice']['soundIdentity']=record['soundIdentity']
             root=record['pitches'][0]%12 if record['pitches'] else None
@@ -151,6 +169,7 @@ def audition_project(editor, instance_id, row=None, column=0):
     if row is not None and root is not None:
         project['tonalityMap']=[dict(beat='0',tonic=root,mode='major')]
         project['harmony']=[dict(beat='0',chord=dict(degree=1,alteration=0,quality='power',inversion=0))]
+    instance.pop('playbackLength',None);project.pop('trackLoops',None);project.pop('loopPlayback',None)
     instance['beat']='0';instance['linked']=False;project['patterns']=[pattern];project['instances']=[instance];project['length']=str(length)
     project['pluginTracks']=[]
     for lane in project['vocals']:lane.update(takes=[],comp=[],selectedTakeId=None);lane['correction']['on']=False
@@ -196,13 +215,9 @@ class SequencerEditing:
             previous_length=beat(target['length'])
             callback(target, project)
             if beat(target['length'])>previous_length:
+                from .project import check_arrangement_space,instance_length
                 for occurrence in (i for i in project['instances'] if i['patternId']==pid):
-                    start=beat(occurrence['beat']);stop=start+beat(target['length'])
-                    for other in project['instances']:
-                        if other['id']==occurrence['id']:continue
-                        part=next(p for p in project['patterns'] if p['id']==other['patternId'])
-                        if part['role']==target['role'] and max(start,beat(other['beat']))<min(stop,beat(other['beat'])+beat(part['length'])):
-                            raise ContractError('A longer pattern would overlap another pattern on this track')
+                    check_arrangement_space(project,target['role'],occurrence['beat'],instance_length(occurrence,target),occurrence['id'])
         self.apply(label, change)
 
     def set_sequencer(self, instance_id, **values):
@@ -236,7 +251,7 @@ class SequencerEditing:
                     continue
                 role = pattern['role']; sound = ''; tone = 0
                 if role == 'drums':
-                    record = self.pack.instruments['drums'][row['sound']]
+                    record = drum_record(self.pack,row['sound'])
                     if record['status'] != 'available':raise ContractError('This optional kit row is unassigned')
                     sound = record['soundIdentity']
                 elif role in REGISTERS:
@@ -305,7 +320,7 @@ class SequencerEditing:
                 for source in payload:
                     e = copy.deepcopy(source); e['id'] = new_id('event')
                     if beat(e['beat']) >= beat(pattern['length']):continue
-                    if pattern['role'] == 'drums':e['choice']['soundIdentity'] = self.pack.instruments['drums'][row['sound']]['soundIdentity']
+                    if pattern['role'] == 'drums':e['choice']['soundIdentity'] = drum_record(self.pack,row['sound'])['soundIdentity']
                     elif pattern['role'] in REGISTERS:
                         tone = at(project['tonalityMap'], beat(instance['beat']) + beat(e['beat']))
                         _, pitches, _ = chord_identity(tone['tonic'], tone['mode'], at(project['harmony'], beat(instance['beat']) + beat(e['beat']))['chord'])
@@ -379,8 +394,6 @@ class SequencerEditing:
         data=inspect_midi(path.read_bytes());notes=data['notes']
         if not notes:raise ContractError('This MIDI file has no note events')
         instance=self.instance(instance_id);role=self.pattern(instance_id)['role'];mapping=mapping or {}
-        addresses={row['midiAddress']:slot for slot,row in self.pack.instruments['drums'].items() if row['status']=='available'}
-        standard={35:'kick',36:'kick',38:'snare',40:'snare',42:'hatClosed',44:'hatClosed',46:'hatOpen',41:'tom1',43:'tom1',45:'tom1',47:'tom2',48:'tom2',50:'tom2'}
         def edit(pattern,project):
             imported=[];seen=set()
             for note in notes:
@@ -389,9 +402,9 @@ class SequencerEditing:
                     matching=next(e for e in imported if beat(e['beat'])==position);matching['duration']=str(max(beat(matching['duration']),duration));continue
                 seen.add(position);sound=''
                 if role=='drums':
-                    slot=mapping.get(note['note'],addresses.get(note['note'],standard.get(note['note'])))
-                    if slot not in SLOTS or self.pack.instruments['drums'][slot]['status']!='available':raise ContractError(f"Map MIDI note {note['note']} to a populated kit row before importing")
-                    sound=self.pack.instruments['drums'][slot]['soundIdentity']
+                    slot=mapping.get(note['note'],address_slot(self.pack,note['note']))
+                    if slot not in SOUND_SLOTS or drum_record(self.pack,slot)['status']!='available':raise ContractError(f"Map MIDI note {note['note']} to a populated kit row before importing")
+                    sound=drum_record(self.pack,slot)['soundIdentity']
                 elif role in REGISTERS and not REGISTERS[role][0]<=note['note']<=REGISTERS[role][1]:
                     raise ContractError('Imported MIDI includes notes outside this instrument register')
                 e=new_event(role,position,duration,sound,register=note['note'])
@@ -419,7 +432,7 @@ class SequencerEditing:
         for voice in plan['events']:
             start=seconds_to_beat(voice['startFrame']/48000,project['tempoMap']);stop=seconds_to_beat(voice['endFrame']/48000,project['tempoMap'])
             if voice['role'].startswith('drums.'):
-                slot=voice['role'].split('.')[1];pitches=[self.pack.instruments['drums'][slot]['midiAddress']];channel=9
+                slot=voice['role'].split('.')[1];pitches=[voice.get('drumMidiAddress',self.pack.instruments['drums'][slot]['midiAddress'])];channel=9
             else:pitches=voice['notePitches'];channel=0
             # MIDI velocity is authored expression, before channel/sample gain.
             address=voice['id'].split(':')[1]

@@ -12,7 +12,8 @@ from fractions import Fraction
 
 from .contracts import ContractError, RATE, VERSION, validate
 from .music import REGISTERS, QUALITIES, at, beat, chord_identity, quarter_seconds
-from .project import validate_project
+from .project import arrangement_occurrences, validate_project
+from .percussion import records as drum_records, sample as drum_sample
 
 DECLICK_FRAMES=240
 def context(project, position):
@@ -48,10 +49,8 @@ def _choose(pack,role,choice,chord_pitches,exact=False,variation=False):
 
 def vst_chord_notes(root, quality, inversion=0, base=60):
     """Event adapter only; not a plug-in host. One chord becomes constituent MIDI."""
-    values=[base+root+interval for interval in QUALITIES[quality]]
-    for index in range(inversion):
-        values[index]+=12
-    return sorted(values)
+    from .coverage import chord_notes
+    return [note+base-48 for note in chord_notes(root,quality,inversion)]
 
 
 def _supported_mix(project):
@@ -90,10 +89,8 @@ def resolve(project, pack, *, approve_altered=False):
     if project["pluginTracks"]:
         warnings.append("Explicitly approved altered render: additional VST instruments are silent in this core checkpoint")
     boundary_beats=sorted({beat(item["beat"]) for name in ("harmony","tonalityMap") for item in project[name]})
-    patterns={pattern["id"]:pattern for pattern in project["patterns"]}
     from .sequencer import effective_events
-    for instance in project["instances"]:
-        pattern=patterns[instance["patternId"]]
+    for instance,pattern,cycle_end in arrangement_occurrences(project):
         role=pattern["role"]
         for authored in (trigger for source in pattern['events'] for trigger in effective_events(project,pack,instance,pattern,source)):
             if not authored["enabled"]:
@@ -112,7 +109,7 @@ def resolve(project, pack, *, approve_altered=False):
                 duration/=2
             for repeat in range(repeats):
                 trigger=position+repeat*beat(authored["duration"])/repeats
-                if trigger>=end:
+                if trigger>=cycle_end:
                     continue
                 event_id=address+":"+str(repeat)
                 chord,root,pitches,legal=context(project,trigger)
@@ -120,20 +117,23 @@ def resolve(project, pack, *, approve_altered=False):
                 issue=None
                 message=None
                 slot=None
+                drum_address=None
                 if role=="drums":
                     sound=authored["choice"]["soundIdentity"]
-                    candidates=[(key,item) for key,item in pack.instruments["drums"].items()
+                    candidates=[(key,item) for key,item in drum_records(pack).items()
                                 if item["status"]=="available" and item["soundIdentity"]==sound]
                     if not candidates:
                         issue,message="missing_drum",f"No prepared drum with sound identity {sound!r}; no slot-based substitution"
                     else:
-                        slot,record=candidates[0]
+                        sound_slot,record=candidates[0]
+                        slot=record.get('mixSlot',sound_slot)
+                        drum_address=record['midiAddress']
                         if record["pitchClass"]=="uncertain":
                             issue,message="uncertain_pitch","Pitched-extra classification requires review"
                         elif record["pitchClass"]=="pitched" and not {note%12 for note in record["pitches"]}.issubset(pitches):
                             issue,message="pitched_extra_conflict","Placed pitched hit conflicts with harmony; retained and withheld"
                         else:
-                            sample=pack.samples[record["sampleId"]]
+                            sample=drum_sample(pack,sound_slot)
                 elif role=="rhythm":
                     sample=pack.sample_for((role,root,chord["quality"],chord["inversion"]))
                 else:
@@ -147,8 +147,8 @@ def resolve(project, pack, *, approve_altered=False):
                 if issue:
                     conflicts.append({"eventId":event_id,"code":issue,"message":message})
                     continue
-                stop=min(end,trigger+duration)
-                reason="gate"
+                stop=min(cycle_end,trigger+duration)
+                reason="loop_boundary" if cycle_end<end and trigger+duration>cycle_end else "gate"
                 actual_pitches=sample["pitches"]
                 if actual_pitches:
                     for boundary in boundary_beats:
@@ -184,6 +184,7 @@ def resolve(project, pack, *, approve_altered=False):
                                  "gain":gain,"pan":pan,"notePitches":actual_pitches,"role":role if role!="drums" else "drums."+slot,
                                  "noteVelocity":velocity,
                                  "endReason":reason})
+                if drum_address is not None:resolved[-1]['drumMidiAddress']=drum_address
     resolved.sort(key=lambda event:(event["startFrame"],event["id"]))
     # Fixed monophonic lanes and explicit open/closed-hat choke group. No invented attacks.
     for index,event in enumerate(resolved):
@@ -205,7 +206,7 @@ def resolve(project, pack, *, approve_altered=False):
     assets=sorted((pack.samples[identity] for identity in used),key=lambda sample:sample['id'])
     indices={sample['id']:index for index,sample in enumerate(assets)}
     for event in resolved:event['assetIndex']=indices[event.pop('sampleId')];event.pop('polyphonic')
-    if reconstructed:warnings.append(f"Hybrid instruments: {len(reconstructed)} reconstructed assets used; these are modeled sounds, not native source recordings")
+    if reconstructed:warnings.append(f"Sample bank: {len(reconstructed)} source-derived warped assets used; transformed PCM, not native source recordings")
     endpoints=sorted([(event["startFrame"],1) for event in resolved]+[(event["endFrame"],-1) for event in resolved])
     voices=peak=0
     for _,delta in endpoints:

@@ -132,6 +132,11 @@
             "type": "number",
             "minimum": 0,
             "maximum": 1
+          },
+          "drumMidiAddress": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 127
           }
         },
         "required": [

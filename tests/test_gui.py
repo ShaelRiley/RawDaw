@@ -66,6 +66,23 @@ class NativeDesktop(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(w.pack.path.read_bytes()).digest(),digest)
                 self.assertTrue(output.with_suffix('.report.json').exists())
 
+    def test_shop_vac_pack_and_its_two_auditions_appear_without_an_unwritten_full_demo(self):
+        w=self.window
+        self.assertEqual(w.editor.project['packReference']['packId'],'parachute')
+        names={Path(w.arrangements.item(i).data(Qt.ItemDataRole.UserRole)).name for i in range(w.arrangements.count())}
+        self.assertIn('shop_vac_a.prdeproj',names);self.assertIn('shop_vac_b.prdeproj',names)
+        self.assertNotIn('shop_vac_full.prdeproj',names)
+        self.assertEqual(w.full_demos.count(),4);self.assertEqual(w.full_demos.findData('shop_vac'),-1)
+        self.assertEqual(w.catalog_summary.text(),'5 Song Packs · 14 editable arrangements · 4 full demos')
+        self.assertTrue(w.load_pack(ROOT/'packs/shop_vac.prdepack'))
+        self.assertEqual(w.pack.manifest['packId'],'shop_vac');self.assertIn('Shop Vac',w.pack_label.text())
+        self.assertIn('NC',w.pack.manifest['source']['license'])
+        self.assertIn('CC BY-NC 3.0 · noncommercial',w.pack_label.text())
+        self.assertEqual(w.editor.project['patterns'],[])
+        for suffix in ('a','b'):
+            self.assertTrue(w.load_session(ROOT/'packs'/f'shop_vac_{suffix}.prdeproj'))
+            self.assertEqual(w.editor.plan()['conflicts'],[])
+
     def test_cancel_preserves_existing_export_and_cannot_publish_stale_audio(self):
         w=self.window;target=Path(self.folder.name)/'prior.wav';target.write_bytes(b'completed earlier export')
         self.assertTrue(w.request_render(destination=target));w.stop();QTest.qWait(30)
@@ -84,10 +101,10 @@ class NativeDesktop(unittest.TestCase):
         w.player.setPosition(1000);w.player.play();QTest.qWait(80)
         self.assertGreaterEqual(w.player.position(),1000);self.assertEqual(w.editor.plan(),plan);self.assertEqual(w.editor.fingerprint,fingerprint)
 
-    def test_unrecorded_chord_is_reconstructed_and_keeps_playback_and_export_enabled(self):
+    def test_unrecorded_chord_is_source_derived_and_keeps_playback_and_export_enabled(self):
         w=self.window
         w.change(lambda:w.editor.set_chord(Fraction(4),dict(degree=3,quality='major',inversion=0,alteration=0)))
-        self.assertIn('reconstructed',w.issues.toPlainText());self.assertTrue(w.play_button.isEnabled());self.assertTrue(w.export_button.isEnabled())
+        self.assertIn('source-derived',w.issues.toPlainText());self.assertTrue(w.play_button.isEnabled());self.assertTrue(w.export_button.isEnabled())
         target=Path(self.folder.name)/'reconstructed.wav';self.assertTrue(w.request_render(destination=target));self.wait_render();self.assertTrue(target.exists())
         w.undo();self.assertTrue(w.play_button.isEnabled())
 

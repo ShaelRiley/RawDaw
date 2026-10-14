@@ -189,6 +189,11 @@
           },
           "linked": {
             "type": "boolean"
+          },
+          "playbackLength": {
+            "type": "string",
+            "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+            "maxLength": 30
           }
         },
         "required": [
@@ -672,6 +677,96 @@
         "phaseBeat"
       ],
       "additionalProperties": false
+    },
+    "trackLoops": {
+      "type": "object",
+      "properties": {
+        "lead": {
+          "type": "object",
+          "properties": {
+            "startBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            },
+            "endBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            }
+          },
+          "required": [
+            "startBeat",
+            "endBeat"
+          ],
+          "additionalProperties": false
+        },
+        "rhythm": {
+          "type": "object",
+          "properties": {
+            "startBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            },
+            "endBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            }
+          },
+          "required": [
+            "startBeat",
+            "endBeat"
+          ],
+          "additionalProperties": false
+        },
+        "bass": {
+          "type": "object",
+          "properties": {
+            "startBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            },
+            "endBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            }
+          },
+          "required": [
+            "startBeat",
+            "endBeat"
+          ],
+          "additionalProperties": false
+        },
+        "drums": {
+          "type": "object",
+          "properties": {
+            "startBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            },
+            "endBeat": {
+              "type": "string",
+              "pattern": "^[0-9]+(?:/[1-9][0-9]*)?$",
+              "maxLength": 30
+            }
+          },
+          "required": [
+            "startBeat",
+            "endBeat"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "loopPlayback": {
+      "type": "boolean"
     }
   },
   "required": [
@@ -724,13 +819,35 @@
             "dominant7",
             "halfDiminished7",
             "diminished7",
-            "minorMajor7"
+            "minorMajor7",
+            "major6",
+            "minor6",
+            "add9",
+            "minorAdd9",
+            "major6Add9",
+            "minor6Add9",
+            "dominant9",
+            "major9",
+            "minor9",
+            "minorMajor9",
+            "dominant11",
+            "minor11",
+            "dominant13",
+            "major13",
+            "minor13",
+            "dominant7sus4",
+            "dominant9sus4",
+            "dominant7b5",
+            "dominant7Sharp5",
+            "dominant7b9",
+            "dominant7Sharp9",
+            "major7Sharp11"
           ]
         },
         "inversion": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 3
+          "maximum": 6
         }
       },
       "required": [
@@ -1035,6 +1152,9 @@
               },
               "maxItems": 128,
               "minItems": 1
+            },
+            "bankProfile": {
+              "const": "complete-v1"
             }
           },
           "required": [

@@ -1,0 +1,19 @@
+{
+  "version": "0.4.0",
+  "pythonQtTests": 186,
+  "pythonQtResult": "passed",
+  "skippedTests": 0,
+  "nativeEngineTests": "passed",
+  "syntheticReferenceRenders": 2,
+  "realSourcePacks": 5,
+  "sourceArrangements": 14,
+  "sourceArrangementsRepeatedByteIdentical": true,
+  "sourceArrangementsSeekExactSlice": true,
+  "chordVoicingsRendered": 9300,
+  "leadBassNoteAddressesAudited": 1280,
+  "gmPercussionAddressesRendered": 235,
+  "sourceArchivesUnchanged": true,
+  "rendererInstallerVerified": true,
+  "humanListeningPerformed": false,
+  "physicalSteamDeckTestPerformed": false
+}

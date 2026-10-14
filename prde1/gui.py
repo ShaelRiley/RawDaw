@@ -175,6 +175,9 @@ class MainWindow(QMainWindow):
         top.addWidget(button('Open project',self.open_project_dialog));top.addWidget(button('Save',self.save))
         self.play_button=button('Play',self.play,True);self.play_button.setAccessibleName('Play or pause current arrangement');top.addWidget(self.play_button)
         self.stop_button=button('Stop',self.stop);top.addWidget(self.stop_button)
+        self.loop_song=QCheckBox('Loop song');self.loop_song.setAccessibleName('Loop the entire song during playback')
+        self.loop_song.setToolTip('Repeat the rendered song from beginning to ending. This setting is saved with the project; exported WAVs contain one song.')
+        self.loop_song.clicked.connect(self.set_playback_loop);top.addWidget(self.loop_song)
         self.export_button=button('Export WAV',self.export_dialog);top.addWidget(self.export_button);layout.addLayout(top)
         # Keep transport visible while an enlarged workspace scrolls vertically.
         self.body=QWidget();body_layout=QVBoxLayout(self.body);body_layout.setContentsMargins(0,0,0,0);body_layout.setSpacing(8)
@@ -207,6 +210,9 @@ class MainWindow(QMainWindow):
         self.zoom=QSlider(Qt.Orientation.Horizontal);self.zoom.setRange(50,200);self.zoom.setValue(100);self.zoom.setMaximumWidth(110);self.zoom.setAccessibleName('Timeline zoom');self.zoom.valueChanged.connect(self.set_zoom);timing.addWidget(QLabel('Zoom'));timing.addWidget(self.zoom);layout.addLayout(timing)
         self.splitter=QSplitter(Qt.Orientation.Vertical);self.splitter.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Ignored);layout.addWidget(self.splitter,1)
         self.timeline=Timeline();self.timeline.selected.connect(self.select);self.timeline.chord_requested.connect(self.edit_chord)
+        self.timeline.instance_moved.connect(self.move_clip);self.timeline.instance_resized.connect(self.resize_clip)
+        self.timeline.move_requested.connect(self.move_clip_dialog);self.timeline.length_requested.connect(self.loop_clip_dialog)
+        self.timeline.track_loop_requested.connect(self.toggle_track_loop)
         self.timeline_scroll=QScrollArea();self.timeline_scroll.setWidget(self.timeline);self.timeline_scroll.setWidgetResizable(True);self.timeline_scroll.horizontalScrollBar().valueChanged.connect(self._scroll_changed)
         # The timeline scrolls within its own pane. Its full track height must
         # not force note controls below a small or enlarged-text viewport.
@@ -242,6 +248,10 @@ class MainWindow(QMainWindow):
         self.gain=spin(-96,12,-8,1,' dB');self.gain.editingFinished.connect(self.inspector_mix);form.addRow('Level',self.gain)
         self.pan=spin(-100,100,0,0,' %');self.pan.editingFinished.connect(self.inspector_mix);form.addRow('Pan',self.pan)
         self.muted=QCheckBox('Muted');self.muted.clicked.connect(self.inspector_mix);form.addRow('',self.muted);layout.addLayout(form)
+        self.loop_track=QCheckBox('Loop track to song end');self.loop_track.setAccessibleName('Loop selected track to song end')
+        self.loop_track.setToolTip('Repeat the current track arrangement from its first clip to its last clip, preserving gaps. Disable this to place clips after that cycle.')
+        self.loop_track.clicked.connect(lambda:self.toggle_track_loop(self.role));layout.addWidget(self.loop_track)
+        layout.addWidget(button('Loop selected clip…',self.loop_clip_dialog));layout.addWidget(button('Move selected clip…',self.move_clip_dialog))
         layout.addWidget(button('Add pattern here',self.add_pattern));layout.addWidget(button('New song',self.new_song));layout.addWidget(button('Regenerate variation',lambda:self.change(self.editor.regenerate)))
         self.inspector_info=QLabel();self.inspector_info.setWordWrap(True);self.inspector_info.setObjectName('muted');layout.addWidget(self.inspector_info)
         layout.addStretch();scale_label=QLabel('Interface scale');layout.addWidget(scale_label);self.scale=QComboBox()
@@ -270,12 +280,13 @@ class MainWindow(QMainWindow):
         self.full_demos.setCurrentIndex(max(0,self.full_demos.findData('parachute')));layout.addWidget(self.full_demos)
         self.full_demo_button=button('Load full demo',lambda:self.load_full_demo(self.full_demos.currentData()))
         self.full_demo_button.setEnabled(self.full_demos.count()>0);layout.addWidget(self.full_demo_button)
-        label=QLabel('Included editable arrangements');label.setWordWrap(True);layout.addWidget(label)
+        self.catalog_summary=QLabel();self.catalog_summary.setWordWrap(True);layout.addWidget(self.catalog_summary)
         self.arrangements=QListWidget();self.arrangements.setAccessibleName('Included pack arrangements');self.arrangements.itemDoubleClicked.connect(lambda _:self.load_arrangement());layout.addWidget(self.arrangements,1)
         for path in sorted((ROOT/'packs').glob('*.prdeproj')):
             try:project=load_project(path)
             except (ValueError,OSError):continue
             row=QListWidgetItem(path.stem.replace('_',' ').title());row.setData(Qt.ItemDataRole.UserRole,str(path));row.setToolTip(project['title']);self.arrangements.addItem(row)
+        self.catalog_summary.setText(f"{len(list((ROOT/'packs').glob('*.prdepack')))} Song Packs · {self.arrangements.count()} editable arrangements · {self.full_demos.count()} full demos")
         layout.addWidget(button('Load arrangement',self.load_arrangement));tabs.addTab(pack_panel,'Packs')
         self.progression_browser=ProgressionBrowser(self);self.presets=self.progression_browser.list;tabs.addTab(self.progression_browser,'Progressions')
         pattern_panel=QWidget();layout=QVBoxLayout(pattern_panel);self.source_clips=QListWidget();layout.addWidget(QLabel('Patterns recovered from active source'));layout.addWidget(self.source_clips,1);layout.addWidget(button('Place source pattern here',self.place_source));tabs.addTab(pattern_panel,'Patterns')
@@ -467,8 +478,54 @@ class MainWindow(QMainWindow):
     def select_role(self):
         if not self._refreshing and self.editor:
             role=self.track.currentData()
-            match=next((i for i in self.editor.project['instances'] if self.editor.pattern(i['id'])['role']==role and beat(i['beat'])<=self.cursor<beat(i['beat'])+beat(self.editor.pattern(i['id'])['length'])),None)
+            from .project import arrangement_spans
+            match=next((i for i,p,start,length,_ in arrangement_spans(self.editor.project) if p['role']==role and start<=self.cursor<start+length),None)
             self.select(role,self.cursor,match['id'] if match else '')
+
+    def move_clip(self,instance_id,position):
+        def op():
+            self.editor.move_instance(instance_id,position);self.selected_id=instance_id;self.cursor=position
+        self.change(op)
+
+    def resize_clip(self,instance_id,length):
+        self.change(lambda:self.editor.resize_instance(instance_id,length))
+
+    def _clip_position_dialog(self,instance_id,length):
+        instance_id=instance_id or self.selected_id
+        if not self.editor or not instance_id:self.notice('Select a clip on the timeline first.');return
+        dialog=QDialog(self);dialog.setWindowTitle('Loop clip length' if length else 'Move clip');layout=QVBoxLayout(dialog)
+        help_text=QLabel('Repeat the editable source pattern for this many quarter-note beats. A fractional final cycle is allowed.' if length else 'Move this clip to a quarter-note beat position. Occupied material is protected.')
+        help_text.setWordWrap(True);layout.addWidget(help_text)
+        value=QLineEdit(str(self.editor.instance_length(instance_id) if length else self.editor.instance(instance_id)['beat']))
+        value.setAccessibleName('Clip playback length in beats' if length else 'Clip start position in beats');layout.addWidget(value)
+        error=QLabel();error.setWordWrap(True);error.setObjectName('warning');layout.addWidget(error)
+        buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Ok|QDialogButtonBox.StandardButton.Cancel);layout.addWidget(buttons);buttons.rejected.connect(dialog.reject)
+        def apply():
+            try:
+                position=beat(value.text())
+                operation=self.editor.resize_instance if length else self.editor.move_instance
+                operation(instance_id,position)
+            except (ValueError,OSError,KeyError) as problem:error.setText(str(problem));return
+            if not length:self.cursor=position
+            self.selected_id=instance_id;self.stop();self._preview_key=None;self.player.setSource(QUrl());self.refresh();self.autosave();dialog.accept()
+        buttons.accepted.connect(apply);value.selectAll();value.setFocus();dialog.exec()
+
+    def move_clip_dialog(self,instance_id=''):
+        self._clip_position_dialog(instance_id,False)
+
+    def loop_clip_dialog(self,instance_id=''):
+        self._clip_position_dialog(instance_id,True)
+
+    def toggle_track_loop(self,role):
+        if self.editor:self.change(lambda:self.editor.set_track_loop(role,role not in self.editor.project.get('trackLoops',{})))
+
+    def set_playback_loop(self,on):
+        if not self.editor or self._refreshing:return
+        self.editor.set_playback_loop(on);self._sync_player_loop();self.refresh();self.autosave()
+
+    def _sync_player_loop(self):
+        loop=self._playback_scope['loop'] if self._playback_scope else bool(self.editor and self.editor.project.get('loopPlayback',False))
+        self.player.setLoops(QMediaPlayer.Loops.Infinite if loop else QMediaPlayer.Loops.Once)
 
     def set_tonality(self):
         if self.editor:self.change(lambda:self.editor.set_map('tonalityMap',self.cursor,dict(tonic=self.tonic.currentIndex(),mode=self.mode.currentData()),'Set key and mode'))
@@ -539,11 +596,7 @@ class MainWindow(QMainWindow):
         self.progression_browser.search.setFocus()
 
     def _free_space(self,role,position,length,exclude=''):
-        for occurrence in self.editor.project['instances']:
-            if occurrence['id']==exclude:continue
-            pattern=self.editor.pattern(occurrence['id']);start=beat(occurrence['beat'])
-            if pattern['role']==role and max(position,start)<min(position+length,start+beat(pattern['length'])):
-                raise ContractError('A '+role+' pattern already occupies that position. Choose an empty measure or remove it first')
+        self.editor.check_instance_space(role,position,length,exclude)
 
     def add_pattern(self):
         if not self.editor:return
@@ -681,9 +734,14 @@ class MainWindow(QMainWindow):
         seconds=quarter_seconds(beat(project['length']),project['tempoMap']);self.duration.setText(f'{int(seconds)//60}:{int(seconds)%60:02d}')
         self.track.setCurrentIndex(self.track.findData(self.role));channel=project['mix']['channels'][self.role]
         self.gain.setValue(channel['gainDb']);self.pan.setValue(channel['pan']*100);self.muted.setChecked(channel['muted'])
+        self.loop_track.setChecked(self.role in project.get('trackLoops',{}));self.loop_song.setChecked(project.get('loopPlayback',False));self._sync_player_loop()
         self.selection_label.setText(('Editing '+self.role.title()+' pattern' if self.selected_id else self.role.title()+' track')+'\n'+self.edit_position(beat(self.editor.instance(self.selected_id)['beat']) if self.selected_id else self.cursor))
         self.inspector_info.setText(('Whole chord events' if self.role=='rhythm' else 'Single prepared notes' if self.role in ('lead','bass') else 'Fixed kit sounds')+'\nOne active Song Pack\nVariation revision '+str(project['variation']['revision']))
-        self.pack_label.setText(self.pack.manifest['source']['title']+'\nFull chord coverage · native + reconstructed instruments')
+        from .music import QUALITIES
+        source=self.pack.manifest['source']
+        permission=f"\n{source['license']} · noncommercial" if 'BY-NC' in source['license'] else ''
+        self.pack_label.setText(source['title']+f'\n128 lead / bass pitches · {len(QUALITIES)*12} chord options'+permission)
+        self.pack_label.setToolTip('Every MIDI pitch and registered chord is playable. Additional inversions are prepared when used. Native recordings and source-derived waveforms retain this pack’s instrument sound.')
         self.undo_action.setEnabled(bool(self.editor.undo_stack));self.redo_action.setEnabled(bool(self.editor.redo_stack))
         self.undo_action.setText('Undo '+self.editor.undo_stack[-1][0] if self.editor.undo_stack else 'Undo');self.redo_action.setText('Redo '+self.editor.redo_stack[-1][0] if self.editor.redo_stack else 'Redo')
         self.save_status.setText('Unsaved changes' if self.editor.dirty else ('Saved' if self.editor.path else 'Editable starter · '+__version__))
@@ -692,10 +750,10 @@ class MainWindow(QMainWindow):
         self.timeline.refresh(self.editor,self.selected_id,self.cursor);self.refresh_steps();self.refresh_mixer();self.refresh_browser()
         try:
             self._plan=self.editor.plan();conflicts=self._plan['conflicts'];warnings=self._plan['warnings']
-            self.issues.setPlainText(('Conflicts — authored events are retained\n'+'\n'.join(v['eventId']+': '+v['message'] for v in conflicts) if conflicts else 'All active requests resolve. Native and reconstructed sounds use the same mixer.')+
+            self.issues.setPlainText(('Conflicts — authored events are retained\n'+'\n'.join(v['eventId']+': '+v['message'] for v in conflicts) if conflicts else 'All active requests resolve. Native and source-derived samples use the same mixer.')+
                 '\n\nNatural limits and source notices\n'+'\n'.join(dict.fromkeys(warnings))+'\n\nSource credits\n'+'\n'.join(v['attribution']+'\n'+v['license'] for v in project['credits']))
             missing=any(v['code'].startswith('missing_') for v in conflicts)
-            self.guidance.setText('Choose a covered chord or edit the flagged step — see Coverage & warnings.' if missing else f'{len(conflicts)} incompatible events are preserved and withheld. Review Coverage & warnings.' if conflicts else 'Ready to play. Select a pattern to edit its steps, or edit harmony above the tracks.')
+            self.guidance.setText('Choose a covered chord or edit the flagged step — see Coverage & warnings.' if missing else f'{len(conflicts)} incompatible events are preserved and withheld. Review Coverage & warnings.' if conflicts else 'Drag clips to move; extend right edges to loop. Use ↻ to repeat tracks. Select a block to edit its steps.')
             if not project['instances']:self.guidance.setText('Choose a chord progression, then preview and place one-bar MIDI clips from the Browser. Edit any placed pattern below.')
             self.play_button.setEnabled(not missing);self.export_button.setEnabled(not missing)
         except (ValueError,OSError,KeyError) as error:
@@ -937,7 +995,7 @@ class MainWindow(QMainWindow):
     def _start_player(self,path):
         if self.outputs.currentData() is None:self.notice('Preview rendered, but no audio output is available. Connect/select an output and press Play.');return
         self._pending_seek=0 if self._playback_scope else round(quarter_seconds(self.cursor,self.editor.project['tempoMap'])*1000)
-        self.player.setLoops(QMediaPlayer.Loops.Infinite if self._playback_scope and self._playback_scope['loop'] else QMediaPlayer.Loops.Once)
+        self._sync_player_loop()
         self.player.setSource(QUrl.fromLocalFile(str(path)));self.player.play()
 
     def _media_status(self,status):
@@ -956,7 +1014,11 @@ class MainWindow(QMainWindow):
                 absolute=beat(self._playback_scope['start'])+seconds_to_beat(milliseconds/1000,self._playback_scope.get('tempoMap',self.editor.project['tempoMap']))
             else:absolute=seconds_to_beat(milliseconds/1000,self.editor.project['tempoMap'])
             self.timeline.play_beat=absolute;self.timeline.update()
-            if self.selected_id:self.sequencer.playhead(absolute-beat(self.editor.instance(self.selected_id)['beat']))
+            if self.selected_id:
+                from .project import arrangement_spans
+                active=next((absolute-start for instance,pattern,start,length,_ in arrangement_spans(self.editor.project)
+                    if instance['id']==self.selected_id and start<=absolute<start+length),None)
+                self.sequencer.playhead(active%beat(self.editor.pattern(self.selected_id)['length']) if active is not None else None)
         state='Preparing' if self._job else self.player.playbackState().name.replace('State','')
         self.position.setText('Edit: '+self.edit_position()+f' · {state} {milliseconds//60000}:{milliseconds//1000%60:02d}')
         if self.player.duration()>0 and not self.seek.isSliderDown():self.seek.setValue(round(milliseconds/self.player.duration()*1000))

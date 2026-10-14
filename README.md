@@ -2,6 +2,26 @@
 
 **Really Awesome Workflow Digital Audio Workstation**
 
+**Build 0.4.0:** source-derived sample banks and timeline looping. Lead and bass
+cover all 128 MIDI notes. Chords cover 12 roots × 35 common qualities, including
+sixths, ninths, elevenths, thirteenths, suspended and altered dominants. Native
+recordings win; missing targets are prepared by transforming recorded waveforms,
+with no substitute synthesizer. Quality depends on source isolation and the
+distance of the pitch shift. [Sample-bank method](docs/HARMONIC_COVERAGE.md).
+Percussion covers all **47 standard General MIDI drum addresses (35–81)**,
+with native hits preferred and missing articulations derived from recorded hits.
+
+**Shop Vac by Jonathan Coulton** is the fifth bundled bank, extracted from his
+official multitrack stems, with two editable arrangements. This bank retains
+**CC BY-NC 3.0: attribution and noncommercial use**; its content is separate from
+the application's MIT code license.
+
+Drag a timeline clip to move it, or drag its **right edge** to repeat its source
+pattern. Click **↻ beside a track name** to repeat that track's source cycle to
+the song ending. **Loop song** repeats transport playback. Repeats follow the
+actual destination harmony and pulse; edits, undo and saved sessions retain them.
+[Clip and track controls](docs/CLIP_LOOPS.md).
+
 Formerly PRDE1. **703 distinct one-bar MIDI clips** cover Bass (175), Drums (247),
 Lead (169) and Chords (112). Browser → MIDI clips provides search, style/role/meter
 filters, favorites, looping preview, drag/drop and a Place button. Pitched clips
@@ -33,18 +53,18 @@ mute/solo rows, fill/copy/shift/reverse patterns, and audition a loop independen
 Keyboard step entry, full `.prdepattern` saves and note MIDI interchange are included.
 See [step-sequencer controls](docs/STEP_SEQUENCER.md).
 
-**Full harmonic coverage:** every Song Pack now plays all 528 registered chord
-voicings (12 roots, 13 qualities, every valid inversion), plus the complete lead
-and bass registers. Native recordings are preferred; a deterministic hybrid
-instrument layer reconstructs unrecorded sounds and supplies sustained holds.
+**Full harmonic coverage:** all 420 root-position chords and every valid inversion
+are addressable in every shipped pack (1,860 registered voicings). Root voicings
+form the compact complete bank; additional inversions are prepared on demand.
 Borrowed chords play even outside the selected mode. Missing offered kit slots
-have explicitly modeled sounds. See [the methodology](docs/HARMONIC_COVERAGE.md).
+derive from the closest suitable recorded percussion. Source recordings and
+saved pack references remain intact. See [the methodology](docs/HARMONIC_COVERAGE.md).
 
-Build **0.3.4** includes **four complete song demos**: Reach Out (2:32.92),
+The build includes **four complete song demos**: Reach Out (2:32.92),
 Where You Are Now (2:33.60), Auld Lang Syne (Bossa) (2:42.46), and Parachute
 (2:42.91). Each has an intro, verses, pre-choruses, a recurring chorus hook,
-bridge, final chorus and outro. The native graphical editor ships four Song
-Packs and twelve editable arrangements, including the eight original short demos.
+bridge, final chorus and outro. The native graphical editor ships five Song
+Packs and fourteen editable arrangements, including two new Shop Vac demos.
 Per-drum EQ now feeds a compressed drum bus with a +3 dB lift. The kick ducks
 only bass, then the whole ensemble reaches the master compressor. **Mixer** and
 **Dynamics** provide saved controls and bypasses; [mixing details](docs/MIXING.md)
@@ -79,7 +99,7 @@ git pull --ff-only origin main
 For a **Raw Daw** application-menu entry with the dog icon, run
 `./install-raw-daw.sh` once. The existing `run-prde1.sh` command remains compatible.
 
-First launch installs PySide6 into a local virtual environment if it is absent.
+First launch installs PySide6 and NumPy into a local virtual environment if needed.
 That setup needs an internet connection; the installed composer then operates
 offline without an API key. The launcher restores the verified compiled renderer
 from the pulled build parts, replacing an older executable when needed. Python 3.11+ is required. On Ubuntu/Linux
@@ -100,9 +120,9 @@ explain the remaining controls and current boundaries.
 
 ## Compiled distribution and command-line auditions
 
-The current 0.3.4 parts contain a small verified **renderer upgrade** for the
+The current 0.4.0 parts contain a small verified **renderer upgrade** for the
 source checkout. `./run-prde1.sh` installs it automatically; keep using the
-repository's code, four existing packs and twelve projects. A compiler is not
+repository's code, five packs and fourteen projects. A compiler is not
 required for this upgrade. Do not extract this renderer-only update as a full app.
 
 The older complete 0.3.3 distribution remains preserved with its original WAV
@@ -121,8 +141,9 @@ For command-line regeneration of the included auditions, run:
 
 Python 3.11+ is required. The supplied binary was built/tested on Ubuntu 24.04
 x86_64; rebuild with `make all` on other supported Linux systems. No source
-preparation packages, model downloads or network access are needed to play
-these prepared packs. This is not a tested Steam Deck installer.
+model downloads or network access are needed to play these packs after initial
+dependency installation. NumPy prepares missing targets outside audio playback.
+This is not a tested Steam Deck installer.
 
 To rebuild and test the source, GNU Make and a C++20 compiler are required:
 

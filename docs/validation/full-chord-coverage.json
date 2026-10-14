@@ -2,11 +2,11 @@
   {
     "pack": "auld_lang_syne_bossa.prdepack",
     "originalSha256": "715c53d363b5dd9cd4ef51d59f18595f9fe3f9010c0cae0a058ab8583d806b31",
-    "chordsRendered": 528,
-    "notesPrepared": 70,
+    "chordsRendered": 1860,
+    "notesPrepared": 256,
     "silentEvents": 0,
     "conflicts": 0,
-    "reconstructedAssetCount": 587,
+    "reconstructedAssetCount": 2103,
     "kitSlotsPlayable": [
       "extra1",
       "extra2",
@@ -24,11 +24,11 @@
   {
     "pack": "parachute.prdepack",
     "originalSha256": "86cbbb967a7d8c00e004428272a389e3256a45e4010797fbfc7e69aa3cb0621c",
-    "chordsRendered": 528,
-    "notesPrepared": 70,
+    "chordsRendered": 1860,
+    "notesPrepared": 256,
     "silentEvents": 0,
     "conflicts": 0,
-    "reconstructedAssetCount": 580,
+    "reconstructedAssetCount": 2096,
     "kitSlotsPlayable": [
       "hatClosed",
       "hatOpen",
@@ -44,11 +44,32 @@
   {
     "pack": "reach_out.prdepack",
     "originalSha256": "d03c80d14b5337b27a0a4361870a85c6c1fc6b7ad9d19f62fc205ca4b2f2e80b",
-    "chordsRendered": 528,
-    "notesPrepared": 70,
+    "chordsRendered": 1860,
+    "notesPrepared": 256,
     "silentEvents": 0,
     "conflicts": 0,
-    "reconstructedAssetCount": 590,
+    "reconstructedAssetCount": 2105,
+    "kitSlotsPlayable": [
+      "extra1",
+      "hatClosed",
+      "hatOpen",
+      "kick",
+      "snare",
+      "tom1",
+      "tom2"
+    ],
+    "packUnchanged": true,
+    "humanListening": "not_performed",
+    "pcmAudited": true
+  },
+  {
+    "pack": "shop_vac.prdepack",
+    "originalSha256": "c65d52c8eabc13001aaff7ef27635dfcfd54e428f16c3b966c6dd2aee9695348",
+    "chordsRendered": 1860,
+    "notesPrepared": 256,
+    "silentEvents": 0,
+    "conflicts": 0,
+    "reconstructedAssetCount": 2103,
     "kitSlotsPlayable": [
       "extra1",
       "hatClosed",
@@ -65,11 +86,11 @@
   {
     "pack": "where_you_are_now.prdepack",
     "originalSha256": "f4892d2aac99613786fb0f8b6f9d479be08ebe7f2d621b7ab9b27d0cd0942f3a",
-    "chordsRendered": 528,
-    "notesPrepared": 70,
+    "chordsRendered": 1860,
+    "notesPrepared": 256,
     "silentEvents": 0,
     "conflicts": 0,
-    "reconstructedAssetCount": 581,
+    "reconstructedAssetCount": 2099,
     "kitSlotsPlayable": [
       "extra1",
       "extra2",

@@ -21,8 +21,8 @@ class SourcePackTests(unittest.TestCase):
         cls.recipes=recipes()
         cls.paths=[ROOT/'packs'/(recipe['packId']+'.prdepack') for recipe in cls.recipes]
 
-    def test_three_cc_and_one_user_authorized_pack_with_explicit_gaps(self):
-        self.assertEqual(len(self.paths),4)
+    def test_five_real_sources_preserve_their_exact_permissions_and_native_kit_status(self):
+        self.assertEqual({path.stem for path in self.paths},{'reach_out','where_you_are_now','auld_lang_syne_bossa','parachute','shop_vac'})
         self.assertEqual(sum(recipe['license']=='CC BY 3.0' for recipe in self.recipes),3)
         for path,recipe in zip(self.paths,self.recipes):
             with self.subTest(pack=path.name),Pack(path) as pack:
@@ -32,9 +32,10 @@ class SourcePackTests(unittest.TestCase):
                 self.assertEqual(pack.manifest['source']['license'],recipe['license'])
                 self.assertEqual(pack.manifest['validation']['status'],'coverage-limited')
                 self.assertTrue(pack.warnings)
-                for slot in ('hatOpen','tom1','tom2'):
-                    self.assertEqual(pack.manifest['instruments']['drums'][slot]['status'],'unavailable')
-                    self.assertIsNone(pack.manifest['instruments']['drums'][slot]['sampleId'])
+                for slot,definition in recipe['drums'].items():
+                    expected='available' if definition.get('sampleId') else 'empty' if slot.startswith('extra') else 'unavailable'
+                    self.assertEqual(pack.manifest['instruments']['drums'][slot]['status'],expected)
+                    self.assertEqual(pack.manifest['instruments']['drums'][slot]['sampleId'],definition.get('sampleId'))
 
     def test_every_sample_has_real_source_lineage_and_no_loops(self):
         for path,recipe in zip(self.paths,self.recipes):
@@ -73,7 +74,7 @@ class SourcePackTests(unittest.TestCase):
                 analysis=read_json(archive.read('analysis/harmony.json'))
                 self.assertEqual(len(analysis['retainedDrumAssignments']),len(clip['events']))
 
-    def test_eight_projects_resolve_and_reopen_without_altered_export(self):
+    def test_all_short_source_arrangements_resolve_and_reopen_without_altered_export(self):
         with tempfile.TemporaryDirectory() as folder:
             for path in self.paths:
                 with Pack(path) as pack:

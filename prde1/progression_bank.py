@@ -14,7 +14,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from .contracts import ContractError, atomic_json, canonical_bytes, read_json
-from .music import MODES, NAMES, QUALITIES, REGISTERS, at, beat, chord_identity, diatonic, quarter_seconds, roman
+from .music import MODES, NAMES, QUALITIES, REGISTERS, at, beat, chord_identity, chord_suffix, diatonic, quarter_seconds, roman
 
 FORMAT = 'raw-daw-progressions'
 VERSION = 1
@@ -238,10 +238,7 @@ def realize(entry, tonic, mode):
 
 def chord_name(tonic, mode, chord):
     root, _, _ = chord_identity(tonic, mode, chord)
-    suffix = {'major': '', 'minor': 'm', 'diminished': 'dim', 'augmented': '+', 'power': '5',
-              'major7': 'maj7', 'minor7': 'm7', 'dominant7': '7', 'halfDiminished7': 'ø7',
-              'diminished7': 'dim7', 'minorMajor7': 'm(maj7)'}.get(chord['quality'], chord['quality'])
-    return NAMES[root] + suffix
+    return NAMES[root] + chord_suffix(chord['quality'])
 
 
 def ranked(pack, tonic, mode, entries=None):
@@ -355,6 +352,8 @@ def audition_project(editor, entry, position=Fraction(0)):
     from .editor import new_event
     entry = validate_entry(entry)
     project = copy.deepcopy(editor.project)
+    project.pop('trackLoops', None)
+    project.pop('loopPlayback', None)
     for key in ('tempoMap', 'meterMap', 'tonalityMap'):
         first = copy.deepcopy(at(project[key], position)); first['beat'] = '0'; project[key] = [first]
     bar = Fraction(4 * project['meterMap'][0]['numerator'], project['meterMap'][0]['denominator'])

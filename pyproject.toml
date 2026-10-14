@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "prde1-core"
-version = "0.3.4"
+version = "0.4.0"
 description = "Raw Daw native desktop composition and prepared-sample renderer"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{name = "Shael Riley"}]
-dependencies = []
+dependencies = ["numpy==2.3.5"]
 
 [project.optional-dependencies]
 preparation = ["numpy==2.3.5", "scipy==1.17.0"]

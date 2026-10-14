@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushB
     QToolButton, QMenu, QComboBox, QCheckBox, QSpinBox, QTableWidget, QTableWidgetItem,
     QHeaderView, QAbstractItemView, QFileDialog, QInputDialog, QSlider)
 
-from .contracts import ContractError, SLOTS
+from .contracts import ContractError
 from .gui_widgets import FlowLayout, COLORS, SLOT_NAMES, spin
 from .music import REGISTERS, beat, at, chord_identity
 from .sequencer import settings, event_row, note_name
@@ -212,6 +212,13 @@ class StepSequencer(QWidget):
     def current_row(self):
         index=self.grid.currentRow()
         return self.rows[index] if 0<=index<len(self.rows) else None
+    def row_name(self,row):
+        if row['label']:return row['label']
+        if row['note'] is not None:return note_name(row['note'])
+        if self.active() and self.editor.pattern(self.instance_id)['role']=='drums':
+            from .percussion import record
+            return SLOT_NAMES.get(row['sound'],record(self.editor.pack,row['sound'])['displayName'])
+        return 'Whole chord'
     def config_change(self,**values):
         if self.active() and not self.refreshing:self.change(lambda:self.editor.set_sequencer(self.instance_id,**values))
     def row_change(self,**values):
@@ -250,7 +257,7 @@ class StepSequencer(QWidget):
         if self.editor and pulse_settings(self.editor.project)['mode']=='on':
             for widget in (self.note_volume,self.note_volume_slider):widget.setToolTip('Stored note volume. Rhythmic Pulse is On and controls playback volume; switching it Off restores this value.')
         row=self.current_row()
-        self.note_volume_context.setText((row['label'] or (note_name(row['note']) if row['note'] is not None else SLOT_NAMES.get(row['sound'],'Whole chord')))+' · beat '+event['beat'] if event else 'Select a note')
+        self.note_volume_context.setText(self.row_name(row)+' · beat '+event['beat'] if event else 'Select a note')
         self.note_volume_midi.setText('Velocity '+str(round(value*127))+'/127' if event else '')
         self.refreshing=was_refreshing
     def set_note_volume(self,value):
@@ -325,7 +332,9 @@ class StepSequencer(QWidget):
         if role in REGISTERS:
             existing={r['note'] for r in self.rows};choices=[n for n in range(REGISTERS[role][0],REGISTERS[role][1]+1) if n not in existing]
             labels=[note_name(n)+' · MIDI '+str(n) for n in choices]
-        elif role=='drums':choices=[s for s in SLOTS if s not in {r['sound'] for r in self.rows}];labels=[SLOT_NAMES[s] for s in choices]
+        elif role=='drums':
+            from .percussion import records
+            kit=records(self.editor.pack);choices=[s for s in kit if s not in {r['sound'] for r in self.rows}];labels=[SLOT_NAMES.get(s,kit[s]['displayName']) for s in choices]
         else:return
         if not choices:return
         label,ok=QInputDialog.getItem(self,'Insert row','Pitch / kit instrument',labels,0,False)
@@ -358,9 +367,11 @@ class StepSequencer(QWidget):
             try:
                 if path.stat().st_size>4*1024*1024:raise ContractError('MIDI file exceeds four MiB')
                 notes=inspect_midi(path.read_bytes())['notes']
-                known={r['midiAddress'] for r in self.editor.pack.instruments['drums'].values() if r['status']=='available'}|{35,36,38,40,41,42,43,44,45,46,47,48,50}
-                available=[slot for slot,r in self.editor.pack.instruments['drums'].items() if r['status']=='available']
-                labels=[SLOT_NAMES[slot]+' · '+self.editor.pack.instruments['drums'][slot]['displayName'] for slot in available]
+                from .percussion import records
+                kit=records(self.editor.pack)
+                known={r['midiAddress'] for r in kit.values() if r['status']=='available'}
+                available=[slot for slot,r in kit.items() if r['status']=='available']
+                labels=[SLOT_NAMES.get(slot,kit[slot]['displayName'])+' · '+kit[slot]['displayName'] for slot in available]
                 for note in sorted({n['note'] for n in notes}-known):
                     label,ok=QInputDialog.getItem(self,'Map imported drum','MIDI note '+str(note)+' → kit instrument',labels,0,False)
                     if not ok:return
@@ -380,7 +391,7 @@ class StepSequencer(QWidget):
         row=self.current_row()
         self.refreshing=True
         if row:
-            self.row_label.setText(row['label'] or (note_name(row['note']) if row['note'] is not None else SLOT_NAMES.get(row['sound'],'Whole chord')))
+            self.row_label.setText(self.row_name(row))
             self.row_muted.setChecked(row['muted']);self.row_solo.setChecked(row['solo'])
             for name,w in self.row_controls.items():w.setValue(row[name]*100 if name=='velocityOffset' else row[name])
         self.refreshing=False;self.refresh_volume();self.refresh_lane()
@@ -443,17 +454,18 @@ class StepSequencer(QWidget):
         self.entry_mode.setEnabled(role!='rhythm');self.pitch_mode.setToolTip('Pitch choice for new notes. Existing steps retain their individual locks.')
         self.default_velocity.setValue(self.config['defaultVelocity']*100)
         self.heading.setText(role.title()+' steps'+(' · Linked Repeat' if instance['linked'] else ''))
+        self.heading.setToolTip('Editable source cycle: '+pattern['length']+' beats. Timeline playback: '+str(editor.instance_length(instance_id))+' beats; loops reuse these source steps.')
         self.grid.setRowCount(len(self.rows));self.grid.setColumnCount(columns)
         self.grid.setHorizontalHeaderLabels([str(int(col*step)+1)+'.'+str(col%max(1,round(1/step))+1) for col in range(columns)])
         def row_label(row):
             if row['label']:return row['label']
             if row['note'] is not None:return note_name(row['note'])+' · '+str(row['note'])
             if role!='drums':return 'Whole chord'
-            record=editor.pack.instruments['drums'][row['sound']];label=SLOT_NAMES[row['sound']]
-            if record['status']!='available':return label+' · unassigned'
-            sample=editor.pack.samples[record['sampleId']]
-            if sample['id'].startswith('hybrid_'):return label+' · modeled'
-            return label+' · '+record['displayName'] if row['sound'].startswith('extra') else label
+            from .percussion import record
+            sound=record(editor.pack,row['sound']);label=SLOT_NAMES.get(row['sound'],sound['displayName'])
+            if sound['status']!='available':return label+' · unassigned'
+            if sound.get('derived') or str(sound.get('sampleId') or '').startswith('hybrid_'):return label+' · source-derived'
+            return label+' · '+sound['displayName'] if row['sound'].startswith('extra') else label
         labels=[row_label(row) for row in self.rows]
         self.grid.setVerticalHeaderLabels(labels)
         matches={};row_events={};events=sorted(pattern['events'],key=lambda e:(beat(e['beat']),e['id']))
@@ -463,8 +475,9 @@ class StepSequencer(QWidget):
             row_events.setdefault(identity,[]).append(event)
         self.grid_matches=matches
         first_active=None
+        if role=='drums':from .percussion import record as percussion_record
         for row,r in enumerate(self.rows):
-            record=editor.pack.instruments['drums'][r['sound']] if role=='drums' else None
+            record=percussion_record(editor.pack,r['sound']) if role=='drums' else None
             for col in range(columns):
                 position=col*step;found=matches.get((r['id'],position),[]);enabled=next((e for e in found if e['enabled']),None)
                 continuing=next((e for e in row_events.get(r['id'],[]) if e['enabled'] and beat(e['beat'])<position<beat(e['beat'])+beat(e['duration'])),None)
@@ -489,7 +502,9 @@ class StepSequencer(QWidget):
         self.help.setToolTip('Left-click/drag draws; right-click erases; Ctrl-drag ties; Shift-drag adjusts note volume; double-click adds a flam. More controls exposes new-note defaults, other expression and row timing.')
         if old_id==instance_id and 0<=previous[0]<len(self.rows) and 0<=previous[1]<columns:self.grid.setCurrentCell(*previous)
         else:
-            focus=first_active or (len(self.rows)//2,0);self.grid.setCurrentCell(*focus);self.grid.scrollToItem(self.grid.item(*focus),QAbstractItemView.ScrollHint.PositionAtCenter)
+            default_note=36 if role=='bass' else 65
+            default_row=min(range(len(self.rows)),key=lambda i:abs(self.rows[i]['note']-default_note)) if role in REGISTERS else 0
+            focus=first_active or (default_row,0);self.grid.setCurrentCell(*focus);self.grid.scrollToItem(self.grid.item(*focus),QAbstractItemView.ScrollHint.PositionAtCenter)
         self.refreshing=False;self.focus_row()
 
     def playhead(self,position):

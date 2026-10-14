@@ -1,7 +1,18 @@
 # Development plan
 
-Authority: the live Raw Daw SDD, sections 1–34 and the engineering selections in
-28.8. Repository notes implement it; they do not supersede it.
+Authority: the live Raw Daw SDD, sections 1–34, engineering selections in 28.8,
+and Shael's October 14 request for source-waveform banks and arrangement loops.
+The explicit October 14 request supersedes the Section 30 modeled fallback.
+
+**October 14 — source banks and looping:** replace oscillator/noise reconstruction
+with nearest-source waveform transforms and polyphonic voice conversion. Lead
+and bass cover MIDI 0–127, and 35 chord qualities cover all roots and valid
+inversions. Prepare the compact root-position bank during extraction; cache
+additional targets on demand outside playback. Preserve native source archives,
+hashes, truthful lineage, finite resource bounds and the downstream mixer.
+The fifth Shop Vac bank uses official Jonathan Coulton stems under CC BY-NC, with two editable demo arrangements.
+Clip moves/right-edge repeats, explicit track cycles and song transport looping
+retain editability, actual destination harmony, deterministic variation and undo.
 
 **Default step sequencer — implemented:** Section 31 provides melodic pitch rows
 and named kit rows, gesture/keyboard entry, mono/poly scheduling, saved row and
@@ -11,9 +22,9 @@ the shared project/Governor/native path. Wider MIDI-device integration and the
 recording/VST/clip-library milestones below remain separately scoped.
 
 **October 11 override — complete harmonic playback:** Section 30 supersedes the
-old missing-coverage gate. Hybrid preparation supplies every registered note,
+old missing-coverage gate. Source-derived preparation supplies every registered note,
 chord and inversion, sustained pitched holds and missing offered kit slots.
-Native source banks remain immutable; modeled assets are labeled honestly.
+Native source banks remain immutable; transformed assets are labeled honestly.
 Modes guide recommendations without withholding borrowed chords. Functional
 coverage is tested separately from source-fidelity/listening quality. See
 `HARMONIC_COVERAGE.md`; source separation, recording, VST3 and the wider approved
@@ -35,8 +46,9 @@ v1 scope remain in this plan.
    complete 2–3 minute Reach Out, Where You Are Now and Auld Lang Syne demos,
    with distinct grooves, returning hooks and measured section contrasts.
    Keep the source-quality gate open until
-   listening, stem alignment and full tonal-map checks succeed. Missing kit slots
-   remain unavailable. This is not a general separator or public builder skill.
+   listening, stem alignment and full tonal-map checks succeed. Unrecorded kit
+   slots now use source-derived transformations. This is not a general separator
+   or public builder skill.
 3. **Native desktop slice — 0.3.0 implemented:** Qt workspace, pack load,
    custom/preset Governor, exact-timing step/event editing, independent/linked
    copies, static mixer, undo/redo, recovery, native save/reopen and stereo export.

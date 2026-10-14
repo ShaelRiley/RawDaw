@@ -589,7 +589,7 @@
         "inversion": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 3
+          "maximum": 6
         },
         "sampleId": {
           "type": "string",

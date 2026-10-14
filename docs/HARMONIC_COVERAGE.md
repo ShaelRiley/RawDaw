@@ -1,77 +1,111 @@
-# Complete harmonic playback
+# Source-derived instrument banks — Raw Daw 0.4.0
 
-Shael's October 11, 2026 instruction and canonical SDD Section 30 supersede the
-earlier policy that missing prepared targets must silence a part. This is a
-source update using the existing 0.3.4 native renderer; a normal pull activates
-it for old packs and saved projects without rewriting their source identities.
+Shael's October 14 request supersedes the modeled-instrument fallback in SDD
+Section 30. Native recordings are preferred. Every missing target is prepared
+from a recorded waveform in the same Song Pack, without oscillator banks,
+synthetic noise, MIDI synthesizers, network models or replacement instruments.
+The original pack and its project references remain immutable.
 
-Every pack is now a hybrid instrument bank: native source samples remain the
-first choice for recorded targets. `prde1/coverage.py` prepares unrecorded
-targets in the pack's private session cache. The native engine receives ordinary
-48 kHz 24-bit WAV assets and keeps its fixed playback clock, drum/channel/mix
-routing and kick-to-bass sidechain. No extra dependencies or network access are
-added to the music runtime.
+## Inventory
 
-## Complete inventory
+Lead and bass each expose MIDI 0–127: 256 pitched addresses per pack. The chord
+registry has 35 common qualities across all 12 roots, including sixth/add-nine,
+ninth/eleventh/thirteenth, suspended and altered-dominant options. The compact
+bank contains 420 root-position chords. Every valid inversion remains selectable;
+the complete address space has 1,860 voicings. Inversions are prepared only when
+needed rather than multiplying the normal extraction bank's storage.
 
-All 12 roots; major, minor, diminished, augmented, power, sus2, sus4, major7,
-minor7, dominant7, half-diminished7, diminished7 and minor-major7; every valid
-inversion. This makes 528 rhythm voicings per pack. Bass covers MIDI 28–60 and
-lead 48–84 (70 notes). All 108 registered tonic/mode combinations and the six
-development progression templates remain playable. These are the entire current
-registry, not a claim to enumerate every possible extended musical chord.
+Mode guides recommendations; borrowed/chromatic chords remain playable. Relative
+patterns follow the actual destination chord. Incompatible exact-pitch locks
+remain visible authored conflicts. Native source identities, intentional rests,
+mute/solo, saved probabilities and the drum/master/sidechain graph retain their
+meanings. Explicitly empty original optional kit slots stay unassigned.
+The supplementary percussion bank exposes all 47 standard GM articulations at
+addresses 35–81, using native source hits where compatible and explicit source
+transformations otherwise. It preserves exact MIDI import/export addresses while
+routing through the existing eight drum EQ families and common drum bus.
 
-The selected chord supplies the actual permitted tones. Mode supplies degree
-interpretation and recommendation context; it no longer withholds a borrowed
-chord. Relative tone indices wrap inside the selected chord's tone count, so a
-fourth-tone motif can continue when its seventh chord becomes a triad. Exact
-pitch locks outside the chord or role register remain explicit authored conflicts.
-Deliberate rests, probability skips, mutes and harmonic-boundary fades remain.
+## Waveform preparation
 
-## Sound preparation and fidelity
+`source_waveform.py` contains offline PCM operations. `coverage.py` chooses seeds,
+tracks lineage and materializes immutable WAVs before native rendering.
+The Governor selects musical events; it performs no waveform processing inside
+the audio loop.
 
-An eight-partial harmonic model estimates instrument color from a stable source
-seed where available, with a deterministic modeled profile when an instrument
-has no clean seed. It renders each requested note and the constituent tones of
-each chord. Inversions move the correct tones up an octave; qualities are not
-approximated by transposing a different-quality chord. Absolute chord identities
-are checked by the existing pack validator. Reconstructed sounds are identified
-in the interface and export notices; they are synthesized, not extracted source
-recordings. Source fidelity and articulation remain approximate.
+For a missing lead/bass pitch, choose the closest declared recorded pitch, then
+break ties by transformation cost, accepted confidence and stable source ID.
+Band-limited Fourier resampling changes pitch and duration together. Long authored
+gates use a crossfaded interior of the transformed recording. Monophonic loop spans
+use integral target cycles to avoid coarse low-octave loop detuning. Stereo
+channels retain their relative phases. Native recordings win unchanged for ordinary
+gates; longer holds get a separate source-derived sustain asset.
 
-Generated single-note loops contain 64 complete cycles, tuned within 0.3 cents
-over the defined registers. Whole chords use one-second integral-cycle periods:
-each constituent pitch is quantized to the nearest Hz, within 6.7 cents for the
-current rhythm voicings. Two periods separate the initial amplitude attack from
-the steady sustain. The highest modeled partial remains below Nyquist. Smooth
-native-to-model crossfades and phase-continuous loop seams let a short recorded
-sample sustain to its authored gate. Long continuations downmix native stereo
-attacks into mono; the original recording remains intact for shorter events.
+For chords, choose the closest useful recorded polyphonic voicing. Overlapping
+short-time Fourier harmonic masks retain original complex frequency bins and phase.
+Separate source voices are warped independently to the requested tones and
+recombined into one complete chord waveform. The method changes chord quality
+and voicing; it does not merely transpose the wrong original chord. Octave-aware
+rotation gives extended chords the correct inversion bass.
 
-Missing required kit slots receive deterministic modeled percussion. Intentionally
-empty extras remain unassigned. Existing semantic identities and recorded hits
-remain; a genuinely unknown imported sound is still reported for repair rather
-than silently remapped to another extra. Pitched-extra conflicts retain the
-established explicit behavior.
+Missing kit articulations use the closest recorded percussion family, followed
+by rate shifts, spectral filtering, duration/envelope changes and boundary fades.
+There is no generated noise or oscillator percussion. Derived sounds are
+identified as approximations, never as newly extracted native recordings.
 
-## Persistence, cost and verification
+A pack without a usable pitched source for a required role, or without a usable
+percussion seed, fails with an actionable source-crop instruction. A wholly absent
+instrument is not filled by an unrelated replacement.
 
-Only requested reconstructions are prepared. Rankings and chord previews do not
-render the whole inventory. Prepared targets are reused throughout the loaded
-session; subsequent loads regenerate the same PCM from the same source hash and
-versioned algorithm. Resolution includes only used assets, so audition history
-cannot change a plan's asset indices or inflate its native decoded bank. Pack
-archives, manifest hashes, saved pack references and original credits are unchanged.
+## Cost, cache and extraction
 
-`make check` exercises PCM fundamentals, borrowed chords, relative tone adaptation,
-all registered roots/qualities/inversions, native export, sustain loop seams,
-source immutability, saves, seek, desktop controls and existing DSP/security rules.
-`make demo` checks both synthetic reference arrangements.
-`python3 tools/verify_chord_coverage.py` exports all 528 chord voicings in each of
-the four actual shipped packs, checks exact pitch-class and inversion metadata,
-and inspects PCM in every event. It also prepares all 70 role notes and verifies
-every registered key/mode ranking. Evidence goes to
-`docs/validation/full-chord-coverage.json`. `make source-demo` checks all twelve
-original projects for conflict-free repeatable audio, exact seek slices and
-unchanged pack bytes. Automated checks do not replace subjective listening or
-physical Steam Deck validation.
+Normal playback prepares only requested targets. The curated extraction tool
+also prewarms the complete compact bank. To prepare an existing archive explicitly:
+
+```bash
+python3 -m prde1 prepare-bank packs/parachute.prdepack --report out/parachute-bank.json
+```
+
+`--inversions` additionally prepares the full inversion inventory. Banks are
+cached outside immutable archives by manifest hash, algorithm version, source
+ID/hash and target identity. Each cached WAV has verified dimensions and SHA-256;
+its metadata must match requested pitches, chord, lineage and valid loop.
+Corrupt or incompatible entries are rebuilt. Writes use durable temporary
+replacement. An unavailable writable cache does not prevent playback.
+
+The persistent cache is bounded to 256 MiB per pack/version with eviction. Session
+materializations have a 1 GiB disk bound and are removed on pack close. Harmonic
+analysis keeps at most 32 MiB of resident voice arrays. Normal source-note analysis
+uses bounded crops; generated notes use at most two seconds, generated chord
+targets approximately 400 ms plus their prepared loop. Original files remain
+available separately.
+
+Only assets used in a resolved plan enter the native decoded bank. Its 256 MiB,
+1,024-asset and 64-voice limits remain explicit. Audition history cannot alter the
+plan's sorted asset indices or allocate the entire catalog in playback. NumPy 2.3.5
+is separately installed for offline preparation; the native engine still performs
+fixed sample playback and downstream DSP only.
+
+## Fidelity and validation
+
+These are source-derived transformations, not an assertion that sparse source
+material becomes a perfect commercial instrument. Shared harmonics cannot be
+perfectly demixed by masks. Residual bleed and missing fundamentals remain possible.
+Rate warps change attack, decay and formants; distant MIDI pitches can sound
+unnatural. Derived percussion cannot reproduce an unrecorded instrument exactly.
+Original source tuning estimates also limit tuning accuracy. Listening remains
+necessary to judge a bank's useful register and timbre.
+
+`make check` validates note/chord PCM, inversion identities, all registered targets,
+cache recovery, source hashes, deterministic reopen/seek, UI gestures, saved loops,
+native output and DSP/security rules. Synthetic fixtures prove those invariants
+and are clearly identified; they are not source listening evidence.
+`make demo` renders both synthetic references.
+
+`tools/verify_source_banks.py` prepares all 256 note addresses and 420 root chords
+and all 47 standard percussion sounds in each of five shipped source packs,
+verifies non-silent real PCM and no synthetic
+fallback, renders all root chords and checks archive immutability.
+`tools/verify_chord_coverage.py` additionally renders all 1,860 inversion voicings
+per source pack. `make source-demo` verifies the fourteen arrangements,
+repeat identity and exact seek slices. Reports distinguish automated coverage
+from human listening and physical device testing.

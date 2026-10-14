@@ -1,0 +1,1465 @@
+[
+  {
+    "packId": "shop_vac",
+    "title": "Shop Vac \u2014 Jonathan Coulton",
+    "artist": "Jonathan Coulton",
+    "sourcePage": "https://www.jonathancoulton.com/source/",
+    "bpm": 150,
+    "vocalLead": true,
+    "license": "CC BY-NC 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+    "attribution": "Shop Vac by Jonathan Coulton \u2014 https://www.jonathancoulton.com/ \u2014 CC BY-NC 3.0. Artist-released JoCo Looks Back stems; cropped/cleaned and transformed into a sample bank by Raw Daw. No endorsement implied. Noncommercial use only.",
+    "rightsDeclaration": "Artist FAQ grants attributed noncommercial reuse of original songs; official source page links these stems. Preserve CC BY-NC restriction. Archive metadata labels BY-NC 4.0; original artist FAQ links BY-NC 3.0, retained conservatively. No commercial permission or endorsement implied.",
+    "primarySourceInput": "mix",
+    "profileVersion": "artist-source-bank-0.4.0",
+    "builderVersion": "curated-stem-preparation-0.4.0",
+    "modelVersion": "none \u2014 artist-released source stems",
+    "licenseEvidence": {
+      "selected": "CC-BY-NC-3.0",
+      "url": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "artistDeclaration": "https://www.jonathancoulton.com/faq/",
+      "sourceDownloadAuthority": "https://www.jonathancoulton.com/source/",
+      "trackListAuthority": "https://www.jonathancoulton.com/2008/11/18/joco-looks-back/",
+      "archiveItem": "https://archive.org/details/JonathanCoultonJoCoLooksBackSourceTracks",
+      "archiveLabel": "CC-BY-NC-4.0",
+      "archiveLicenseUrl": "http://creativecommons.org/licenses/by-nc/4.0/",
+      "versionChoice": "Artist FAQ links BY-NC3.0. Archive upload is labeled BY-NC4.0. Preserve both statements and conservatively use the original artist linked3.0 license rather than claiming an unrestricted commercial grant.",
+      "commercialUse": false,
+      "shareAlike": false,
+      "derivatives": true,
+      "obligations": [
+        "Credit Shop Vac and Jonathan Coulton; link artist website and license.",
+        "Describe cropping, filtering, pitch warps, harmonic-mask processing and other modifications.",
+        "Noncommercial redistribution/remixing only; separate permission is required for commercial use.",
+        "No implication of endorsement; no additional DRM/legal restrictions on licensed material."
+      ]
+    },
+    "separation": "Official artist-released JoCo Looks Back multitrack stems. Lead voice, bass, acoustic guitars, drum submix and isolated claps selected. Radio and Vincent Solo not used. No learned separation model or substitute synthesizer.",
+    "isolation": "Mostly dry artist lead voice; original acoustic-guitar and drum submixes may contain overlapping notes/hits and baked effects. Provisional crop estimates require listening.",
+    "corrections": "Saved native crop, pitch, chord and percussion decisions in recipes/shop-vac.json; complete source-derived bank prepared separately.",
+    "sourceTimeConvention": "Ingredient-local decoded MP3 seconds; artist readme says stems may need grid nudging. Stem/master alignment not claimed. Readme gives quarter-note BPM 150.",
+    "inputs": {
+      "mix": {
+        "path": "shop-vac-original.mp3",
+        "sha256": "1734a5e6a02d330baccc76da91fc50a37a3072e7448244b2124bc24d050a926c",
+        "bytes": 7164459,
+        "sourcePage": "https://www.jonathancoulton.com/source/",
+        "sourceUrl": "https://www.jonathancoulton.com/wp-content/uploads/encodes/Thing_a_Week_One/mp3/04_Shop_Vac_mp3_a4579fe.mp3",
+        "license": "CC BY-NC 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+        "origin": "official studio recording",
+        "timeOriginSeconds": 0
+      },
+      "lead": {
+        "path": "lead-vox.mp3",
+        "sha256": "de8d861bd29b0b0bdf71427c04db78e17061a8d333f536ca93eb5091bbfb6370",
+        "bytes": 3151322,
+        "sourcePage": "https://www.jonathancoulton.com/source/",
+        "sourceUrl": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+        "license": "CC BY-NC 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+        "origin": "artist-released multitrack stem",
+        "timeOriginSeconds": 0
+      },
+      "bass": {
+        "path": "bass.mp3",
+        "sha256": "657b954a52f990c7aaf047385baa3ff8d639049daa7d01e396f5360157260b46",
+        "bytes": 2520683,
+        "sourcePage": "https://www.jonathancoulton.com/source/",
+        "sourceUrl": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+        "license": "CC BY-NC 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+        "origin": "artist-released multitrack stem",
+        "timeOriginSeconds": 0
+      },
+      "rhythm": {
+        "path": "acoustic-guitars.mp3",
+        "sha256": "f33062541ce88b4383add99f0e8a0d0bbeaf5f9e8218287ce5605b90586ee96a",
+        "bytes": 5843261,
+        "sourcePage": "https://www.jonathancoulton.com/source/",
+        "sourceUrl": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+        "license": "CC BY-NC 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+        "origin": "artist-released multitrack stem",
+        "timeOriginSeconds": 0
+      },
+      "drums": {
+        "path": "drums.mp3",
+        "sha256": "069c28fb82447ea63e7039b0696a61caf2e07c8af1f768e663e2ea31f525e431",
+        "bytes": 7092248,
+        "sourcePage": "https://www.jonathancoulton.com/source/",
+        "sourceUrl": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+        "license": "CC BY-NC 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+        "origin": "artist-released multitrack stem",
+        "timeOriginSeconds": 0
+      },
+      "claps": {
+        "path": "claps.mp3",
+        "sha256": "a9c90be0148c4f13e7245abb53c63f97c5176c7594c9a8a611213ea96fe9503f",
+        "bytes": 2681141,
+        "sourcePage": "https://www.jonathancoulton.com/source/",
+        "sourceUrl": "https://archive.org/download/JonathanCoultonJoCoLooksBackSourceTracks/Jonathan%20Coulton%20-%20JoCo%20Looks%20Back%20Source%20Tracks.zip",
+        "license": "CC BY-NC 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+        "origin": "artist-released multitrack stem",
+        "timeOriginSeconds": 0
+      }
+    },
+    "crops": [
+      {
+        "id": "shop_vac_lead_47",
+        "role": "lead",
+        "pitches": [
+          47
+        ],
+        "source": {
+          "input": "lead",
+          "start": 6.416,
+          "end": 6.912
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_lead_49",
+        "role": "lead",
+        "pitches": [
+          49
+        ],
+        "source": {
+          "input": "lead",
+          "start": 26.2,
+          "end": 26.536
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_lead_52",
+        "role": "lead",
+        "pitches": [
+          52
+        ],
+        "source": {
+          "input": "lead",
+          "start": 29.048000000000002,
+          "end": 29.304000000000002
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_lead_54",
+        "role": "lead",
+        "pitches": [
+          54
+        ],
+        "source": {
+          "input": "lead",
+          "start": 28.744,
+          "end": 29.016
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_lead_56",
+        "role": "lead",
+        "pitches": [
+          56
+        ],
+        "source": {
+          "input": "lead",
+          "start": 71.232,
+          "end": 71.584
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_lead_59",
+        "role": "lead",
+        "pitches": [
+          59
+        ],
+        "source": {
+          "input": "lead",
+          "start": 17.6,
+          "end": 17.888
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_lead_60",
+        "role": "lead",
+        "pitches": [
+          60
+        ],
+        "source": {
+          "input": "lead",
+          "start": 30.984,
+          "end": 31.64
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_lead_61",
+        "role": "lead",
+        "pitches": [
+          61
+        ],
+        "source": {
+          "input": "lead",
+          "start": 31.8,
+          "end": 32.376
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_bass_28",
+        "role": "bass",
+        "pitches": [
+          28
+        ],
+        "source": {
+          "input": "bass",
+          "start": 50.192,
+          "end": 51.056
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_bass_30",
+        "role": "bass",
+        "pitches": [
+          30
+        ],
+        "source": {
+          "input": "bass",
+          "start": 44.903999999999996,
+          "end": 46.153999999999996
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_bass_33",
+        "role": "bass",
+        "pitches": [
+          33
+        ],
+        "source": {
+          "input": "bass",
+          "start": 21.76,
+          "end": 22.128
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_bass_35",
+        "role": "bass",
+        "pitches": [
+          35
+        ],
+        "source": {
+          "input": "bass",
+          "start": 66.048,
+          "end": 67.12
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_bass_36",
+        "role": "bass",
+        "pitches": [
+          36
+        ],
+        "source": {
+          "input": "bass",
+          "start": 70.4,
+          "end": 71.65
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_bass_37",
+        "role": "bass",
+        "pitches": [
+          37
+        ],
+        "source": {
+          "input": "bass",
+          "start": 14.384,
+          "end": 15.634
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_bass_39",
+        "role": "bass",
+        "pitches": [
+          39
+        ],
+        "source": {
+          "input": "bass",
+          "start": 2.8,
+          "end": 3.2
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_bass_40",
+        "role": "bass",
+        "pitches": [
+          40
+        ],
+        "source": {
+          "input": "bass",
+          "start": 36.92,
+          "end": 38.135999999999996
+        },
+        "onsetFrame": 96,
+        "confidence": 0.8,
+        "decision": "Artist-released isolated stem; stable source pitch screen; vibrato/tuning estimates remain approximate"
+      },
+      {
+        "id": "shop_vac_chord_1_power_1",
+        "role": "rhythm",
+        "pitches": [
+          44,
+          49,
+          56
+        ],
+        "chord": {
+          "root": 1,
+          "quality": "power",
+          "inversion": 1
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 14.41,
+          "end": 14.805
+        },
+        "onsetFrame": 96,
+        "confidence": 0.75,
+        "decision": "Artist-released acoustic-guitar stem; spectral chord screen; source voicing/isolation remains provisional"
+      },
+      {
+        "id": "shop_vac_chord_4_major_0",
+        "role": "rhythm",
+        "pitches": [
+          40,
+          47,
+          52,
+          56,
+          59
+        ],
+        "chord": {
+          "root": 4,
+          "quality": "major",
+          "inversion": 0
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 10.61,
+          "end": 10.805
+        },
+        "onsetFrame": 96,
+        "confidence": 0.75,
+        "decision": "Artist-released acoustic-guitar stem; spectral chord screen; source voicing/isolation remains provisional"
+      },
+      {
+        "id": "shop_vac_chord_8_major_0",
+        "role": "rhythm",
+        "pitches": [
+          44,
+          51,
+          56,
+          60,
+          72
+        ],
+        "chord": {
+          "root": 8,
+          "quality": "major",
+          "inversion": 0
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 13.8,
+          "end": 14.004999999999999
+        },
+        "onsetFrame": 96,
+        "confidence": 0.75,
+        "decision": "Artist-released acoustic-guitar stem; spectral chord screen; source voicing/isolation remains provisional"
+      },
+      {
+        "id": "shop_vac_chord_1_minor_2",
+        "role": "rhythm",
+        "pitches": [
+          44,
+          49,
+          56,
+          64,
+          73
+        ],
+        "chord": {
+          "root": 1,
+          "quality": "minor",
+          "inversion": 2
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 15.01,
+          "end": 15.225
+        },
+        "onsetFrame": 96,
+        "confidence": 0.75,
+        "decision": "Artist-released acoustic-guitar stem; spectral chord screen; source voicing/isolation remains provisional"
+      },
+      {
+        "id": "shop_vac_chord_9_major7_3",
+        "role": "rhythm",
+        "pitches": [
+          44,
+          45,
+          49,
+          56,
+          61,
+          64,
+          76
+        ],
+        "chord": {
+          "root": 9,
+          "quality": "major7",
+          "inversion": 3
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 15.83,
+          "end": 16.015
+        },
+        "onsetFrame": 96,
+        "confidence": 0.75,
+        "decision": "Artist-released acoustic-guitar stem; spectral chord screen; source voicing/isolation remains provisional"
+      },
+      {
+        "id": "shop_vac_chord_11_dominant7_0",
+        "role": "rhythm",
+        "pitches": [
+          47,
+          51,
+          57,
+          59,
+          66,
+          81
+        ],
+        "chord": {
+          "root": 11,
+          "quality": "dominant7",
+          "inversion": 0
+        },
+        "source": {
+          "input": "rhythm",
+          "start": 5.19,
+          "end": 5.375
+        },
+        "onsetFrame": 96,
+        "confidence": 0.75,
+        "decision": "Artist-released acoustic-guitar stem; spectral chord screen; source voicing/isolation remains provisional"
+      },
+      {
+        "id": "shop_vac_kick",
+        "role": "drums",
+        "pitches": [],
+        "articulation": "kick",
+        "source": {
+          "input": "drums",
+          "start": 4.002,
+          "end": 4.18
+        },
+        "onsetFrame": 864,
+        "confidence": 0.65,
+        "decision": "Saved transient crop from artist drum submix; provisional percussion identity and residual bleed require listening"
+      },
+      {
+        "id": "shop_vac_snare",
+        "role": "drums",
+        "pitches": [],
+        "articulation": "snare",
+        "source": {
+          "input": "drums",
+          "start": 3.812,
+          "end": 3.99
+        },
+        "onsetFrame": 864,
+        "confidence": 0.65,
+        "decision": "Saved transient crop from artist drum submix; provisional percussion identity and residual bleed require listening"
+      },
+      {
+        "id": "shop_vac_hatClosed",
+        "role": "drums",
+        "pitches": [],
+        "articulation": "hatClosed",
+        "source": {
+          "input": "drums",
+          "start": 3.332,
+          "end": 3.49
+        },
+        "onsetFrame": 864,
+        "confidence": 0.65,
+        "decision": "Saved transient crop from artist drum submix; provisional percussion identity and residual bleed require listening",
+        "filter": "highpass=frequency=1800"
+      },
+      {
+        "id": "shop_vac_clap",
+        "role": "drums",
+        "pitches": [],
+        "articulation": "clap",
+        "source": {
+          "input": "claps",
+          "start": 37.192,
+          "end": 37.43
+        },
+        "onsetFrame": 864,
+        "confidence": 0.9,
+        "decision": "Artist-released isolated clap stem"
+      }
+    ],
+    "variants": [],
+    "drums": {
+      "hatOpen": {
+        "reason": "No isolated source articulation; derive from recorded percussion"
+      },
+      "tom1": {
+        "reason": "No isolated source articulation; derive from recorded percussion"
+      },
+      "tom2": {
+        "reason": "No isolated source articulation; derive from recorded percussion"
+      },
+      "kick": {
+        "sampleId": "shop_vac_kick",
+        "label": "Kick",
+        "soundIdentity": "kick",
+        "midiAddress": 36
+      },
+      "snare": {
+        "sampleId": "shop_vac_snare",
+        "label": "Snare",
+        "soundIdentity": "snare",
+        "midiAddress": 38
+      },
+      "hatClosed": {
+        "sampleId": "shop_vac_hatClosed",
+        "label": "Closed hi-hat",
+        "soundIdentity": "hatClosed",
+        "midiAddress": 42
+      },
+      "extra1": {
+        "sampleId": "shop_vac_clap",
+        "label": "Hand clap",
+        "soundIdentity": "clap",
+        "midiAddress": 39
+      },
+      "extra2": {
+        "reason": "Intentionally unassigned original extra; standard percussion bank remains separately available"
+      }
+    },
+    "clip": {
+      "id": "shop_vac_source_groove",
+      "role": "drums",
+      "length": "4",
+      "events": [
+        {
+          "id": "hat_0",
+          "beat": "0",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "hatClosed"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "hat_1",
+          "beat": "1/2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "hatClosed"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "hat_2",
+          "beat": "1",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "hatClosed"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "hat_3",
+          "beat": "3/2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "hatClosed"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "hat_4",
+          "beat": "2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "hatClosed"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "hat_5",
+          "beat": "5/2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "hatClosed"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "hat_6",
+          "beat": "3",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "hatClosed"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "hat_7",
+          "beat": "7/2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "hatClosed"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "kick_0",
+          "beat": "0",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "kick"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "kick_2",
+          "beat": "2",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "kick"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "snare_1",
+          "beat": "1",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "snare"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        },
+        {
+          "id": "snare_3",
+          "beat": "3",
+          "duration": "1/4",
+          "kind": "drum",
+          "enabled": true,
+          "choice": {
+            "tone": 0,
+            "registerMidi": 60,
+            "exactMidi": null,
+            "soundIdentity": "snare"
+          },
+          "expression": {
+            "velocity": 0.8,
+            "attackMs": 0,
+            "playPercent": 100,
+            "changePercent": 0,
+            "variation": "none",
+            "locked": false,
+            "lockExactPitch": false
+          }
+        }
+      ],
+      "provenance": {
+        "sourceClip": "Shop Vac first drum measure, estimated",
+        "license": "CC BY-NC 3.0",
+        "changes": "Saved approximate 150 BPM onset assignments; not artist-authored MIDI; clap accents are authored separately"
+      }
+    },
+    "analysis": {
+      "tempoQuarterBpm": 150,
+      "tonic": 4,
+      "mode": "major",
+      "screenedCrops": [
+        {
+          "id": "shop_vac_lead_47",
+          "medianMidi": 47.004681343905716,
+          "centsFromTarget": 0.4681343905716062,
+          "spreadCents": 33.2160552846652,
+          "voicedFrames": 24
+        },
+        {
+          "id": "shop_vac_lead_49",
+          "medianMidi": 48.989898138647916,
+          "centsFromTarget": -1.0101861352083574,
+          "spreadCents": 23.470549194373547,
+          "voicedFrames": 14
+        },
+        {
+          "id": "shop_vac_lead_52",
+          "medianMidi": 52.069366771245534,
+          "centsFromTarget": 6.93667712455337,
+          "spreadCents": 11.30635047217936,
+          "voicedFrames": 9
+        },
+        {
+          "id": "shop_vac_lead_54",
+          "medianMidi": 54.266444749390175,
+          "centsFromTarget": 26.64447493901747,
+          "spreadCents": 3.735533723853024,
+          "voicedFrames": 10
+        },
+        {
+          "id": "shop_vac_lead_56",
+          "medianMidi": 56.14372197635825,
+          "centsFromTarget": 14.372197635825046,
+          "spreadCents": 5.5307902584345925,
+          "voicedFrames": 15
+        },
+        {
+          "id": "shop_vac_lead_59",
+          "medianMidi": 58.88224937607664,
+          "centsFromTarget": -11.775062392335656,
+          "spreadCents": 9.965707115723177,
+          "voicedFrames": 11
+        },
+        {
+          "id": "shop_vac_lead_60",
+          "medianMidi": 59.72629489816908,
+          "centsFromTarget": -27.370510183092023,
+          "spreadCents": 30.755048697479026,
+          "voicedFrames": 34
+        },
+        {
+          "id": "shop_vac_lead_61",
+          "medianMidi": 60.94269955936369,
+          "centsFromTarget": -5.730044063631112,
+          "spreadCents": 14.569269504427496,
+          "voicedFrames": 29
+        },
+        {
+          "id": "shop_vac_bass_28",
+          "medianMidi": 28.111966301297258,
+          "centsFromTarget": 11.196630129725804,
+          "spreadCents": 1.8393167355171158,
+          "voicedFrames": 37
+        },
+        {
+          "id": "shop_vac_bass_30",
+          "medianMidi": 30.141994944866234,
+          "centsFromTarget": 14.199494486623365,
+          "spreadCents": 9.002572767560224,
+          "voicedFrames": 61
+        },
+        {
+          "id": "shop_vac_bass_33",
+          "medianMidi": 33.13449198785637,
+          "centsFromTarget": 13.44919878563715,
+          "spreadCents": 2.0031469496778698,
+          "voicedFrames": 8
+        },
+        {
+          "id": "shop_vac_bass_35",
+          "medianMidi": 35.152322816395056,
+          "centsFromTarget": 15.23228163950563,
+          "spreadCents": 5.1982707882089585,
+          "voicedFrames": 52
+        },
+        {
+          "id": "shop_vac_bass_36",
+          "medianMidi": 36.16609119576353,
+          "centsFromTarget": 16.609119576352782,
+          "spreadCents": 7.782907927926885,
+          "voicedFrames": 62
+        },
+        {
+          "id": "shop_vac_bass_37",
+          "medianMidi": 37.16010944124267,
+          "centsFromTarget": 16.010944124266757,
+          "spreadCents": 8.237786150130688,
+          "voicedFrames": 63
+        },
+        {
+          "id": "shop_vac_bass_39",
+          "medianMidi": 39.15615826120363,
+          "centsFromTarget": 15.615826120362897,
+          "spreadCents": 8.988305895149296,
+          "voicedFrames": 10
+        },
+        {
+          "id": "shop_vac_bass_40",
+          "medianMidi": 40.073602545290214,
+          "centsFromTarget": 7.360254529021404,
+          "spreadCents": 2.099289092981138,
+          "voicedFrames": 61
+        },
+        {
+          "id": "shop_vac_chord_1_power_1",
+          "chroma": [
+            0.0,
+            0.864,
+            0.003,
+            0.0,
+            0.085,
+            0.024,
+            0.018,
+            0.006,
+            1.0,
+            0.012,
+            0.002,
+            0.012
+          ],
+          "notes": [
+            [
+              49,
+              50.41042142465664
+            ],
+            [
+              44,
+              37.58453835156273
+            ],
+            [
+              56,
+              20.790128716915465
+            ],
+            [
+              64,
+              4.983640963387589
+            ],
+            [
+              65,
+              1.061332934391618
+            ],
+            [
+              66,
+              1.0299777253125375
+            ],
+            [
+              59,
+              0.7094134695072677
+            ],
+            [
+              57,
+              0.6842006337590949
+            ]
+          ],
+          "residual": 0.4629773417473164,
+          "expectedPitchClasses": [
+            1,
+            8
+          ],
+          "interpretation": "Passed bounded spectral screen; voicing/isolation/listening validation remains open"
+        },
+        {
+          "id": "shop_vac_chord_4_major_0",
+          "chroma": [
+            0.199,
+            0.0,
+            0.0,
+            0.135,
+            0.78,
+            0.12,
+            0.093,
+            0.172,
+            1.0,
+            0.121,
+            0.118,
+            0.832
+          ],
+          "notes": [
+            [
+              56,
+              34.85211783025192
+            ],
+            [
+              52,
+              23.57172235954504
+            ],
+            [
+              47,
+              19.05625073075021
+            ],
+            [
+              59,
+              10.502336778384258
+            ],
+            [
+              48,
+              7.07147956149451
+            ],
+            [
+              55,
+              5.360996901465857
+            ],
+            [
+              51,
+              4.781842255170964
+            ],
+            [
+              57,
+              4.29605586642105
+            ]
+          ],
+          "residual": 0.49126925460387594,
+          "expectedPitchClasses": [
+            4,
+            8,
+            11
+          ],
+          "interpretation": "Passed bounded spectral screen; voicing/isolation/listening validation remains open"
+        },
+        {
+          "id": "shop_vac_chord_8_major_0",
+          "chroma": [
+            0.495,
+            0.0,
+            0.031,
+            0.49,
+            0.097,
+            0.009,
+            0.048,
+            0.076,
+            1.0,
+            0.218,
+            0.036,
+            0.0
+          ],
+          "notes": [
+            [
+              56,
+              42.43218303871749
+            ],
+            [
+              51,
+              27.443370925744397
+            ],
+            [
+              60,
+              23.274437030505222
+            ],
+            [
+              44,
+              13.521499144669251
+            ],
+            [
+              57,
+              7.336072211652942
+            ],
+            [
+              52,
+              5.424609398772263
+            ],
+            [
+              45,
+              4.865898369026188
+            ],
+            [
+              72,
+              3.374911479864761
+            ]
+          ],
+          "residual": 0.5622823212488757,
+          "expectedPitchClasses": [
+            0,
+            3,
+            8
+          ],
+          "interpretation": "Passed bounded spectral screen; voicing/isolation/listening validation remains open"
+        },
+        {
+          "id": "shop_vac_chord_1_minor_2",
+          "chroma": [
+            0.143,
+            1.0,
+            0.199,
+            0.088,
+            0.453,
+            0.009,
+            0.029,
+            0.05,
+            0.35,
+            0.083,
+            0.0,
+            0.0
+          ],
+          "notes": [
+            [
+              49,
+              37.72376510636375
+            ],
+            [
+              64,
+              16.654419624017148
+            ],
+            [
+              44,
+              10.765602656833423
+            ],
+            [
+              50,
+              8.147147463383227
+            ],
+            [
+              48,
+              5.829810338843118
+            ],
+            [
+              75,
+              3.599935553256744
+            ],
+            [
+              56,
+              3.564170250582058
+            ],
+            [
+              45,
+              3.38262626604476
+            ]
+          ],
+          "residual": 0.46319581987449787,
+          "expectedPitchClasses": [
+            1,
+            4,
+            8
+          ],
+          "interpretation": "Passed bounded spectral screen; voicing/isolation/listening validation remains open"
+        },
+        {
+          "id": "shop_vac_chord_9_major7_3",
+          "chroma": [
+            0.066,
+            0.646,
+            0.015,
+            0.0,
+            0.355,
+            0.043,
+            0.084,
+            0.165,
+            1.0,
+            0.42,
+            0.021,
+            0.045
+          ],
+          "notes": [
+            [
+              56,
+              22.819383617728167
+            ],
+            [
+              61,
+              14.06994202348772
+            ],
+            [
+              44,
+              12.42967450850105
+            ],
+            [
+              45,
+              9.478566968508604
+            ],
+            [
+              64,
+              6.865759480779823
+            ],
+            [
+              49,
+              6.571227382368498
+            ],
+            [
+              43,
+              5.829389644494723
+            ],
+            [
+              57,
+              5.330699347643133
+            ]
+          ],
+          "residual": 0.5678128703693627,
+          "expectedPitchClasses": [
+            1,
+            4,
+            8,
+            9
+          ],
+          "interpretation": "Passed bounded spectral screen; voicing/isolation/listening validation remains open"
+        },
+        {
+          "id": "shop_vac_chord_11_dominant7_0",
+          "chroma": [
+            0.21,
+            0.067,
+            0.1,
+            0.627,
+            0.107,
+            0.003,
+            0.269,
+            0.056,
+            0.094,
+            0.559,
+            0.185,
+            1.0
+          ],
+          "notes": [
+            [
+              47,
+              17.67756792387034
+            ],
+            [
+              51,
+              16.50284142184813
+            ],
+            [
+              57,
+              13.271424191621966
+            ],
+            [
+              59,
+              10.405477270191726
+            ],
+            [
+              48,
+              6.07817596623491
+            ],
+            [
+              46,
+              5.363202157267244
+            ],
+            [
+              66,
+              4.891220343452256
+            ],
+            [
+              50,
+              2.8989798246370793
+            ]
+          ],
+          "residual": 0.48609161270923446,
+          "expectedPitchClasses": [
+            3,
+            6,
+            9,
+            11
+          ],
+          "interpretation": "Passed bounded spectral screen; voicing/isolation/listening validation remains open"
+        }
+      ],
+      "retainedDrumAssignments": [
+        {
+          "eventId": "hat_0",
+          "beat": "0",
+          "sound": "hatClosed"
+        },
+        {
+          "eventId": "hat_1",
+          "beat": "1/2",
+          "sound": "hatClosed"
+        },
+        {
+          "eventId": "hat_2",
+          "beat": "1",
+          "sound": "hatClosed"
+        },
+        {
+          "eventId": "hat_3",
+          "beat": "3/2",
+          "sound": "hatClosed"
+        },
+        {
+          "eventId": "hat_4",
+          "beat": "2",
+          "sound": "hatClosed"
+        },
+        {
+          "eventId": "hat_5",
+          "beat": "5/2",
+          "sound": "hatClosed"
+        },
+        {
+          "eventId": "hat_6",
+          "beat": "3",
+          "sound": "hatClosed"
+        },
+        {
+          "eventId": "hat_7",
+          "beat": "7/2",
+          "sound": "hatClosed"
+        },
+        {
+          "eventId": "kick_0",
+          "beat": "0",
+          "sound": "kick"
+        },
+        {
+          "eventId": "kick_2",
+          "beat": "2",
+          "sound": "kick"
+        },
+        {
+          "eventId": "snare_1",
+          "beat": "1",
+          "sound": "snare"
+        },
+        {
+          "eventId": "snare_3",
+          "beat": "3",
+          "sound": "snare"
+        }
+      ],
+      "assignments": "Approximate normalized one-measure groove. Clip timing is an estimate, not an original MIDI score."
+    },
+    "roleLabels": {
+      "lead": "Jonathan Coulton lead voice",
+      "bass": "Electric bass",
+      "rhythm": "Acoustic guitars"
+    },
+    "demonstrations": [
+      {
+        "tonic": 4,
+        "mode": "major",
+        "bpm": 150,
+        "chords": [
+          [
+            4,
+            "major",
+            0
+          ],
+          [
+            9,
+            "major",
+            0
+          ],
+          [
+            1,
+            "minor",
+            0
+          ],
+          [
+            11,
+            "dominant7",
+            0
+          ]
+        ]
+      },
+      {
+        "tonic": 1,
+        "mode": "natural_minor",
+        "bpm": 128,
+        "chords": [
+          [
+            1,
+            "minor",
+            0
+          ],
+          [
+            9,
+            "major",
+            0
+          ],
+          [
+            4,
+            "major",
+            0
+          ],
+          [
+            11,
+            "major",
+            0
+          ]
+        ]
+      }
+    ],
+    "demonstrationSuffixes": [
+      "a",
+      "b"
+    ]
+  }
+]
