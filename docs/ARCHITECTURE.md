@@ -1,3 +1,17 @@
+# SONAR reference step interface — October 14
+
+`step_widgets.py` implements the supplied visual reference with a shared cell
+paint delegate, beat header and instrument header. Row hit targets dispatch to
+the same editor transactions as the existing numeric controls. The focused row
+reserves one expanded section; a single expression widget and five-dial inspector
+follow its viewport coordinates. Scrolling and focus changes move these widgets,
+rather than allocating an editor for every pitch, drum articulation or step.
+Keyboard/numeric alternatives, accessible cell text and tooltips remain available.
+A mouse dial gesture saves on release; keyboard edits save immediately. Left-click
+selects a paint/erase gesture from the first cell's state. Preview is suppressed
+for erasure. Existing sample preparation, resolver, persistent rows and DSP remain
+the authoritative musical path.
+
 # Architecture decisions — first core checkpoint
 
 ## Current source banks and virtual loops — 0.4.0

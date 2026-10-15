@@ -1,3 +1,47 @@
+# Current checkpoint — Raw Daw 0.4.1 SONAR reference sequencer
+
+October 14: Shael supplied a SONAR/Cakewalk step-sequencer screenshot and
+requested the corresponding appearance and interaction in Raw Daw, with explicit
+permission to push a build. The live SDD revision read was
+`AHj4eMS_K1M3ev47yLin3yhFl-jZCDjO6MceppWUzoUpCcvnLz-TeNORRHv-NvtHXF-dKwJMArmwF1r6GDnrfNa52n_Nrj8kdDKjt_4s4Q`.
+Section 31 remains the musical specification; this request supplies the visual
+reference and click-to-toggle workflow.
+
+The native step view now has silver beveled buttons, cyan active hits and
+velocity marks, beat groups, cream playback highlighting and a beat/subdivision
+readout. Each instrument header exposes expansion, independent audition, its
+MIDI address and saved Mute/Solo. The selected row opens an inline expression
+lane with Volume ×, Duration, Swing, Time ± and Flam dials plus an expression
+selector. One shared inspector/lane follows selection and scrolling. A delegate
+and painted headers avoid per-cell widgets for the full pitch and kit banks.
+
+Left-click toggles the initial step; dragging consistently paints or erases from
+that state. Right-click erases, Ctrl-drag ties and Shift-drag edits velocity.
+Erasure does not audition. Keyboard entry, native pattern/MIDI interchange,
+linked reuse, exact row controls and save/undo/recovery retain the shared musical
+path. Mouse dial gestures commit on release; keyboard edits commit immediately.
+The transport adds local Play/Stop and retains Loop. Row +/× shortcuts complement
+the existing menus. Native source banks, renderer/DSP and all arrangements retain
+their prior audio behavior.
+
+Visual inspection and viewport assertions cover 1280×800 at 100% and 150% text,
+including the complete expanded expression selector. Compact toolbar labels
+avoid the initial enlarged-text wrapping/clipping defect. New real Qt tests
+exercise row targeting, Mute/Solo persistence, audition independence, expansion,
+scrolling, dial drag/keyboard undo and click-to-erase preview suppression.
+
+Final `make check` passed all 190 Python/Qt tests with no skips plus native
+engine checks; `make demo` passed both reference renders. All fourteen GUI
+exports match the pre-update reference WAVs byte for byte. Launcher, installer,
+1280×800 and enlarged-text checks pass. Validation results and logs are recorded
+in `validation/sonar-step-interface.json`.
+The 0.4.1 source checkout includes a hashed Linux x86_64 renderer package, checked
+by the normal installer; the compiled audio engine remains byte-identical to
+0.4.0. Physical Steam Deck operation and human listening remain unverified.
+The broader approved recording/VST/effects work remains in the development plan.
+
+---
+
 # Current checkpoint — Raw Daw 0.4.0 source banks and loops
 
 October 14: Shael requested source-waveform completion instead of a substitute

@@ -14,6 +14,13 @@ The fifth Shop Vac bank uses official Jonathan Coulton stems under CC BY-NC, wit
 Clip moves/right-edge repeats, explicit track cycles and song transport looping
 retain editability, actual destination harmony, deterministic variation and undo.
 
+**October 14 — SONAR reference interface:** compact silver/cyan step buttons,
+beat groups, per-row audition/Mute/Solo, inline collapsible expression, five row
+dials and pattern transport use the existing native musical/editor paths.
+Mouse and keyboard checks cover targeting, single-undo gestures, preservation of
+notes, persistence and 1280×800/150% layout. Recording, VST3, source-fidelity and
+physical-device release gates below retain their scope.
+
 **Default step sequencer — implemented:** Section 31 provides melodic pitch rows
 and named kit rows, gesture/keyboard entry, mono/poly scheduling, saved row and
 step expression, ties/flams, swing/offsets, row/pattern reuse, independent loop

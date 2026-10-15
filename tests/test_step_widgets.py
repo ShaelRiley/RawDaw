@@ -186,6 +186,9 @@ class StepInterface(unittest.TestCase):
                 top=control.mapTo(view,QPoint(0,0));bottom=control.mapTo(view,QPoint(control.width()-1,control.height()-1))
                 self.assertTrue(view.rect().contains(top));self.assertTrue(view.rect().contains(bottom))
             self.assertTrue(s.grid.viewport().rect().contains(s.grid.visualItemRect(s.grid.currentItem()).center()))
+            lane_bottom=s.lane.mapTo(s.grid.viewport(),QPoint(s.lane.width()-1,s.lane.height()-1))
+            self.assertTrue(s.grid.viewport().rect().contains(lane_bottom))
+            self.assertTrue(s.inspector.rect().contains(s.parameter.mapTo(s.inspector,QPoint(s.parameter.width()-1,s.parameter.height()-1))))
 
     def test_live_mouse_preview_precedes_commit_and_uses_an_independent_native_clip(self):
         import wave
@@ -218,3 +221,61 @@ class StepInterface(unittest.TestCase):
         QTest.mouseRelease(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=end);self.wait_note_preview()
         self.assertEqual([r[2] for r in requests],[Fraction(0),Fraction(1,4),Fraction(3,4)])
         self.assertEqual(len(w.editor.plan()['events']),4);self.assertEqual(len(w.editor.undo_stack),before+1)
+
+    def header_click(self,identity,action):
+        s=self.window.sequencer;row,_=self.target(identity,0);header=s.grid.verticalHeader()
+        from PySide6.QtCore import QRect
+        rect=QRect(0,header.sectionViewportPosition(row),header.width(),header.sectionSize(row))
+        QTest.mouseClick(header.viewport(),Qt.MouseButton.LeftButton,pos=header.parts(rect)[action].center())
+        self.app.processEvents();return row
+
+    def test_inline_row_buttons_target_clicked_instrument_and_preserve_saved_notes(self):
+        w=self.window;s=w.sequencer;s.preview_click.setChecked(False)
+        w.change(lambda:w.editor.paint_steps(self.drums,[('d_kick',Fraction(0)),('d_snare',Fraction(0))]))
+        w.select('drums',Fraction(0),self.drums);before=w.editor.plan();count=len(w.editor.undo_stack)
+        self.header_click('d_snare','muted')
+        self.assertEqual({e['role'] for e in w.editor.plan()['events']},{'drums.kick'})
+        self.assertEqual(len(w.editor.undo_stack),count+1)
+        w.undo();self.assertEqual(w.editor.plan(),before)
+        self.header_click('d_snare','solo')
+        self.assertEqual({e['role'] for e in w.editor.plan()['events']},{'drums.snare'})
+        path=Path(self.folder.name)/'inline.prdeproj';w.editor.save(path)
+        from prde1.project import load_project
+        self.assertEqual(Editor(load_project(path),w.pack,path).plan(),w.editor.plan())
+        before=canonical_bytes(w.editor.project);calls=[];s.audition=lambda *args:calls.append(args)
+        self.header_click('d_kick','audition')
+        self.assertEqual(calls[-1][1]['id'],'d_kick');self.assertEqual(canonical_bytes(w.editor.project),before)
+
+    def test_expanded_expression_follows_row_and_scroll_without_changing_music(self):
+        w=self.window;s=w.sequencer;s.preview_click.setChecked(False)
+        w.change(lambda:w.editor.paint_steps(self.drums,[('d_kick',Fraction(0)),('d_snare',Fraction(1,4))]))
+        w.select('drums',Fraction(0),self.drums);before=canonical_bytes(w.editor.project)
+        row=self.header_click('d_kick','name');self.assertEqual(s.lane.values[0],.8);self.assertIsNone(s.lane.values[1])
+        self.assertEqual(s.lane.y(),s.grid.rowViewportPosition(row)+s.grid.button_height)
+        self.assertEqual(sum(s.grid.rowHeight(i)>s.grid.button_height for i in range(s.grid.rowCount())),1)
+        self.header_click('d_kick','expand');self.assertFalse(s.lane.isVisible())
+        self.header_click('d_snare','expand');self.assertTrue(s.lane.isVisible());self.assertEqual(s.lane.values[1],.8)
+        self.assertIsNone(s.lane.values[0]);self.assertEqual(canonical_bytes(w.editor.project),before)
+        s.grid.verticalScrollBar().setValue(s.grid.verticalScrollBar().value()+1);self.app.processEvents()
+        self.assertEqual(s.lane.y(),s.grid.rowViewportPosition(s.grid.currentRow())+s.grid.button_height)
+
+    def test_timing_dial_gesture_commits_once_and_keyboard_undo_preserves_notes(self):
+        w=self.window;s=w.sequencer;s.preview_click.setChecked(False)
+        row,point=self.target('n_48',0);QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+        original=w.editor.plan();count=len(w.editor.undo_stack);dial=s.row_dials['swingPercent']
+        # Qt's real dial emits changes throughout a drag; the project commits on release.
+        QTest.mousePress(dial,Qt.MouseButton.LeftButton,pos=QPoint(16,4))
+        QTest.mouseMove(dial,QPoint(29,16));QTest.mouseRelease(dial,Qt.MouseButton.LeftButton,pos=QPoint(29,16))
+        self.assertEqual(len(w.editor.undo_stack),count+1)
+        self.assertNotEqual(settings(w.editor.pattern(self.bass),w.pack)['rows'][row]['swingPercent'],50)
+        w.undo();self.assertEqual(w.editor.plan(),original)
+        count=len(w.editor.undo_stack);dial.setFocus();QTest.keyClick(dial,Qt.Key.Key_Right)
+        self.assertEqual(len(w.editor.undo_stack),count+1);w.undo();self.assertEqual(w.editor.plan(),original)
+
+    def test_left_click_active_button_toggles_off_without_an_audition(self):
+        w=self.window;s=w.sequencer;requests=[];s.preview_note=lambda *args:requests.append(args)
+        _,point=self.target('n_48',0);QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+        self.assertEqual(len(w.editor.plan()['events']),1);count=len(requests)
+        QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+        self.assertEqual(w.editor.plan()['events'],[]);self.assertEqual(len(requests),count)
+        w.undo();self.assertEqual(len(w.editor.plan()['events']),1)

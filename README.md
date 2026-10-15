@@ -2,7 +2,11 @@
 
 **Really Awesome Workflow Digital Audio Workstation**
 
-**Build 0.4.0:** source-derived sample banks and timeline looping. Lead and bass
+**Build 0.4.1:** a SONAR/Cakewalk-inspired step sequencer with silver beveled
+buttons, cyan hits, beat groups, inline velocity/expression bars, per-row
+Mute/Solo/audition, five timing/dynamics dials and a compact pattern transport.
+Click active steps to turn them off; row arrows expand/collapse expression.
+The 0.4.0 source-derived sample banks and timeline looping are retained. Lead and bass
 cover all 128 MIDI notes. Chords cover 12 roots × 35 common qualities, including
 sixths, ninths, elevenths, thirteenths, suspended and altered dominants. Native
 recordings win; missing targets are prepared by transforming recorded waveforms,
@@ -120,7 +124,7 @@ explain the remaining controls and current boundaries.
 
 ## Compiled distribution and command-line auditions
 
-The current 0.4.0 parts contain a small verified **renderer upgrade** for the
+The current 0.4.1 parts contain a small verified **renderer upgrade** for the
 source checkout. `./run-prde1.sh` installs it automatically; keep using the
 repository's code, five packs and fourteen projects. A compiler is not
 required for this upgrade. Do not extract this renderer-only update as a full app.

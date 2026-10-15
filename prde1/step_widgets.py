@@ -5,16 +5,126 @@ import math
 from fractions import Fraction
 from pathlib import Path
 
-from PySide6.QtCore import Qt, Signal, QEvent
-from PySide6.QtGui import QColor, QPainter, QPen
+from PySide6.QtCore import Qt, Signal, QEvent, QRect, QTimer
+from PySide6.QtGui import QColor, QPainter, QPen, QLinearGradient
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QToolButton, QMenu, QComboBox, QCheckBox, QSpinBox, QTableWidget, QTableWidgetItem,
-    QHeaderView, QAbstractItemView, QFileDialog, QInputDialog, QSlider)
+    QHeaderView, QAbstractItemView, QFileDialog, QInputDialog, QSlider, QStyledItemDelegate, QStyle, QDial)
 
 from .contracts import ContractError
 from .gui_widgets import FlowLayout, COLORS, SLOT_NAMES, spin
 from .music import REGISTERS, beat, at, chord_identity
 from .sequencer import settings, event_row, note_name
+
+
+# Original Qt chrome drawn from the supplied SONAR reference. No bitmap skin or
+# per-cell widgets: long patterns and the complete 128-note banks stay inexpensive.
+SEQUENCER_STYLE = """
+QWidget#stepSequencer { background: #47494b; color: #e3e5e7; }
+QWidget#stepSequencer QLabel { background: transparent; color: #e0e3e5; }
+QWidget#stepSequencer QPushButton, QWidget#stepSequencer QToolButton {
+ background: qlineargradient(x1:0,y1:0,x2:0,y2:1,stop:0 #85898b,stop:1 #55595b);
+ border: 1px solid #242729; border-radius: 2px; padding: 2px 7px; min-height: 20px; }
+QWidget#stepSequencer QPushButton:hover, QWidget#stepSequencer QToolButton:hover { background: #7d9097; }
+QWidget#stepSequencer QPushButton:pressed { background: #294a57; }
+QWidget#stepSequencer QComboBox, QWidget#stepSequencer QAbstractSpinBox {
+ background: #282c2f; color: #7cd4f2; border: 1px solid #74797c;
+ border-radius: 2px; padding: 2px; min-height: 20px; }
+QWidget#stepSequencer QComboBox QAbstractItemView { background: #282c2f; color: #e0e3e5; }
+QWidget#stepSequencer QCheckBox { background: transparent; spacing: 4px; }
+QWidget#stepSequencer QCheckBox::indicator { width: 11px; height: 11px; background: #272d30; border: 1px solid #939da2; }
+QWidget#stepSequencer QCheckBox::indicator:checked { background: #75d4f3; border: 1px solid #d0f1fb; }
+QWidget#stepSequencer QTableWidget { background: #303436; border: 1px solid #202426; }
+QWidget#stepSequencer QScrollBar { background: #383d40; }
+QWidget#stepSequencer QScrollBar::handle { background: #818a8f; }
+QWidget#stepSequencer QLabel#stepPosition { background: #171d20; color: #73d8fa; padding: 3px 8px; }
+QWidget#rowInspector { background: #3a3e40; }
+"""
+
+
+def bevel(painter, rect, top, bottom, border='#222729'):
+    gradient=QLinearGradient(rect.topLeft(),rect.bottomLeft())
+    gradient.setColorAt(0,QColor(top));gradient.setColorAt(1,QColor(bottom))
+    painter.setBrush(gradient);painter.setPen(QColor(border));painter.drawRoundedRect(rect,1,1)
+    painter.setPen(QColor(top).lighter(120));painter.drawLine(rect.left()+1,rect.top()+1,rect.right()-1,rect.top()+1)
+
+
+class StepButtons(QStyledItemDelegate):
+    def paint(self,painter,option,index):
+        grid=self.parent();data=index.data(Qt.ItemDataRole.UserRole) or {}
+        rect=QRect(option.rect);rect.setHeight(grid.button_height)
+        painter.save();painter.fillRect(option.rect,QColor('#393d3f' if index.row()%2 else '#414547'))
+        if index.row()==grid.currentRow():painter.fillRect(rect,QColor('#48545a'))
+        beat_start=grid.beat_start(index.column())
+        if beat_start:
+            painter.setPen(QColor('#222628'));painter.drawLine(rect.left(),rect.top(),rect.left(),option.rect.bottom())
+        button=rect.adjusted(5 if beat_start else 2,4,-2,-4)
+        active=data.get('enabled');held=data.get('continuing');play=index.column()==grid.play_column
+        top,bottom=('#f7e6c6','#b7a480') if play else ('#63747b','#35464d') if active else ('#afb3b5','#73797d')
+        if not data.get('allowed',True):top,bottom='#62686c','#494e52'
+        bevel(painter,button,top,bottom)
+        if active:
+            color=QColor('#80d6f1' if not data.get('muted') else '#82979e')
+            painter.setPen(color)
+            for y in range(button.top()+4,button.bottom()-2,3):painter.drawLine(button.left()+3,y,button.right()-3,y)
+            width=max(1,round((button.width()-6)*data.get('velocity',.8)))
+            painter.fillRect(button.left()+3,button.bottom()-3,width,2,color)
+            if data.get('flam'):
+                painter.setPen(QColor('#ffe1a0'));painter.drawText(button,Qt.AlignmentFlag.AlignCenter,'F')
+        elif held:
+            painter.setPen(QPen(QColor('#73bed6'),2));painter.drawLine(button.left()+3,button.center().y(),button.right()-3,button.center().y())
+        elif not data.get('allowed',True):
+            painter.setPen(QColor('#858e93'));painter.drawText(button,Qt.AlignmentFlag.AlignCenter,'×')
+        if option.state & QStyle.StateFlag.State_HasFocus:
+            painter.setBrush(Qt.BrushStyle.NoBrush);painter.setPen(QPen(QColor('#92e3ff'),2));painter.drawRect(button.adjusted(-1,-1,1,1))
+        painter.restore()
+
+
+class BeatHeader(QHeaderView):
+    def __init__(self,grid):super().__init__(Qt.Orientation.Horizontal,grid);self.grid=grid;self.setFixedHeight(29)
+    def paintSection(self,painter,rect,index):
+        if not rect.isValid():return
+        painter.save();painter.fillRect(rect,QColor('#939799'));painter.setPen(QColor('#444a4d'))
+        if self.grid.beat_start(index):
+            painter.drawLine(rect.left(),rect.top()+2,rect.left(),rect.bottom())
+            painter.drawText(rect.adjusted(5,0,0,-8),Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter,str(int(index*self.grid.step_beat)+1))
+        painter.setPen(QColor('#454d51'));painter.drawLine(rect.left()+6,rect.bottom()-5,rect.right()-3,rect.bottom()-5);painter.restore()
+
+
+class InstrumentHeader(QHeaderView):
+    action=Signal(int,str)
+    def __init__(self,grid):
+        super().__init__(Qt.Orientation.Vertical,grid);self.grid=grid;self.setSectionsClickable(True)
+        self.setSectionResizeMode(QHeaderView.ResizeMode.Fixed);self.setFixedWidth(266)
+        self.setAccessibleName('Instrument rows. Expand, audition, MIDI pitch, mute and solo. Row menu has keyboard alternatives.')
+    def parts(self,rect):
+        h=self.grid.button_height
+        return {key:QRect(x,rect.top()+4,w,h-8) for key,x,w in (
+            ('expand',5,18),('audition',27,18),('name',50,rect.width()-151),
+            ('address',rect.width()-99,35),('muted',rect.width()-59,24),('solo',rect.width()-31,24))}
+    def paintSection(self,painter,rect,index):
+        if not rect.isValid():return
+        data=getattr(self.grid,'row_data',[])
+        if index>=len(data):return
+        row=data[index];painter.save();painter.fillRect(rect,QColor('#373b3d'))
+        strip=QRect(rect);strip.setHeight(self.grid.button_height)
+        bevel(painter,strip,'#555a5d','#373d40')
+        parts=self.parts(rect)
+        for key,label in [('expand','▾' if index==self.grid.currentRow() and self.grid.expanded else '▸'),('audition','▶'),('muted','M'),('solo','S')]:
+            on=row.get(key,False);bevel(painter,parts[key],'#7294a0' if on else '#898f92','#344e59' if on else '#555d61')
+            painter.setPen(QColor('#9ee4ff' if on else '#f0f2f3'));painter.drawText(parts[key],Qt.AlignmentFlag.AlignCenter,label)
+        painter.fillRect(parts['name'],QColor('#252d31'));painter.setPen(QColor('#76d6fa'))
+        label=self.model().headerData(index,Qt.Orientation.Vertical,Qt.ItemDataRole.DisplayRole) or ''
+        painter.drawText(parts['name'].adjusted(4,0,-2,0),Qt.AlignmentFlag.AlignVCenter,painter.fontMetrics().elidedText(label,Qt.TextElideMode.ElideRight,parts['name'].width()-6))
+        painter.fillRect(parts['address'],QColor('#252d31'));painter.drawText(parts['address'],Qt.AlignmentFlag.AlignCenter,str(row.get('address') if row.get('address') is not None else '—'))
+        painter.restore()
+    def mousePressEvent(self,event):
+        index=self.logicalIndexAt(event.position().toPoint())
+        if event.button()==Qt.MouseButton.LeftButton and index>=0:
+            rect=QRect(0,self.sectionViewportPosition(index),self.width(),self.sectionSize(index))
+            for key,part in self.parts(rect).items():
+                if part.contains(event.position().toPoint()):self.action.emit(index,key);event.accept();return
+        super().mousePressEvent(event)
 
 
 class StepGrid(QTableWidget):
@@ -28,12 +138,23 @@ class StepGrid(QTableWidget):
 
     def __init__(self):
         super().__init__(); self.drag = None; self.play_column = -1; self.step_entry = False
+        self.step_beat=Fraction(1,4);self.button_height=30;self.expanded=True;self.row_data=[]
+        self.setHorizontalHeader(BeatHeader(self));self.setVerticalHeader(InstrumentHeader(self))
+        self.setItemDelegate(StepButtons(self));self.setShowGrid(False)
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.setAccessibleName('Step sequencer. Pitch or instrument rows, time columns. Arrows navigate; Space toggles; Delete erases; Control-drag ties; Shift-drag changes note volume.')
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
-        self.horizontalHeader().setDefaultSectionSize(44); self.verticalHeader().setDefaultSectionSize(30)
+        self.horizontalHeader().setDefaultSectionSize(38); self.verticalHeader().setDefaultSectionSize(30)
         self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+
+    def beat_start(self,col):
+        return col==0 or int(col*self.step_beat)!=int((col-1)*self.step_beat)
+
+    def visualItemRect(self,item):
+        rect=super().visualItemRect(item)
+        if rect.isValid():rect.setHeight(min(rect.height(),self.button_height))
+        return rect
 
     def event(self, event):
         if event.type() == QEvent.Type.ShortcutOverride and event.key() in (Qt.Key.Key_Space, Qt.Key.Key_Return, Qt.Key.Key_Delete):
@@ -46,7 +167,7 @@ class StepGrid(QTableWidget):
         row, col = index.row(), index.column(); self.setCurrentCell(row, col)
         cell = self.item(row, col); data = cell.data(Qt.ItemDataRole.UserRole) or {}
         mods = event.modifiers(); right = event.button() == Qt.MouseButton.RightButton
-        mode = 'split' if right and mods & Qt.KeyboardModifier.ControlModifier else 'tie' if mods & Qt.KeyboardModifier.ControlModifier else 'velocity' if mods & Qt.KeyboardModifier.ShiftModifier else 'erase' if right else 'paint'
+        mode = 'split' if right and mods & Qt.KeyboardModifier.ControlModifier else 'tie' if mods & Qt.KeyboardModifier.ControlModifier else 'velocity' if mods & Qt.KeyboardModifier.ShiftModifier else 'erase' if right or data.get('enabled') else 'paint'
         self.drag = dict(first=(row,col), cells=[(row,col)], mode=mode, y=event.position().y(), value=data.get('velocity', .8), free=bool(mods & Qt.KeyboardModifier.AltModifier))
         if mode=='paint':self.preview.emit(row,col)
         event.accept()
@@ -104,7 +225,7 @@ class StepGrid(QTableWidget):
     def paintEvent(self,event):
         super().paintEvent(event)
         if 0 <= self.play_column < self.columnCount():
-            painter=QPainter(self.viewport());painter.setPen(QPen(QColor('#fff0a7'),2))
+            painter=QPainter(self.viewport());painter.setPen(QPen(QColor('#f3d9a5'),2))
             x=self.columnViewportPosition(self.play_column)
             painter.drawRect(x,0,self.columnWidth(self.play_column)-1,self.viewport().height()-1);painter.end()
 
@@ -116,17 +237,27 @@ class StepGrid(QTableWidget):
 class ExpressionLane(QWidget):
     edited=Signal(int,float)
     def __init__(self, grid):
-        super().__init__();self.grid=grid;self.values=[];self.minimum=0;self.maximum=1;self.pending=None;self.setFixedHeight(62);self.setAccessibleName('Step expression bars; click or drag to edit')
+        super().__init__();self.grid=grid;self.values=[];self.minimum=0;self.maximum=1;self.pending=None;self.setFixedHeight(88);self.setAccessibleName('Step expression bars; click or drag to edit')
         grid.horizontalScrollBar().valueChanged.connect(self.update)
     def paintEvent(self,event):
-        painter=QPainter(self);painter.fillRect(self.rect(),QColor('#111820'))
+        painter=QPainter(self);painter.fillRect(self.rect(),QColor('#303638'))
         origin=self.grid.verticalHeader().width()+self.grid.frameWidth()
+        painter.setClipRect(QRect(origin,0,max(0,self.width()-origin),self.height()))
+        for y in range(4,self.height(),5):
+            painter.setPen(QColor('#3f484b'));painter.drawLine(origin,y,self.width(),y)
+        scale=(self.height()-8)/(self.maximum-self.minimum)
+        baseline=self.height()-4+self.minimum*scale
         for col,value in enumerate(self.values):
             x=origin+self.grid.columnViewportPosition(col);width=self.grid.columnWidth(col)
-            painter.setPen(QColor('#314557'));painter.drawRect(x,2,width-1,self.height()-4)
+            painter.setPen(QColor('#242b2e'));painter.drawLine(x,0,x,self.height())
             if value is not None:
-                scale=(self.height()-8)/(self.maximum-self.minimum);baseline=self.height()-4+self.minimum*scale
-                y=baseline-value*scale;painter.fillRect(x+4,int(min(baseline,y)),width-8,max(1,int(abs(baseline-y))),QColor('#76c9bb'))
+                y=baseline-value*scale
+                # Inset the bars; exact values remain in the accessible controls.
+                top=int(min(baseline,y));height=max(1,int(abs(baseline-y)))
+                gradient=QLinearGradient(x,top,x,top+height)
+                gradient.setColorAt(0,QColor('#8bd4e5'));gradient.setColorAt(1,QColor('#478594'))
+                painter.fillRect(x+5,top,max(1,width-10),height,gradient)
+                painter.setPen(QColor('#b1e6ef'));painter.drawLine(x+5,top,x+width-6,top)
         painter.end()
     def edit_at(self,event):
         origin=self.grid.verticalHeader().width()+self.grid.frameWidth()
@@ -142,23 +273,25 @@ class ExpressionLane(QWidget):
         if event.buttons() & Qt.MouseButton.LeftButton:self.edit_at(event)
     def mouseReleaseEvent(self,event):
         self.edit_at(event);values=self.pending or {};self.pending=None
-        self.parent().draw_expression(values)
+        self.grid.sequencer.draw_expression(values)
 
 
 class StepSequencer(QWidget):
     def __init__(self,change,audition,duplicate,detach,remove,parent=None,*,preview_note=None):
-        super().__init__(parent);self.change=change;self.audition=audition;self.preview_note=preview_note;self.editor=None;self.instance_id='';self.rows=[];self.config=None;self.clipboard=None;self.refreshing=False;self.column_focus=0
-        layout=QVBoxLayout(self);layout.setContentsMargins(6,6,6,6)
+        super().__init__(parent);self.setObjectName('stepSequencer');self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground,True);self.setStyleSheet(SEQUENCER_STYLE);self.change=change;self.audition=audition;self.preview_note=preview_note;self.editor=None;self.instance_id='';self.rows=[];self.config=None;self.clipboard=None;self.refreshing=False;self.column_focus=0
+        layout=QVBoxLayout(self);layout.setContentsMargins(5,5,5,5);layout.setSpacing(4)
         toolbar=FlowLayout();self.heading=QLabel('Select a pattern');toolbar.addWidget(self.heading)
         self.length=spin(.25,64,4,2,' beats');self.length.setAccessibleName('Pattern length in beats');self.length.editingFinished.connect(self.set_length);toolbar.addWidget(self.length)
         self.resolution=QComboBox()
-        for n in range(1,17):self.resolution.addItem(str(n)+' steps/beat',n)
+        for n in range(1,17):self.resolution.addItem(str(n)+' / beat',n)
         self.resolution.setCurrentIndex(3);self.resolution.setAccessibleName('Steps per beat');self.resolution.currentIndexChanged.connect(self.set_resolution);toolbar.addWidget(self.resolution)
-        self.entry_mode=QComboBox();self.entry_mode.addItem('Mono entry','mono');self.entry_mode.addItem('Poly entry','poly');self.entry_mode.currentIndexChanged.connect(lambda:self.config_change(entryMode=self.entry_mode.currentData()));toolbar.addWidget(self.entry_mode)
-        self.pitch_mode=QComboBox();self.pitch_mode.addItem('Follow harmony','follow');self.pitch_mode.addItem('Lock pitches','exact');self.pitch_mode.currentIndexChanged.connect(lambda:self.config_change(pitchMode=self.pitch_mode.currentData()));toolbar.addWidget(self.pitch_mode)
-        self.play_button=QPushButton('Play pattern');self.play_button.clicked.connect(self.play_pattern);toolbar.addWidget(self.play_button)
+        self.entry_mode=QComboBox();self.entry_mode.addItem('Mono','mono');self.entry_mode.addItem('Poly','poly');self.entry_mode.currentIndexChanged.connect(lambda:self.config_change(entryMode=self.entry_mode.currentData()));toolbar.addWidget(self.entry_mode)
+        self.pitch_mode=QComboBox();self.pitch_mode.addItem('Follow','follow');self.pitch_mode.addItem('Exact','exact');self.pitch_mode.currentIndexChanged.connect(lambda:self.config_change(pitchMode=self.pitch_mode.currentData()));toolbar.addWidget(self.pitch_mode)
+        self.play_button=QPushButton('▶');self.play_button.setAccessibleName('Play pattern');self.play_button.setToolTip('Play pattern independently of the song transport');self.play_button.clicked.connect(self.play_pattern);toolbar.addWidget(self.play_button)
+        self.stop_button=QPushButton('■');self.stop_button.setAccessibleName('Stop playback');self.stop_button.clicked.connect(lambda:self.window().stop());toolbar.addWidget(self.stop_button)
+        self.position=QLabel('01.01');self.position.setObjectName('stepPosition');self.position.setAccessibleName('Pattern playback beat and step');toolbar.addWidget(self.position)
         self.loop=QCheckBox('Loop');self.loop.setChecked(True);toolbar.addWidget(self.loop)
-        self.record=QCheckBox('Step entry');self.record.setToolTip('Enter notes with Space or the Z S X D C V G B H N J M keys. Period inserts a rest; comma goes back.');self.record.toggled.connect(lambda value:setattr(self.grid,'step_entry',value));toolbar.addWidget(self.record)
+        self.record=QCheckBox('●');self.record.setAccessibleName('Keyboard step entry');self.record.setToolTip('Enter notes with Space or the Z S X D C V G B H N J M keys. Period inserts a rest; comma goes back.');self.record.toggled.connect(lambda value:setattr(self.grid,'step_entry',value));toolbar.addWidget(self.record)
         self.pattern_menu=QToolButton();self.pattern_menu.setText('Pattern ▾');self.pattern_menu.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup);menu=QMenu(self.pattern_menu)
         for title,fn in [('Save pattern…',self.save_pattern),('Load pattern…',self.load_pattern),('Import note MIDI…',self.import_midi),('Export note MIDI…',self.export_midi),('Clear pattern',lambda:self.pattern_action('clear')),
                          ('Quantize to grid',lambda:self.pattern_action('quantize')),('Fit to quarters…',self.fit),('Duplicate',duplicate),('Make independent',detach),('Remove pattern',remove)]:
@@ -172,10 +305,17 @@ class StepSequencer(QWidget):
                          ('Clear row',lambda:self.row_action('clear')),('Tie selected steps',lambda:self.tie(False)),('Split tied step',lambda:self.tie(True))]:row_menu.addAction(title,fn)
         fill=row_menu.addMenu('Fill every…')
         for n in range(1,17):fill.addAction(str(n)+' steps',lambda n=n:self.row_action('fill',every=n))
-        self.row_menu.setMenu(row_menu);toolbar.addWidget(self.row_menu);layout.addLayout(toolbar)
-        self.grid=StepGrid();self.grid.setObjectName('stepGrid');layout.addWidget(self.grid,1)
+        self.row_menu.setMenu(row_menu);toolbar.addWidget(self.row_menu)
+        for title,description,callback in [('+','Insert pitch or kit row',self.insert_row),('×','Delete focused display row',lambda:self.row_action('delete'))]:
+            tool=QPushButton(title);tool.setAccessibleName(description);tool.setToolTip(description);tool.clicked.connect(callback);toolbar.addWidget(tool)
+        layout.addLayout(toolbar)
+        self.grid=StepGrid();self.grid.sequencer=self;self.grid.setObjectName('stepGrid');layout.addWidget(self.grid,1)
+        self.grid.verticalHeader().action.connect(self.header_action)
+        self.grid.verticalScrollBar().valueChanged.connect(self.position_lane)
+        self.grid.horizontalHeader().sectionResized.connect(self.position_lane)
+        self.grid.viewport().installEventFilter(self)
         self.grid.activated.connect(self.toggle);self.grid.gesture.connect(lambda cells,mode:self.gesture(cells,mode,preview=False));self.grid.preview.connect(self.preview_cell);self.grid.velocity.connect(self.set_velocity);self.grid.flam.connect(self.toggle_flam);self.grid.command.connect(self.row_action);self.grid.typed_note.connect(self.type_note)
-        self.grid.currentCellChanged.connect(self.focus_row);self.grid.verticalHeader().sectionClicked.connect(self.audition_row)
+        self.grid.currentCellChanged.connect(self.focus_row)
         self.grid.verticalHeader().setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);self.grid.verticalHeader().customContextMenuRequested.connect(lambda point:row_menu.exec(self.grid.verticalHeader().mapToGlobal(point)))
         dynamics=FlowLayout();dynamics.addWidget(QLabel('Note volume'))
         self.note_volume_slider=QSlider(Qt.Orientation.Horizontal);self.note_volume_slider.setRange(0,100);self.note_volume_slider.setTracking(False)
@@ -196,8 +336,8 @@ class StepSequencer(QWidget):
         self.default_velocity=spin(0,100,80,0,' %');self.default_velocity.setAccessibleName('Default new note volume');self.default_velocity.editingFinished.connect(lambda:self.config_change(defaultVelocity=self.default_velocity.value()/100));bottom.addWidget(QLabel('New note volume'));bottom.addWidget(self.default_velocity)
         self.parameter=QComboBox()
         for label,key in [('Volume / velocity','velocity'),('Duration','duration'),('Play probability','playPercent'),('Change probability','changePercent'),('Timing offset','offsetBeat')]:self.parameter.addItem(label,key)
-        self.parameter.currentIndexChanged.connect(self.refresh_lane);bottom.addWidget(self.parameter)
-        self.show_lane=QCheckBox('Dynamics bars');self.show_lane.toggled.connect(lambda on:self.lane.setVisible(on));dynamics.addWidget(self.show_lane)
+        self.parameter.currentIndexChanged.connect(self.refresh_lane)
+        self.show_lane=QCheckBox('Dynamics bars');self.show_lane.toggled.connect(self.expand_lane);dynamics.addWidget(self.show_lane)
         self.advanced_panel=QWidget();self.advanced_panel.setLayout(bottom);layout.addWidget(self.advanced_panel);self.advanced_panel.hide()
         self.row_panel=QWidget();controls=FlowLayout();self.row_controls={}
         for name,label,low,high,value in [('velocityScale','Velocity ×',0,2,1),('velocityOffset','Velocity ± %',-100,100,0),('gatePercent','Gate %',1,200,100),
@@ -205,8 +345,60 @@ class StepSequencer(QWidget):
             w=spin(low,high,value,2);w.setAccessibleName(label);w.setMaximumWidth(90);w.editingFinished.connect(lambda name=name,w=w:self.row_change(**{name:w.value()/100 if name=='velocityOffset' else w.value()}))
             controls.addWidget(QLabel(label));controls.addWidget(w);self.row_controls[name]=w
         self.row_panel.setLayout(controls);layout.addWidget(self.row_panel);self.row_panel.hide()
-        self.lane=ExpressionLane(self.grid);self.lane.edited.connect(self.set_parameter);layout.addWidget(self.lane);self.show_lane.setChecked(True)
+        self.lane=ExpressionLane(self.grid);self.lane.setParent(self.grid.viewport());self.lane.edited.connect(self.set_parameter)
+        self.inspector=QWidget(self.grid.verticalHeader().viewport());self.inspector.setObjectName('rowInspector');self.inspector.setAttribute(Qt.WidgetAttribute.WA_StyledBackground,True)
+        inspector_layout=QVBoxLayout(self.inspector);inspector_layout.setContentsMargins(3,1,3,1);inspector_layout.setSpacing(0)
+        knobs=QHBoxLayout();knobs.setContentsMargins(0,0,0,0);knobs.setSpacing(0);self.row_dials={};self.dial_labels={};self.dial_titles={}
+        for key,label,low,high in [('velocityScale','Volume ×',0,2),('gatePercent','Duration',1,200),('swingPercent','Swing',1,99),('offsetPercent','Time ±',-50,50),('flamPercent','Flam',-50,50)]:
+            box=QVBoxLayout();box.setSpacing(0);dial=QDial();dial.setRange(low*100,high*100);dial.setFixedSize(32,32);dial.setNotchesVisible(True)
+            dial.setAccessibleName('Row '+label);dial.setToolTip('Drag to set row '+label.lower()+'. Release to save one undoable edit; More controls offers exact numeric entry.')
+            dial.sliderReleased.connect(lambda key=key,dial=dial:self.row_change(**{key:dial.value()/100}))
+            # Keyboard and wheel edits commit immediately; mouse dragging commits once.
+            dial.valueChanged.connect(lambda value,key=key,dial=dial:self.dial_changed(key,dial,value))
+            caption=QLabel(label);caption.setAlignment(Qt.AlignmentFlag.AlignCenter);caption.setStyleSheet('font-size: 9px;')
+            box.addWidget(dial,0,Qt.AlignmentFlag.AlignHCenter);box.addWidget(caption);knobs.addLayout(box);self.row_dials[key]=dial;self.dial_labels[key]=caption;self.dial_titles[key]=label
+        inspector_layout.addLayout(knobs);inspector_layout.addWidget(self.parameter)
+        self.show_lane.setChecked(True)
         self.refresh_volume()
+
+    def dial_changed(self,key,dial,value):
+        self.dial_labels[key].setText(f'{value/100:g}\n{self.dial_titles[key]}')
+        if not self.refreshing and not dial.isSliderDown():self.row_change(**{key:value/100})
+
+    def header_action(self,index,action):
+        if self.refreshing or not 0<=index<len(self.rows):return
+        same=index==self.grid.currentRow()
+        self.grid.setCurrentCell(index,max(0,self.grid.currentColumn()))
+        if action=='expand':
+            self.show_lane.setChecked(not self.show_lane.isChecked() if same else True)
+        elif action=='audition':self.audition_row(index)
+        elif action in ('muted','solo'):self.row_change(**{action:not self.rows[index][action]})
+        self.position_lane()
+
+    def expand_lane(self,on):
+        self.grid.expanded=on;self.position_lane()
+        item=self.grid.currentItem()
+        if item is not None:self.grid.scrollToItem(item,QAbstractItemView.ScrollHint.EnsureVisible)
+
+    def eventFilter(self,watched,event):
+        if watched is self.grid.viewport() and event.type()==QEvent.Type.Resize:
+            QTimer.singleShot(0,self.position_lane)
+        return super().eventFilter(watched,event)
+
+    def position_lane(self,*_):
+        if not hasattr(self,'lane'):return
+        grid=self.grid;row=grid.currentRow();expanded=self.show_lane.isChecked() and 0<=row<grid.rowCount() and bool(self.instance_id)
+        for i in range(grid.rowCount()):
+            height=grid.button_height+(self.lane.height() if expanded and i==row else 0)
+            if grid.rowHeight(i)!=height:grid.setRowHeight(i,height)
+        if expanded:
+            y=grid.rowViewportPosition(row)+grid.button_height
+            header=grid.verticalHeader();origin=header.width()+grid.frameWidth()
+            self.lane.setGeometry(-origin,y,grid.viewport().width()+origin,self.lane.height())
+            self.inspector.setGeometry(0,y,header.width(),self.lane.height())
+            self.lane.show();self.inspector.show();self.lane.raise_();self.inspector.raise_()
+        else:self.lane.hide();self.inspector.hide()
+        grid.verticalHeader().viewport().update()
 
     def active(self):return self.editor is not None and bool(self.instance_id)
     def current_row(self):
@@ -394,7 +586,11 @@ class StepSequencer(QWidget):
             self.row_label.setText(self.row_name(row))
             self.row_muted.setChecked(row['muted']);self.row_solo.setChecked(row['solo'])
             for name,w in self.row_controls.items():w.setValue(row[name]*100 if name=='velocityOffset' else row[name])
-        self.refreshing=False;self.refresh_volume();self.refresh_lane()
+        if row:
+            for key,dial in self.row_dials.items():
+                dial.setValue(round(row[key]*100));self.dial_labels[key].setText(f'{row[key]:g}\n{self.dial_titles[key]}')
+        self.refreshing=False;self.refresh_volume();self.refresh_lane();self.position_lane()
+        if self.grid.currentItem() is not None:self.grid.scrollToItem(self.grid.currentItem(),QAbstractItemView.ScrollHint.EnsureVisible)
     def refresh_lane(self,*_):
         if not self.active() or self.current_row() is None:return
         parameter=self.parameter.currentData();self.lane.minimum=-.5 if parameter=='offsetBeat' else 0;self.lane.maximum=.5 if parameter=='offsetBeat' else 100 if parameter.endswith('Percent') else 2 if parameter=='duration' else 1
@@ -435,7 +631,7 @@ class StepSequencer(QWidget):
         self.editor=editor;self.instance_id=instance_id;self.refreshing=True
         self.grid.clear()
         if not instance_id:
-            self.grid.setRowCount(0);self.grid.setColumnCount(0);self.heading.setText('Select a pattern on the timeline');self.lane.values=[];self.lane.update();self.refreshing=False;self.refresh_volume();return
+            self.grid.setRowCount(0);self.grid.setColumnCount(0);self.heading.setText('Select a pattern on the timeline');self.lane.values=[];self.lane.update();self.refreshing=False;self.refresh_volume();self.position_lane();return
         pattern=editor.pattern(instance_id);instance=editor.instance(instance_id);role=pattern['role']
         self.config=settings(pattern,editor.pack);self.rows=self.config['rows'];step=beat(self.config['stepBeat']);columns=math.ceil(beat(pattern['length'])/step)
         if role in REGISTERS:
@@ -451,11 +647,11 @@ class StepSequencer(QWidget):
             if index<0:self.resolution.addItem('Custom · '+str(step)+' beat/step',str(step));index=self.resolution.count()-1
         self.resolution.setCurrentIndex(index)
         self.entry_mode.setCurrentIndex(self.entry_mode.findData(self.config['entryMode']));self.pitch_mode.setCurrentIndex(self.pitch_mode.findData(self.config['pitchMode']));self.pitch_mode.setVisible(role in REGISTERS)
-        self.entry_mode.setEnabled(role!='rhythm');self.pitch_mode.setToolTip('Pitch choice for new notes. Existing steps retain their individual locks.')
+        self.entry_mode.setToolTip('Mono replaces other pitches in each column; Poly retains simultaneous pitches.');self.entry_mode.setEnabled(role!='rhythm');self.pitch_mode.setToolTip('Follow: new notes follow harmony. Exact: lock new notes to their chosen MIDI pitches. Existing steps retain individual locks.')
         self.default_velocity.setValue(self.config['defaultVelocity']*100)
-        self.heading.setText(role.title()+' steps'+(' · Linked Repeat' if instance['linked'] else ''))
+        self.heading.setText(role.title()+(' · Linked Repeat' if instance['linked'] else ''))
         self.heading.setToolTip('Editable source cycle: '+pattern['length']+' beats. Timeline playback: '+str(editor.instance_length(instance_id))+' beats; loops reuse these source steps.')
-        self.grid.setRowCount(len(self.rows));self.grid.setColumnCount(columns)
+        self.grid.step_beat=step;self.grid.setRowCount(len(self.rows));self.grid.setColumnCount(columns)
         self.grid.setHorizontalHeaderLabels([str(int(col*step)+1)+'.'+str(col%max(1,round(1/step))+1) for col in range(columns)])
         def row_label(row):
             if row['label']:return row['label']
@@ -468,6 +664,9 @@ class StepSequencer(QWidget):
             return label+' · '+sound['displayName'] if row['sound'].startswith('extra') else label
         labels=[row_label(row) for row in self.rows]
         self.grid.setVerticalHeaderLabels(labels)
+        for i,label in enumerate(labels):self.grid.verticalHeaderItem(i).setToolTip(label+' · ▸ expression · ▶ audition · M mute · S solo')
+        from .percussion import record as kit_record
+        self.grid.row_data=[dict(r,address=r['note'] if r['note'] is not None else kit_record(editor.pack,r['sound'])['midiAddress'] if role=='drums' else '—') for r in self.rows]
         matches={};row_events={};events=sorted(pattern['events'],key=lambda e:(beat(e['beat']),e['id']))
         for event in events:
             identity=event_row(editor.project,editor.pack,instance,pattern,event)
@@ -491,14 +690,14 @@ class StepSequencer(QWidget):
                 item.setForeground(QColor('#f4f7fb' if enabled else '#a1b4c6' if allowed else '#536779'))
                 if enabled and first_active is None:first_active=(row,col)
                 if r['muted']:item.setForeground(QColor('#738293'))
-                data=dict(enabled=bool(enabled),events=[e['id'] for e in found],allowed=allowed,velocity=enabled['expression']['velocity'] if enabled else .8)
+                data=dict(enabled=bool(enabled),events=[e['id'] for e in found],allowed=allowed,continuing=bool(continuing),muted=r['muted'],flam=bool(enabled and enabled.get('flam')),velocity=enabled['expression']['velocity'] if enabled else .8)
                 item.setData(Qt.ItemDataRole.UserRole,data)
                 description=labels[row]+', beat '+str(position)+', '+('enabled' if enabled else 'sustain' if continuing else 'empty')
                 if not allowed:description+='; outside governing chord' if role in REGISTERS else '; unassigned kit slot'
                 if enabled:description+=f", note volume {round(enabled['expression']['velocity']*100)}% (velocity {round(enabled['expression']['velocity']*127)}/127), play {enabled['expression']['playPercent']}%, gate {enabled['duration']} beats"
                 item.setData(Qt.ItemDataRole.AccessibleTextRole,description);item.setToolTip(description);self.grid.setItem(row,col,item)
         offgrid=sum(bool(beat(e['beat'])/step%1) for e in events)
-        self.help.setText(f'Drag the bars to shape note volume; Shift-drag a step adjusts it. {offgrid} off-grid notes retained.')
+        self.help.setText(f'Click / drag: draw · Right-click: erase · Shift-drag: velocity · Ctrl-drag: tie · {offgrid} off-grid notes retained')
         self.help.setToolTip('Left-click/drag draws; right-click erases; Ctrl-drag ties; Shift-drag adjusts note volume; double-click adds a flam. More controls exposes new-note defaults, other expression and row timing.')
         if old_id==instance_id and 0<=previous[0]<len(self.rows) and 0<=previous[1]<columns:self.grid.setCurrentCell(*previous)
         else:
@@ -509,4 +708,6 @@ class StepSequencer(QWidget):
 
     def playhead(self,position):
         column=math.floor(position/beat(self.config['stepBeat'])) if self.active() and self.config and position is not None else -1
-        if column!=self.grid.play_column:self.grid.play_column=column;self.grid.viewport().update()
+        if column!=self.grid.play_column:
+            self.grid.play_column=column;self.grid.viewport().update()
+            self.position.setText(f'{int(column*beat(self.config["stepBeat"]))+1:02d}.{column%max(1,round(1/beat(self.config["stepBeat"])))+1:02d}' if column>=0 else '01.01')

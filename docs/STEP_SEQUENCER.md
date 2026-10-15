@@ -7,6 +7,30 @@ kit rows retain their stable instrument identities. Pitch cells outside the
 current chord are visibly marked. Section 31 of the canonical SDD records Shael's
 October 11 request, including his clarification that he means the step sequencer.
 
+## SONAR reference interface — October 14
+
+The supplied SONAR/Cakewalk screenshot guides the native Qt interface: silver
+beveled step buttons, cyan active hits, numbered beat groups, cream playback
+highlighting, a compact transport and an inline expression editor. Each row has
+an expand arrow, an audition button, its MIDI address and M/S buttons. Clicking
+the name focuses the row; ▶ auditions it. Mute and Solo target the clicked row,
+remain saved with the pattern and are undoable. Unassigned kit addresses show —.
+
+The focused row expands beneath its step buttons. Its left inspector exposes
+Volume ×, Duration, Swing, Time ± and Flam dials, with an expression selector;
+the bars occupy the same time columns as the steps. Mouse gestures commit one
+undoable change on release. The expression panel follows vertical/horizontal
+scrolling and collapses through the row arrow or **Dynamics bars**. Exact numeric
+row controls remain available through **More controls**. Shared painted headers
+and a cell delegate avoid creating a widget per step or per available pitch.
+
+The pattern transport provides ▶, ■, Loop and a beat/subdivision readout. The ●
+switch enables keyboard step entry. Mono/Poly and Follow/Exact retain the same
+saved musical semantics. Row +/× provide insert/delete shortcuts. Pattern and Row
+menus retain reuse, interchange, fill and editing commands.
+
+![Raw Daw step sequencer at 1280×800](validation/raw-daw-sonar-steps-1280.png)
+
 ## Composition controls
 
 Focus a note and use the visible **Note volume** slider or percentage field to
@@ -25,7 +49,7 @@ velocity-one hits. Percentages describe amplitude, not a decibel or loudness sca
 
 | Control | Behavior |
 | --- | --- |
-| Left-click / drag | Enable steps; fast drags fill crossed columns |
+| Left-click / drag | Toggle the first step; dragging paints or erases consistently from that initial state; fast drags fill crossed columns |
 | Right-click / drag | Disable steps without deleting their authored data |
 | Arrows + Space | Navigate and toggle the focused step |
 | Mono / Poly entry | Replace other notes in a column, or retain simultaneous notes; bass/lead default mono, kit defaults poly |
@@ -42,19 +66,19 @@ velocity-one hits. Percentages describe amplitude, not a decibel or loudness sca
 | Alt-up/down | Move a melodic column to the next higher/lower permitted pitches |
 | Pattern menu | Save/load, clear, explicit quantize, Fit to quarters, duplicate, linked/independent reuse and MIDI interchange |
 | Play pattern / Loop | Audition the selected pattern independently of the song transport |
-| Click row label | Audition that pitch/instrument without changing the song |
+| Row ▶ / row name | Audition that pitch/instrument / focus the row without changing the song |
 | Preview notes | On initially; hear mouse press/drag and keyboard entries, with a saved preference for quiet editing |
 | Step entry | Use Space or Z S X D C V G B H N J M; period advances/rests, comma goes back; Ctrl-R toggles entry |
 
-Velocity inside each active cell is expressed as a percentage. `F` marks a flam;
-a dash marks a continuation of an earlier note. Scroll vertically for additional
+Active cells use cyan stripes and a small velocity bar; exact percentages are
+available in Note volume and tooltips. `F` marks a flam;
+a cyan line marks a continuation of an earlier note. Scroll vertically for additional
 pitches and horizontally for longer patterns. The highlighted playback column
 follows the real preview clock, including independent looped auditions.
 
-Rows offer their actual source or modeled kit sounds. Empty optional extras stay
-unassigned. Source-specific Extra 1/2 names remain visible. Row controls are
-collapsed initially to retain working space on a 1280×800 screen; the visible
-More controls toggle and menus provide non-drag equivalents. The exact Event list remains an
+Rows offer native or source-derived kit sounds. Empty optional extras stay
+unassigned. Source-specific Extra 1/2 names remain visible. The focused row’s expression editor opens initially. The visible
+More controls toggle and menus provide numeric and non-drag equivalents. The exact Event list remains an
 editable alternative and retains every off-grid event.
 
 ## Musical and persistence rules

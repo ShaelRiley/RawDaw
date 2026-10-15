@@ -1,0 +1,76 @@
+{
+  "version": "0.4.1",
+  "date": "2026-10-14",
+  "baseCommit": "a4cd97d47fe2453d81b0ea2a7f427e8aa8f7574a",
+  "sddRevision": "AHj4eMS_K1M3ev47yLin3yhFl-jZCDjO6MceppWUzoUpCcvnLz-TeNORRHv-NvtHXF-dKwJMArmwF1r6GDnrfNa52n_Nrj8kdDKjt_4s4Q",
+  "environment": {
+    "python": "3.12.14",
+    "PySide6": "6.8.3",
+    "platform": "Linux",
+    "QtPlatform": "offscreen"
+  },
+  "reference": "User-provided SONAR/Cakewalk step-sequencer screenshot; original native Qt implementation",
+  "validation": {
+    "makeCheck": {
+      "passed": true,
+      "pythonQtTests": 190,
+      "skipped": 0,
+      "nativeEngine": true,
+      "log": "sonar-step-make-check.log"
+    },
+    "makeDemo": {
+      "passed": true,
+      "referenceRenders": 2,
+      "log": "sonar-step-demo.log"
+    },
+    "sourceGuiExports": {
+      "passed": true,
+      "arrangements": 14,
+      "comparison": "byte-identical to verified pre-update reference WAVs"
+    },
+    "viewport": {
+      "passed": true,
+      "size": [
+        1280,
+        800
+      ],
+      "textScales": [
+        1,
+        1.5
+      ],
+      "checks": [
+        "focused step visible",
+        "complete inline expression lane",
+        "expression selector inside inspector"
+      ],
+      "log": "sonar-step-layout.log"
+    },
+    "launcher": {
+      "passed": true,
+      "command": "./run-raw-daw.sh --help",
+      "log": "sonar-step-launcher.log"
+    },
+    "rendererInstaller": {
+      "passed": true,
+      "command": "python3 tools/install_renderer.py --ensure",
+      "identity": {
+        "bytes": 255840,
+        "sha256": "c0576c1ccc9e261c10fd803a30f3948119653e3f38afc64bcebab6632179e79a"
+      },
+      "sameBinaryAs040": true
+    }
+  },
+  "package": {
+    "manifest": "dist/PRDE1_0.4.1_Linux_x86_64.parts.json",
+    "bytes": 93465,
+    "sha256": "17caf4539120c7b2416a4fac96f4904cb6613e1077520f63df57c30dfdd39d51",
+    "kind": "Renderer package for the updated source checkout"
+  },
+  "screenshots": [
+    "raw-daw-sonar-steps-1280.png",
+    "raw-daw-sonar-steps-150pct.png"
+  ],
+  "limits": [
+    "Physical Steam Deck launch/playback and human listening are not certified by offscreen tests."
+  ]
+}
