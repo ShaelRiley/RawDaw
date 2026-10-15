@@ -1,8 +1,28 @@
 # Development plan
 
 Authority: the live Raw Daw SDD, sections 1–34, engineering selections in 28.8,
-and Shael's October 14 request for source-waveform banks and arrangement loops.
+and Shael's October 14 requests for source-waveform banks, arrangement loops and
+a Cakewalk-style step sequencer interface.
 The explicit October 14 request supersedes the Section 30 modeled fallback.
+The current SDD was read at revision
+`AHj4eMS_K1M3ev47yLin3yhFl-jZCDjO6MceppWUzoUpCcvnLz-TeNORRHv-NvtHXF-dKwJMArmwF1r6GDnrfNa52n_Nrj8kdDKjt_4s4Q`.
+
+**October 14 — step sequencer interface (0.4.2):** graphite beveled pads with cyan
+per-hit velocity, beat-grouped columns/ruler and an amber playhead/readout.
+Instrument strips separate row selection, audition, mute, solo and details.
+Compact transport, three pad sizes and Expand editor improve working space.
+The focused row expands an inline expression editor with six compact dials and
+an expression selector in its left inspector; its chevron shows/hides the panel.
+The separate Row controls checkbox retains exact numeric settings below the grid.
+The existing dynamics/timing semantics and undoable saved row mute/solo remain.
+
+An active first clicked step chooses silent erasure for its whole drag; an
+inactive first step starts painting. Right-drag remains an explicit erase gesture.
+Keyboard entry, exact/off-grid events, native rendering, all five bundled packs
+and source-bank coverage are retained. Recording, VST3, source-fidelity and
+physical-device release gates below retain their scope. The release uses the
+same hash-verified native renderer upgrade for the source checkout; it is
+not a new standalone distribution. See `STEP_SEQUENCER.md` for the controls.
 
 **October 14 — source banks and looping:** replace oscillator/noise reconstruction
 with nearest-source waveform transforms and polyphonic voice conversion. Lead
@@ -13,13 +33,6 @@ hashes, truthful lineage, finite resource bounds and the downstream mixer.
 The fifth Shop Vac bank uses official Jonathan Coulton stems under CC BY-NC, with two editable demo arrangements.
 Clip moves/right-edge repeats, explicit track cycles and song transport looping
 retain editability, actual destination harmony, deterministic variation and undo.
-
-**October 14 — SONAR reference interface:** compact silver/cyan step buttons,
-beat groups, per-row audition/Mute/Solo, inline collapsible expression, five row
-dials and pattern transport use the existing native musical/editor paths.
-Mouse and keyboard checks cover targeting, single-undo gestures, preservation of
-notes, persistence and 1280×800/150% layout. Recording, VST3, source-fidelity and
-physical-device release gates below retain their scope.
 
 **Default step sequencer — implemented:** Section 31 provides melodic pitch rows
 and named kit rows, gesture/keyboard entry, mono/poly scheduling, saved row and

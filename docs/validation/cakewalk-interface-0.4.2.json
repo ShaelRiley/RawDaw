@@ -1,0 +1,126 @@
+{
+  "version": "0.4.2",
+  "validatedAtUtc": "2026-10-15T02:55:37.243077+00:00",
+  "canonicalSDD": {
+    "documentId": "1qb6LWTgkk3vVJB3aFnwkXvtZ1-IxRIY0VezW0P9e_HE",
+    "revisionId": "AHj4eMS_K1M3ev47yLin3yhFl-jZCDjO6MceppWUzoUpCcvnLz-TeNORRHv-NvtHXF-dKwJMArmwF1r6GDnrfNa52n_Nrj8kdDKjt_4s4Q",
+    "sections": "1\u201334"
+  },
+  "concurrentBaseCommit": "15ddcca505dc31d1f618fd85992250d7e7cab378",
+  "preIntegrationFullSuite": {
+    "tests": 191,
+    "skips": 0,
+    "result": "passed",
+    "log": "cakewalk-preintegration-191-tests.log"
+  },
+  "finalAffectedQtSuites": {
+    "distinctTests": 55,
+    "runs": [
+      {
+        "tests": 28,
+        "result": "passed",
+        "scope": "step, surface and workspace layout before final flam repair",
+        "evidence": "recorded streamed result",
+        "log": "cakewalk-qt-28-tests.log"
+      },
+      {
+        "tests": 26,
+        "result": "passed",
+        "scope": "all GUI exports, library, loops, progressions, preview and startup",
+        "log": "cakewalk-qt-26-tests.log"
+      },
+      {
+        "tests": 21,
+        "result": "passed",
+        "scope": "all step-widget tests after double-click flam repair",
+        "log": "cakewalk-step-21-tests.log"
+      }
+    ]
+  },
+  "nativeEngineTests": "passed",
+  "syntheticReferenceRenders": 2,
+  "sourceArrangementExportsEqualPreviousBuild": 14,
+  "sourcePacksArrangementsNativeEngineAndCatalogsUnchanged": true,
+  "rendererSha256": "c0576c1ccc9e261c10fd803a30f3948119653e3f38afc64bcebab6632179e79a",
+  "rendererInstallerVerified": true,
+  "visualChecks": [
+    {
+      "image": "cakewalk-1280.png",
+      "project": "shop_vac_a",
+      "role": "drums",
+      "scale": 1,
+      "expanded": false,
+      "inline": true,
+      "window": [
+        1280,
+        800
+      ],
+      "gridViewport": [
+        985,
+        185
+      ],
+      "buttonHeight": 25,
+      "expandedRowHeight": 123,
+      "unalteredProject": true
+    },
+    {
+      "image": "cakewalk-150pct.png",
+      "project": "shop_vac_a",
+      "role": "drums",
+      "scale": 1.5,
+      "expanded": false,
+      "inline": true,
+      "window": [
+        1280,
+        800
+      ],
+      "gridViewport": [
+        909,
+        260
+      ],
+      "buttonHeight": 40,
+      "expandedRowHeight": 196,
+      "unalteredProject": true
+    },
+    {
+      "image": "cakewalk-expanded.png",
+      "project": "shop_vac_a",
+      "role": "drums",
+      "scale": 1,
+      "expanded": true,
+      "inline": true,
+      "window": [
+        1280,
+        800
+      ],
+      "gridViewport": [
+        985,
+        453
+      ],
+      "buttonHeight": 25,
+      "expandedRowHeight": 123,
+      "unalteredProject": true
+    },
+    {
+      "image": "cakewalk-bass-expanded.png",
+      "project": "shop_vac_a",
+      "role": "bass",
+      "scale": 1,
+      "expanded": true,
+      "inline": true,
+      "window": [
+        1280,
+        800
+      ],
+      "gridViewport": [
+        985,
+        453
+      ],
+      "buttonHeight": 25,
+      "expandedRowHeight": 123,
+      "unalteredProject": true
+    }
+  ],
+  "humanListeningPerformed": false,
+  "physicalSteamDeckTestPerformed": false
+}

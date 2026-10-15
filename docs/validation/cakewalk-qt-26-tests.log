@@ -1,0 +1,44 @@
+qt.multimedia.symbolsresolver: Couldn't load pipewire-0.3 library
+qt.multimedia.symbolsresolver: Couldn't resolve pipewire-0.3 symbols
+test_all_catalog_gui_exports_equal_bundled_auditions_and_keep_packs_intact (test_gui.NativeDesktop.test_all_catalog_gui_exports_equal_bundled_auditions_and_keep_packs_intact) ... qt.multimedia.ffmpeg: Using Qt multimedia with FFmpeg version 7.1 LGPL version 2.1 or later
+socket(): Operation not permitted
+socket(): Operation not permitted
+PulseAudioService: pa_context_connect() failed
+ok
+test_cancel_preserves_existing_export_and_cannot_publish_stale_audio (test_gui.NativeDesktop.test_cancel_preserves_existing_export_and_cannot_publish_stale_audio) ... ok
+test_keyboard_step_edit_and_undo_resolve_the_actual_source_bank (test_gui.NativeDesktop.test_keyboard_step_edit_and_undo_resolve_the_actual_source_bank) ... ok
+test_recovery_restores_mix_timing_selection_and_variation (test_gui.NativeDesktop.test_recovery_restores_mix_timing_selection_and_variation) ... ok
+test_rendered_preview_decodes_at_48khz_and_pause_seek_reuse_saved_realization (test_gui.NativeDesktop.test_rendered_preview_decodes_at_48khz_and_pause_seek_reuse_saved_realization) ... Input #0, wav, from '/tmp/prde1-desktop-w037eucz/preview.wav':
+  Duration: 00:00:05.82, bitrate: 2304 kb/s
+  Stream #0:0: Audio: pcm_s24le ([1][0][0][0] / 0x0001), 48000 Hz, 2 channels, s32 (24 bit), 2304 kb/s
+No audio device detected
+No audio device detected
+ok
+test_saved_dynamics_controls_apply_to_the_same_native_preview_and_recover (test_gui.NativeDesktop.test_saved_dynamics_controls_apply_to_the_same_native_preview_and_recover) ... ok
+test_scale_and_small_window_keep_primary_actions_accessible (test_gui.NativeDesktop.test_scale_and_small_window_keep_primary_actions_accessible) ... ok
+test_shop_vac_pack_and_its_two_auditions_appear_without_an_unwritten_full_demo (test_gui.NativeDesktop.test_shop_vac_pack_and_its_two_auditions_appear_without_an_unwritten_full_demo) ... ok
+test_unrecorded_chord_is_source_derived_and_keeps_playback_and_export_enabled (test_gui.NativeDesktop.test_unrecorded_chord_is_source_derived_and_keeps_playback_and_export_enabled) ... ok
+test_drop_on_matching_track_places_a_bar_and_occupied_drop_is_preserved (test_library_widgets.NativeLibrary.test_drop_on_matching_track_places_a_bar_and_occupied_drop_is_preserved) ... ok
+test_modes_commit_saved_values_and_browser_buttons_fit_large_text (test_library_widgets.NativeLibrary.test_modes_commit_saved_values_and_browser_buttons_fit_large_text) ... ok
+test_search_role_meter_favorites_place_and_real_preview_are_independent (test_library_widgets.NativeLibrary.test_search_role_meter_favorites_place_and_real_preview_are_independent) ... ok
+test_drag_right_edge_repeats_move_snaps_and_undo_keeps_source_editable (test_loop_widgets.LoopInterface.test_drag_right_edge_repeats_move_snaps_and_undo_keeps_source_editable) ... ok
+test_large_layout_and_extended_chord_inversions_remain_accessible (test_loop_widgets.LoopInterface.test_large_layout_and_extended_chord_inversions_remain_accessible) ... ok
+test_occupied_drag_is_rejected_and_keyboard_loop_controls_are_undoable (test_loop_widgets.LoopInterface.test_occupied_drag_is_rejected_and_keyboard_loop_controls_are_undoable) ... ok
+test_track_loop_has_selectable_ghosts_protects_drops_and_persists_transport_loop (test_loop_widgets.LoopInterface.test_track_loop_has_selectable_ghosts_protects_drops_and_persists_transport_loop) ... ok
+test_custom_authoring_saves_to_bank_and_primary_controls_fit_enlarged_text (test_progression_widgets.NativeProgressions.test_custom_authoring_saves_to_bank_and_primary_controls_fit_enlarged_text) ... This plugin does not support propagateSizeHints()
+ok
+test_default_bank_search_native_preview_load_and_undo (test_progression_widgets.NativeProgressions.test_default_bank_search_native_preview_load_and_undo) ... ok
+test_import_is_persistent_separate_from_song_and_bad_batch_leaves_bank_intact (test_progression_widgets.NativeProgressions.test_import_is_persistent_separate_from_song_and_bad_batch_leaves_bank_intact) ... ok
+test_latest_request_wins_cache_reuses_equivalent_notes_and_stop_blocks_late_results (test_note_preview.NativeNotePreview.test_latest_request_wins_cache_reuses_equivalent_notes_and_stop_blocks_late_results) ... ok
+test_preview_switch_persists_as_a_preference_and_never_changes_the_project (test_note_preview.NativeNotePreview.test_preview_switch_persists_as_a_preference_and_never_changes_the_project) ... ok
+test_editor_opens_when_video_device_initialization_would_segfault (test_desktop_startup.DesktopStartup.test_editor_opens_when_video_device_initialization_would_segfault) ... ok
+test_native_fault_retains_stage_and_traceback_in_local_log (test_desktop_startup.DesktopStartup.test_native_fault_retains_stage_and_traceback_in_local_log) ... ok
+test_pcm_startup_disables_video_drivers_and_preserves_display_selection (test_desktop_startup.DesktopStartup.test_pcm_startup_disables_video_drivers_and_preserves_display_selection) ... ok
+test_recovery_entrypoint_shows_full_song_and_records_the_display_stages (test_desktop_startup.DesktopStartup.test_recovery_entrypoint_shows_full_song_and_records_the_display_stages) ... ok
+test_saved_scale_opens_with_a_native_fault_in_dock_tabification (test_desktop_startup.DesktopStartup.test_saved_scale_opens_with_a_native_fault_in_dock_tabification)
+Model the Deck's failing native API; this is not a physical reproduction. ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 139.739s
+
+OK

@@ -1,0 +1,19 @@
+Completed Qt regression result, recorded from the streamed execution output.
+The raw process output was streamed to the tool rather than redirected to a file.
+
+Command:
+PYTHONPATH=tests python3 -m unittest test_step_widgets test_cakewalk_surface test_gui_layout -v
+
+Execution session: 23113
+Result:
+Ran 28 tests in 108.090s
+OK
+
+Coverage:
+20 tests in test_step_widgets, including all four incoming 0.4.1 regressions.
+5 tests in test_cakewalk_surface.
+3 tests in test_gui_layout.
+
+This run used the merged inline expression implementation with the actual-width
+layout minimum fix. It preceded the subsequently identified double-click flam
+repair, which is verified separately by cakewalk-step-21-tests.log.

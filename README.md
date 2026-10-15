@@ -2,11 +2,20 @@
 
 **Really Awesome Workflow Digital Audio Workstation**
 
-**Build 0.4.1:** a SONAR/Cakewalk-inspired step sequencer with silver beveled
-buttons, cyan hits, beat groups, inline velocity/expression bars, per-row
-Mute/Solo/audition, five timing/dynamics dials and a compact pattern transport.
-Click active steps to turn them off; row arrows expand/collapse expression.
-The 0.4.0 source-derived sample banks and timeline looping are retained. Lead and bass
+**Build 0.4.2:** a Cakewalk-style step sequencer with graphite beveled pads,
+cyan velocity stripes, grouped beat columns and an amber playhead/readout. Each
+pitch or instrument strip has separate selection, audition and mute/solo controls.
+Its chevron opens an inline expression editor beneath the focused row, with six
+compact dynamics/timing dials and an expression selector in the left inspector.
+**Row controls** provides exact numeric alternatives. Clicking an active first
+step silently erases for that drag; an inactive first step starts painting.
+Choose **Compact**, **Normal** or **Large** pads; **Expand editor**
+gives the grid the song controls and timeline's space while retaining the main
+transport and workspace tabs. The inline expression editor remains available
+without opening the numeric row controls. The audio engine, musical project
+format, bundled packs and source-bank coverage are unchanged.
+
+**Source-derived sample banks and timeline looping:** lead and bass
 cover all 128 MIDI notes. Chords cover 12 roots × 35 common qualities, including
 sixths, ninths, elevenths, thirteenths, suspended and altered dominants. Native
 recordings win; missing targets are prepared by transforming recorded waveforms,
@@ -49,7 +58,8 @@ See [the clip library and pulse controls](docs/CLIP_LIBRARY.md) for sources,
 kit/meter behavior and credits. Existing saves, settings and launch commands work.
 
 **Default step sequencer:** bass/lead use labeled pitch rows; drums use named kit
-rows. **Preview notes** is on by default: hear notes as you click, drag or enter
+rows. Click a row's name to select it; its triangle auditions the sound.
+**Preview notes** is on by default: hear notes as you click, drag or enter
 them, and switch it off for quiet editing. Each note has a visible volume
 slider/percentage and dynamics bars. Draw/erase
 steps, edit velocity and gates, tie notes, add flams, apply swing,
@@ -124,8 +134,8 @@ explain the remaining controls and current boundaries.
 
 ## Compiled distribution and command-line auditions
 
-The current 0.4.1 parts contain a small verified **renderer upgrade** for the
-source checkout. `./run-prde1.sh` installs it automatically; keep using the
+The current 0.4.2 parts contain the same hash-verified native **renderer upgrade**
+for the source checkout. `./run-prde1.sh` installs it automatically; keep using the
 repository's code, five packs and fourteen projects. A compiler is not
 required for this upgrade. Do not extract this renderer-only update as a full app.
 

@@ -1,18 +1,38 @@
-# SONAR reference step interface — October 14
-
-`step_widgets.py` implements the supplied visual reference with a shared cell
-paint delegate, beat header and instrument header. Row hit targets dispatch to
-the same editor transactions as the existing numeric controls. The focused row
-reserves one expanded section; a single expression widget and five-dial inspector
-follow its viewport coordinates. Scrolling and focus changes move these widgets,
-rather than allocating an editor for every pitch, drum articulation or step.
-Keyboard/numeric alternatives, accessible cell text and tooltips remain available.
-A mouse dial gesture saves on release; keyboard edits save immediately. Left-click
-selects a paint/erase gesture from the first cell's state. Preview is suppressed
-for erasure. Existing sample preparation, resolver, persistent rows and DSP remain
-the authoritative musical path.
-
 # Architecture decisions — first core checkpoint
+
+## Current step sequencer presentation — 0.4.2
+
+`step_surface.py` supplies native Qt delegates and headers for beveled pads,
+cyan velocity stripes, beat grouping/ruler and the amber playback column.
+The row header emits separate selection, audition, mute, solo and details
+signals; `step_widgets.py` applies those actions through the existing editor
+transactions. Clicking the row name selects it, while its triangle auditions.
+Presentation state is read from the existing item model without changing events
+in the paint path. Shared headers/delegates and a single expression widget avoid
+allocating an editor for every pitch, drum articulation or step. Accessible cell
+text, tooltips and keyboard/numeric alternatives remain available.
+
+The compact pattern transport, Compact/Normal/Large spacing and Expand editor
+control change workspace layout. Expansion hides the song controls and timeline
+while preserving the main transport and workspace tabs. One inline expression
+widget sits beneath the focused row and follows viewport coordinates as focus
+or scrolling changes. Its left inspector contains six compact dynamics/timing
+dials and the expression selector. The row chevron shows/hides this panel; the
+independent Row controls checkbox exposes exact numeric settings below the grid.
+Dials commit mouse gestures on release and use the same row transactions as
+numeric edits. Lane editing respects scroll offsets and rejects inspector
+clicks or positions outside visible grid columns.
+
+Left-click chooses painting or erasure from the first cell's enabled state and
+holds that mode through the drag. Erasure suppresses note preview; right-drag
+retains explicit erase behavior. Neither gesture changes musical timing or
+removes authored data that belongs to a disabled step.
+
+No audio engine, musical schema, source preparation or pack changes accompany
+this interface release. Exact off-grid events remain available through the Event
+list, and all existing musical edits use the same Governor/native render path.
+The 0.4.2 source release retains the current hash-verified native renderer upgrade
+rather than introducing a new standalone application distribution.
 
 ## Current source banks and virtual loops — 0.4.0
 

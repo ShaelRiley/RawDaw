@@ -1,0 +1,9 @@
+{
+  "version": "0.4.2",
+  "archiveSha256": "ef516913badd04b72bf2932759bd54927c71ad62396fccbe8cc0422ac16cd053",
+  "archiveBytes": 93466,
+  "rendererSha256": "c0576c1ccc9e261c10fd803a30f3948119653e3f38afc64bcebab6632179e79a",
+  "rendererBytes": 255840,
+  "verifiedInstaller": true,
+  "matchingBinaryReused": true
+}

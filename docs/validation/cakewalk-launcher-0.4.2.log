@@ -1,0 +1,16 @@
+Raw Daw: Startup diagnostics: /root/.local/state/prde1/startup.log
+Raw Daw: Python 3.12.14 on Linux
+Raw Daw: Loading Qt; GPU video probes disabled for PCM audio
+qt.multimedia.symbolsresolver: Couldn't load pipewire-0.3 library
+qt.multimedia.symbolsresolver: Couldn't resolve pipewire-0.3 symbols
+usage: desktop_startup.py [-h] [--project PROJECT] [--pack PACK]
+                          [--safe-workspace]
+
+Raw Daw desktop editor
+
+options:
+  -h, --help         show this help message and exit
+  --project PROJECT
+  --pack PACK
+  --safe-workspace   Use central tabs and the built-in Fusion style without
+                     restoring or replacing saved layout/scale

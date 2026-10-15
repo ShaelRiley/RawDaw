@@ -1,3 +1,40 @@
+# Current checkpoint — Raw Daw 0.4.2 Cakewalk interface integration
+
+Shael's October 14 screenshot request is implemented with graphite beveled
+step pads, cyan velocity stripes, exact beat grouping and an amber playhead.
+Pitch/kit strips offer selection, audition, MIDI address, mute, solo and an
+expression chevron. One real expression lane expands below the focused row;
+its header inspector contains six dials and the expression selector. Exact
+numeric row controls remain independent. Compact/Normal/Large spacing and
+Expand editor provide additional working room.
+
+This integrates the concurrently published 0.4.1 commit `15ddcca` and retains
+its silent first-cell toggle behavior, inline expansion and regression coverage.
+A physical double-click regression found during final review is fixed: changing
+flam state re-enables the attack, rather than leaving it silently disabled.
+Row actions preserve the focused beat; scrolling cannot edit hidden notes from
+the inspector. Layout minimums honor wrapped controls and enlarged text.
+
+The audio engine, source banks, MIDI catalogs and musical formats are unchanged.
+The 0.4.2 hash-verified renderer package contains the same native executable as
+0.4.0/0.4.1. Legacy launch commands and the five packs/fourteen arrangements remain.
+
+Verification: the full pre-integration suite passed 191 tests with no skips.
+Final affected Qt suites cover 55 distinct tests: 28 step/surface/layout tests,
+26 GUI/export/browser/loop/preview/startup tests, and all 21 step tests rerun
+following the final flam repair. The 28-test evidence is explicitly a recorded
+streamed result; the other logs retain raw output. All fourteen source exports
+match their preceding WAVs exactly. Native engine checks, both synthetic reference
+renders, launcher/installer checks, and four source-project visual checks at
+1280×800 including 150% text passed. See `validation/cakewalk-interface-0.4.2.json`.
+Physical device listening and Steam Deck execution remain unverified.
+
+Authority: live Raw Daw SDD sections 1–34, revision
+`AHj4eMS_K1M3ev47yLin3yhFl-jZCDjO6MceppWUzoUpCcvnLz-TeNORRHv-NvtHXF-dKwJMArmwF1r6GDnrfNa52n_Nrj8kdDKjt_4s4Q`.
+The earlier approved recording, comping, wider DSP and Linux VST scope remains open.
+
+---
+
 # Current checkpoint — Raw Daw 0.4.1 SONAR reference sequencer
 
 October 14: Shael supplied a SONAR/Cakewalk step-sequencer screenshot and

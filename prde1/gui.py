@@ -183,6 +183,8 @@ class MainWindow(QMainWindow):
         self.body=QWidget();body_layout=QVBoxLayout(self.body);body_layout.setContentsMargins(0,0,0,0);body_layout.setSpacing(8)
         self.body_scroll=QScrollArea();self.body_scroll.setWidget(self.body);self.body_scroll.setWidgetResizable(True)
         self.body_scroll.setFrameShape(QScrollArea.Shape.NoFrame);layout.addWidget(self.body_scroll,1);layout=body_layout
+        self.song_controls=QWidget();layout.addWidget(self.song_controls)
+        layout=QVBoxLayout(self.song_controls);layout.setContentsMargins(0,0,0,0);layout.setSpacing(8)
         guide=QHBoxLayout();self.guidance=QLabel('Load a Song Pack to begin.');self.guidance.setObjectName('guidance');self.guidance.setWordWrap(True);guide.addWidget(self.guidance,1)
         self.recover_button=button('Recover unsaved session',self.recover);guide.addWidget(self.recover_button);layout.addLayout(guide)
         govern=FlowLayout();govern.addWidget(QLabel('Chord Governor'))
@@ -208,6 +210,7 @@ class MainWindow(QMainWindow):
         self.bars=QSpinBox();self.bars.setRange(1,512);self.bars.setSuffix(' bars');self.bars.setKeyboardTracking(False);self.bars.editingFinished.connect(self.resize_song);timing.addWidget(self.bars)
         self.duration=QLabel();timing.addWidget(self.duration);timing.addStretch()
         self.zoom=QSlider(Qt.Orientation.Horizontal);self.zoom.setRange(50,200);self.zoom.setValue(100);self.zoom.setMaximumWidth(110);self.zoom.setAccessibleName('Timeline zoom');self.zoom.valueChanged.connect(self.set_zoom);timing.addWidget(QLabel('Zoom'));timing.addWidget(self.zoom);layout.addLayout(timing)
+        layout=body_layout
         self.splitter=QSplitter(Qt.Orientation.Vertical);self.splitter.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Ignored);layout.addWidget(self.splitter,1)
         self.timeline=Timeline();self.timeline.selected.connect(self.select);self.timeline.chord_requested.connect(self.edit_chord)
         self.timeline.instance_moved.connect(self.move_clip);self.timeline.instance_resized.connect(self.resize_clip)
@@ -220,6 +223,10 @@ class MainWindow(QMainWindow):
         self.splitter.addWidget(self.timeline_scroll)
         self.dock_tabs=QTabWidget();self.splitter.addWidget(self.dock_tabs);self.splitter.setSizes([360,260])
         self.sequencer=StepSequencer(self.change,self.audition_steps,self.copy_dialog,self.detach_selected,self.remove_selected,self,preview_note=self.preview_note)
+        self._step_pane_sizes=None
+        self.sequencer.focus_editor.toggled.connect(self.expand_step_editor)
+        self.sequencer.layout_changed.connect(lambda:QTimer.singleShot(0,self.fit_step_panes))
+        self.dock_tabs.currentChanged.connect(lambda:QTimer.singleShot(0,self.fit_step_panes))
         if self._settings:self.sequencer.preview_click.setChecked(self._settings.value('previewNotes',True,type=bool))
         self.sequencer.preview_click.toggled.connect(self.set_note_preview_enabled)
         self.steps=self.sequencer.grid;self.step_resolution=self.sequencer.resolution
@@ -236,6 +243,35 @@ class MainWindow(QMainWindow):
         self.seek=QSlider(Qt.Orientation.Horizontal);self.seek.setRange(0,1000);self.seek.setAccessibleName('Playback position');self.seek.sliderReleased.connect(self.seek_player);bottom.addWidget(self.seek,1)
         self.outputs=QComboBox();self.outputs.setMaximumWidth(240);self.outputs.setAccessibleName('Audio output device');self.outputs.currentIndexChanged.connect(self.choose_output);bottom.addWidget(self.outputs);layout.addLayout(bottom)
         self.message=QLabel();self.message.setObjectName('warning');self.message.setWordWrap(True);layout.addWidget(self.message)
+
+    def expand_step_editor(self,on):
+        self.song_controls.setVisible(not on);self.timeline_scroll.setVisible(not on)
+        if on:
+            self._step_pane_sizes=self.splitter.sizes();self.splitter.setSizes([0,sum(self._step_pane_sizes)])
+        elif self._step_pane_sizes:
+            self.splitter.setSizes(self._step_pane_sizes);self._step_pane_sizes=None
+        self.fit_step_panes()
+
+    def fit_step_panes(self):
+        # QSplitter's ignored vertical policy otherwise compresses the editor
+        # below its layout minimum when fonts grow, overlapping live controls.
+        s=self.sequencer
+        if self.dock_tabs.currentWidget() is not s:
+            self.dock_tabs.setMinimumHeight(0);self.splitter.setMinimumHeight(0);return
+        editor_height=s.minimumSizeHint().height()
+        if s.details.isChecked():editor_height=max(editor_height,s.layout().heightForWidth(s.width()))
+        needed=editor_height+self.dock_tabs.tabBar().sizeHint().height()+12
+        self.dock_tabs.setMinimumHeight(needed)
+        layout=self.body.layout();others=[]
+        for index in range(layout.count()):
+            widget=layout.itemAt(index).widget()
+            if widget is not None and widget is not self.splitter and not widget.isHidden():others.append(widget.height())
+        available=max(0,self.body_scroll.viewport().height()-sum(others)-layout.spacing()*len(others))
+        timeline=self.timeline_scroll.minimumHeight()
+        keep_timeline=self.timeline_scroll.isVisible() and available>=needed+timeline+self.splitter.handleWidth()
+        reserved=timeline+self.splitter.handleWidth() if keep_timeline else 0
+        self.splitter.setMinimumHeight(needed+reserved)
+        self.splitter.setSizes([timeline if keep_timeline else 0,max(needed,available-reserved)])
 
     def _make_inspector(self):
         self.inspector_dock=None
@@ -474,6 +510,7 @@ class MainWindow(QMainWindow):
         self.editor.project['editorContext']['selection']=instance_id
         self.refresh()
         if instance_id:self.dock_tabs.setCurrentWidget(self.sequencer)
+        self.fit_step_panes()
 
     def select_role(self):
         if not self._refreshing and self.editor:
@@ -832,10 +869,12 @@ class MainWindow(QMainWindow):
         self.scale.blockSignals(True);self.scale.setCurrentIndex(self.scale.findData(value));self.scale.blockSignals(False)
         if self._settings and not self._safe_workspace:self._settings.setValue('scale',value)
         self._responsive_layout()
+        self.fit_step_panes()
 
     def resizeEvent(self,event):
         super().resizeEvent(event)
-        if hasattr(self,'browser_dock'):self._responsive_layout()
+        if hasattr(self,'browser_dock'):
+            self._responsive_layout();QTimer.singleShot(0,self.fit_step_panes)
 
     def _responsive_layout(self):
         if not self._layout_ready or self._layout_changing:return

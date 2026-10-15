@@ -1,0 +1,13 @@
+{
+  "version": "0.4.2",
+  "archive": "PRDE1_0.4.2_Linux_x86_64.tar.gz",
+  "bytes": 93466,
+  "sha256": "ef516913badd04b72bf2932759bd54927c71ad62396fccbe8cc0422ac16cd053",
+  "parts": [
+    {
+      "file": "PRDE1_0.4.2_Linux_x86_64.tar.gz.part01",
+      "bytes": 93466,
+      "sha256": "ef516913badd04b72bf2932759bd54927c71ad62396fccbe8cc0422ac16cd053"
+    }
+  ]
+}

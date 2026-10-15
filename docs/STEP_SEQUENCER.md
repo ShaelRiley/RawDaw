@@ -7,29 +7,25 @@ kit rows retain their stable instrument identities. Pitch cells outside the
 current chord are visibly marked. Section 31 of the canonical SDD records Shael's
 October 11 request, including his clarification that he means the step sequencer.
 
-## SONAR reference interface — October 14
+Build 0.4.2 applies the Cakewalk-style layout requested on October 14. Graphite
+beveled pads sit in alternating beat groups beneath a two-tier beat/step ruler.
+Cyan stripes show each enabled hit's velocity; an amber playhead and beat/step
+readout follow playback. Pitch/instrument strips keep names and MIDI addresses
+beside separate audition, mute, solo and expression-chevron targets. Mute and Solo
+address the clicked row, remain saved with the pattern and are undoable.
+Unassigned kit addresses display a dash.
 
-The supplied SONAR/Cakewalk screenshot guides the native Qt interface: silver
-beveled step buttons, cyan active hits, numbered beat groups, cream playback
-highlighting, a compact transport and an inline expression editor. Each row has
-an expand arrow, an audition button, its MIDI address and M/S buttons. Clicking
-the name focuses the row; ▶ auditions it. Mute and Solo target the clicked row,
-remain saved with the pattern and are undoable. Unassigned kit addresses show —.
+The focused row's expression editor opens directly beneath its step buttons.
+The left inspector contains six compact dials and an expression selector; its
+bars share the step columns. The row chevron or **Dynamics bars** shows or hides
+this inline panel. **Row controls** independently reveals exact numeric settings
+below the grid. Selecting another row moves the inline editor with the focus.
 
-The focused row expands beneath its step buttons. Its left inspector exposes
-Volume ×, Duration, Swing, Time ± and Flam dials, with an expression selector;
-the bars occupy the same time columns as the steps. Mouse gestures commit one
-undoable change on release. The expression panel follows vertical/horizontal
-scrolling and collapses through the row arrow or **Dynamics bars**. Exact numeric
-row controls remain available through **More controls**. Shared painted headers
-and a cell delegate avoid creating a widget per step or per available pitch.
-
-The pattern transport provides ▶, ■, Loop and a beat/subdivision readout. The ●
-switch enables keyboard step entry. Mono/Poly and Follow/Exact retain the same
-saved musical semantics. Row +/× provide insert/delete shortcuts. Pattern and Row
-menus retain reuse, interchange, fill and editing commands.
-
-![Raw Daw step sequencer at 1280×800](validation/raw-daw-sonar-steps-1280.png)
+Choose **Compact**, **Normal** or **Large** in **Size** to change pad spacing.
+**Expand editor** hides the song controls and timeline, giving their space to the
+editor while keeping the main transport and workspace tabs available. Turning it
+off restores those controls. These are display controls: exact musical timing,
+off-grid events, saved patterns and the native audio path are retained.
 
 ## Composition controls
 
@@ -39,9 +35,14 @@ before row dynamics and mixer levels. The tooltip also shows its MIDI velocity
 on the 0–127 scale. A slider drag creates one undoable edit. A tied note can be
 edited from any of its sustained cells without creating another attack.
 
-**Dynamics bars** are visible by default for the focused pitch or kit row. Drag
-each note's bar to shape its volume; empty columns remain empty. **More controls**
-opens new-note defaults, the other expression types and row timing.
+**Dynamics bars** are visible by default beneath the focused pitch or kit row.
+Drag each note's bar to shape its volume; empty columns remain empty. The inline
+inspector's dropdown selects volume/velocity, duration, play probability, change
+probability or timing offset without opening numeric row controls. Its six
+rotary dials edit velocity multiplier/offset, gate, swing, timing offset and flam.
+Mouse dial gestures commit on release. **Row controls** opens new-note defaults
+and exact numeric alternatives for those same saved settings; keyboard controls
+remain available.
 The event list/dialog exposes **Note volume** for exact off-grid notes.
 Values survive save/reopen, pattern reuse, undo/recovery, preview and audio export.
 Silent realized notes are omitted from MIDI export rather than becoming faint
@@ -49,7 +50,7 @@ velocity-one hits. Percentages describe amplitude, not a decibel or loudness sca
 
 | Control | Behavior |
 | --- | --- |
-| Left-click / drag | Toggle the first step; dragging paints or erases consistently from that initial state; fast drags fill crossed columns |
+| Left-click / drag | Toggle the first step; an active first step starts silent erasure, otherwise painting; the whole drag follows that mode and fast drags fill crossed columns |
 | Right-click / drag | Disable steps without deleting their authored data |
 | Arrows + Space | Navigate and toggle the focused step |
 | Mono / Poly entry | Replace other notes in a column, or retain simultaneous notes; bass/lead default mono, kit defaults poly |
@@ -60,26 +61,38 @@ velocity-one hits. Percentages describe amplitude, not a decibel or loudness sca
 | Double-click | Toggle a quieter flam grace trigger |
 | Expression bars | Draw velocity, gate duration, play/change probability or timing offsets; one drag is one undo operation |
 | Note volume | Slider and percentage for the focused note; Shift-drag and default dynamics bars provide gesture alternatives |
-| More controls | New-note volume, expression type, row velocity multiplier/offset, gate %, swing %, time offset %, flam timing |
+| Inline expression dropdown | Select volume/velocity, duration, play/change probability or timing offset while numeric row controls stay closed |
+| Row chevron / Dynamics bars | Show or hide the focused row's inline expression editor and six-dial inspector |
+| Row controls | Independently show new-note volume and exact numeric row velocity multiplier/offset, gate %, swing %, time offset % and flam timing |
 | Row menu | Insert/delete/rename/reorder, copy/cut/paste, shift, reverse, clear and fill every N steps |
 | Alt-left/right | Shift the focused row by one step, wrapping within the pattern |
 | Alt-up/down | Move a melodic column to the next higher/lower permitted pitches |
 | Pattern menu | Save/load, clear, explicit quantize, Fit to quarters, duplicate, linked/independent reuse and MIDI interchange |
 | Play pattern / Loop | Audition the selected pattern independently of the song transport |
-| Row ▶ / row name | Audition that pitch/instrument / focus the row without changing the song |
+| Click row label | Select that pitch/instrument for editing and its dynamics lane |
+| Row triangle | Audition that pitch/instrument without changing the song |
+| Row M / S | Toggle the row's saved mute / solo setting |
+| Size | Choose Compact, Normal or Large step buttons |
+| Expand editor | Hide song controls and timeline to enlarge the editor; main transport and workspace tabs stay visible |
 | Preview notes | On initially; hear mouse press/drag and keyboard entries, with a saved preference for quiet editing |
 | Step entry | Use Space or Z S X D C V G B H N J M; period advances/rests, comma goes back; Ctrl-R toggles entry |
 
-Active cells use cyan stripes and a small velocity bar; exact percentages are
-available in Note volume and tooltips. `F` marks a flam;
-a cyan line marks a continuation of an earlier note. Scroll vertically for additional
-pitches and horizontally for longer patterns. The highlighted playback column
-follows the real preview clock, including independent looped auditions.
+Cyan stripe height inside an active pad expresses velocity; **Note volume** and
+the note tooltip retain exact percentages. Small paired strokes mark a flam;
+horizontal bridges mark held-note continuations. Scroll vertically for additional
+pitches and horizontally for longer patterns. Beat grouping and the highlighted
+playback column follow exact grid timing and the real preview clock, including
+independent looped auditions.
 
-Rows offer native or source-derived kit sounds. Empty optional extras stay
-unassigned. Source-specific Extra 1/2 names remain visible. The focused row’s expression editor opens initially. The visible
-More controls toggle and menus provide numeric and non-drag equivalents. The exact Event list remains an
-editable alternative and retains every off-grid event.
+Rows offer their native or source-derived kit sounds. Empty optional extras stay
+unassigned. Source-specific Extra 1/2 names remain visible. Row controls are
+collapsed initially to retain working space on a 1280×800 screen, while the
+focused row's inline expression editor opens initially. **Row controls** and
+menus provide numeric and non-drag equivalents. The inline panel follows row
+focus and vertical/horizontal scrolling; inspector clicks do not edit hidden or
+clipped step columns. The exact Event list remains an editable alternative and
+retains every off-grid event. This interface update
+does not alter the renderer, DSP, musical schema, bundled packs or sample banks.
 
 ## Musical and persistence rules
 
@@ -173,4 +186,4 @@ Cakewalk's primary references informed the interaction vocabulary:
 [toolbar](https://legacy.cakewalk.com/Documentation?product=SONAR&language=3&help=Views.15.html),
 [rows](https://legacy.cakewalk.com/Documentation?product=SONAR&language=3&help=Views.16.html),
 [notes pane](https://legacy.cakewalk.com/Documentation?product=SONAR&language=3&help=Views.17.html).
-This is an original PRDE1 implementation with its own interface and constraints.
+This is an original Raw Daw implementation with its own interface and constraints.

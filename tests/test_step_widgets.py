@@ -166,7 +166,7 @@ class StepInterface(unittest.TestCase):
         w=self.window;s=w.sequencer
         w.change(lambda:w.editor.paint_steps(self.drums,[('d_kick',Fraction(0)),('d_kick',Fraction(1,4)),('d_snare',Fraction(0))]))
         w.select('drums',Fraction(0),self.drums);row,_=self.target('d_kick',0);s.grid.setCurrentCell(row,0)
-        lane=s.lane;origin=s.grid.verticalHeader().width()+s.grid.frameWidth()
+        lane=s.lane;origin=lane.origin()
         x=origin+s.grid.columnViewportPosition(0)+s.grid.columnWidth(0)//2
         before=len(w.editor.undo_stack);point=QPoint(x,lane.height()//2)
         QTest.mouseClick(lane,Qt.MouseButton.LeftButton,pos=point)
@@ -223,10 +223,9 @@ class StepInterface(unittest.TestCase):
         self.assertEqual(len(w.editor.plan()['events']),4);self.assertEqual(len(w.editor.undo_stack),before+1)
 
     def header_click(self,identity,action):
-        s=self.window.sequencer;row,_=self.target(identity,0);header=s.grid.verticalHeader()
-        from PySide6.QtCore import QRect
-        rect=QRect(0,header.sectionViewportPosition(row),header.width(),header.sectionSize(row))
-        QTest.mouseClick(header.viewport(),Qt.MouseButton.LeftButton,pos=header.parts(rect)[action].center())
+        s=self.window.sequencer;row,_=self.target(identity,0);header=s.grid.row_header
+        action={'muted':'mute','name':'select','expand':'details'}.get(action,action)
+        QTest.mouseClick(header.viewport(),Qt.MouseButton.LeftButton,pos=header.button_rect(row,action).center())
         self.app.processEvents();return row
 
     def test_inline_row_buttons_target_clicked_instrument_and_preserve_saved_notes(self):
@@ -251,9 +250,10 @@ class StepInterface(unittest.TestCase):
         w.change(lambda:w.editor.paint_steps(self.drums,[('d_kick',Fraction(0)),('d_snare',Fraction(1,4))]))
         w.select('drums',Fraction(0),self.drums);before=canonical_bytes(w.editor.project)
         row=self.header_click('d_kick','name');self.assertEqual(s.lane.values[0],.8);self.assertIsNone(s.lane.values[1])
+        self.assertIs(s.lane.parentWidget(),s.grid.viewport())
         self.assertEqual(s.lane.y(),s.grid.rowViewportPosition(row)+s.grid.button_height)
         self.assertEqual(sum(s.grid.rowHeight(i)>s.grid.button_height for i in range(s.grid.rowCount())),1)
-        self.header_click('d_kick','expand');self.assertFalse(s.lane.isVisible())
+        self.header_click('d_kick','expand');self.assertFalse(s.lane.isVisible());self.assertFalse(s.inspector.isVisible())
         self.header_click('d_snare','expand');self.assertTrue(s.lane.isVisible());self.assertEqual(s.lane.values[1],.8)
         self.assertIsNone(s.lane.values[0]);self.assertEqual(canonical_bytes(w.editor.project),before)
         s.grid.verticalScrollBar().setValue(s.grid.verticalScrollBar().value()+1);self.app.processEvents()
@@ -262,10 +262,13 @@ class StepInterface(unittest.TestCase):
     def test_timing_dial_gesture_commits_once_and_keyboard_undo_preserves_notes(self):
         w=self.window;s=w.sequencer;s.preview_click.setChecked(False)
         row,point=self.target('n_48',0);QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+        s.details.setChecked(True);self.app.processEvents()
         original=w.editor.plan();count=len(w.editor.undo_stack);dial=s.row_dials['swingPercent']
-        # Qt's real dial emits changes throughout a drag; the project commits on release.
-        QTest.mousePress(dial,Qt.MouseButton.LeftButton,pos=QPoint(16,4))
-        QTest.mouseMove(dial,QPoint(29,16));QTest.mouseRelease(dial,Qt.MouseButton.LeftButton,pos=QPoint(29,16))
+        self.assertTrue(dial.isVisible())
+        # A physical drag commits on release; keyboard changes commit directly.
+        QTest.mousePress(dial,Qt.MouseButton.LeftButton,pos=QPoint(dial.width()//2,4))
+        QTest.mouseMove(dial,QPoint(dial.width()-3,dial.height()//2))
+        QTest.mouseRelease(dial,Qt.MouseButton.LeftButton,pos=QPoint(dial.width()-3,dial.height()//2))
         self.assertEqual(len(w.editor.undo_stack),count+1)
         self.assertNotEqual(settings(w.editor.pattern(self.bass),w.pack)['rows'][row]['swingPercent'],50)
         w.undo();self.assertEqual(w.editor.plan(),original)
@@ -279,3 +282,21 @@ class StepInterface(unittest.TestCase):
         QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
         self.assertEqual(w.editor.plan()['events'],[]);self.assertEqual(len(requests),count)
         w.undo();self.assertEqual(len(w.editor.plan()['events']),1)
+
+    def test_real_double_click_toggles_flam_without_disabling_active_attack(self):
+        w=self.window;s=w.sequencer;s.preview_click.setChecked(False)
+        _,point=self.target('n_48',0)
+        QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+        for expected in (True,False):
+            _,point=self.target('n_48',0)
+            # Qt sends an ordinary first click, then the second press as a
+            # double-click. The first click must not leave the attack erased.
+            QTest.mouseClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+            QTest.mouseDClick(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+            QTest.mouseRelease(s.grid.viewport(),Qt.MouseButton.LeftButton,pos=point)
+            notes=w.editor.pattern(self.bass)['events']
+            self.assertEqual(len(notes),1);self.assertTrue(notes[0]['enabled'])
+            self.assertEqual(bool(notes[0].get('flam')),expected)
+            realized=w.editor.plan()['events']
+            self.assertEqual(len(realized),2 if expected else 1)
+            self.assertTrue(all(event['notePitches']==[48] for event in realized))
